@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://portainer.github.io/k8s
     chart: portainer
-    targetRevision: 2.32.0
+    targetRevision: 1.0.69
   destination:
     server: https://kubernetes.default.svc
     namespace: portainer
