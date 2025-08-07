@@ -1,11 +1,11 @@
 resource "kubernetes_namespace" "portainer" {
   metadata {
-    name = "portainer"
+    name = "portainer-namespace-app"
   }
 }
 
 resource "kubernetes_namespace" "argocd" {
   metadata {
-    name = "argocd"
+    name = "argocd-namespace-app"
   }
 }

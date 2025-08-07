@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://charts.portainer.io
+    repoURL: https://portainer.github.io/k8s
     chart: portainer
     targetRevision: 2.9.0
   destination:
