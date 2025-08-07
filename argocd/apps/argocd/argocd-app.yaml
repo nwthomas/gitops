@@ -8,6 +8,6 @@ spec:
   source:
     repoURL: https://github.com/argoproj/argo-cd.git
     targetRevision: 3.0.12
-    automated:
-      prune: true
-      selfHeal: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
