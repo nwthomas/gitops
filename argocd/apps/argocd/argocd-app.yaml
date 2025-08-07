@@ -7,12 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/argoproj/argo-cd.git
-    targetRevision: v2.8.0
-    path: manifests/cluster-install
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: argocd
-  syncPolicy:
+    targetRevision: 3.0.12
     automated:
       prune: true
       selfHeal: true
