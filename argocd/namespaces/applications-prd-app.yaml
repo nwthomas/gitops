@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: applications-prd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/you/gitops-repo.git
+    targetRevision: HEAD
+    path: apps/applications-prd
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: applications-prd
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
