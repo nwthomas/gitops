@@ -6,3 +6,12 @@ resource "kubernetes_namespace" "argocd" {
     }
   }
 }
+
+resource "kubernetes_namespace" "applications" {
+  metadata {
+    name = "applications"
+    labels = {
+      "app.kubernetes.io/managed-by" = "terraform"
+    }
+  }
+}
