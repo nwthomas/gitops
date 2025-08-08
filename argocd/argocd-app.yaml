@@ -8,10 +8,10 @@ spec:
   source:
     repoURL: https://github.com/nwthomas/gitops.git
     targetRevision: HEAD
-    path: argocd
+    path: namespaces
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: argocd
   syncPolicy:
     syncOptions:
-      - CreateNamespace=false
+      - CreateNamespace=true
