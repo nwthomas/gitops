@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack-eng-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 48.3.1
+    helm:
+      values: |
+        grafana:
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            hosts:
+              - grafana-eng.local
+        adminPassword: ${GRAFANA_ADMIN_PASSWORD}
+          adminPasswordSecret:
+            name: grafana-admin-password
+            key: admin-password
+        prometheus:
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            hosts:
+              - prometheus-eng.local
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring-eng
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

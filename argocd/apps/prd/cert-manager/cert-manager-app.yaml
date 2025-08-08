@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-prd-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.jetstack.io
+    chart: cert-manager
+    targetRevision: v1.12.3
+    helm:
+      values: |
+        installCRDs: true
+        prometheus:
+          enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager-prd
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

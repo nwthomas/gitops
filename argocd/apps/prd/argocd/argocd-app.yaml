@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-prd-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-cd
+    targetRevision: 5.46.7
+    helm:
+      values: |
+        server:
+          extraArgs:
+            - --insecure
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            hosts:
+              - argocd.local
+        configs:
+          cm:
+            timeout.reconciliation: 180s
+            resource.customizations.health.networking.k8s.io_Ingress: |
+              hs = {}
+              hs.status = "Healthy"
+              return hs
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
