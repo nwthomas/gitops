@@ -2,7 +2,6 @@ locals {
   environments = ["eng", "prd"]
   namespaces = {
     argocd        = "argocd"
-    ingress_nginx = "ingress-nginx"
     monitoring    = "monitoring"
     cert_manager  = "cert-manager"
   }

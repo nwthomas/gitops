@@ -14,7 +14,7 @@ spec:
         grafana:
           ingress:
             enabled: true
-            ingressClassName: nginx
+            ingressClassName: traefik
             hosts:
               - grafana-prd.local
         adminPassword: ${GRAFANA_ADMIN_PASSWORD}
@@ -24,7 +24,7 @@ spec:
         prometheus:
           ingress:
             enabled: true
-            ingressClassName: nginx
+            ingressClassName: traefik
             hosts:
               - prometheus-prd.local
   destination:

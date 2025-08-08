@@ -16,7 +16,7 @@ spec:
             - --insecure
           ingress:
             enabled: true
-            ingressClassName: nginx
+            ingressClassName: traefik
             hosts:
               - argocd.local
         configs:
