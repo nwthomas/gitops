@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/you/gitops-repo.git
+    repoURL: https://github.com/nwthomas/gitops.git
     targetRevision: HEAD
-    path: namespaces
+    path: argocd/namespaces
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

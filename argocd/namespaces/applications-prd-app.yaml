@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/you/gitops-repo.git
+    repoURL: https://github.com/nwthomas/gitops.git
     targetRevision: HEAD
-    path: apps/applications-prd
+    path: argocd/apps/applications-prd
   destination:
     server: https://kubernetes.default.svc
     namespace: applications-prd
