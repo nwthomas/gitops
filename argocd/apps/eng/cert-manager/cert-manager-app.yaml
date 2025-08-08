@@ -14,6 +14,11 @@ spec:
         installCRDs: true
         prometheus:
           enabled: true
+        serviceAccount:
+          create: true
+          name: cert-manager-eng-app
+        rbac:
+          create: true
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager-eng
