@@ -1,0 +1,31 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: argocd-allowlist
+  namespace: argocd
+spec:
+  ipWhiteList:
+    sourceRange:
+      - 10.0.0.1/24 # LAN subnet
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-ingress
+  namespace: argocd
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: argocd-allowlist@kubernetescrd
+spec:
+  rules:
+    - host: argocd.home.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80

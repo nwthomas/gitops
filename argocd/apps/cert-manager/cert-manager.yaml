@@ -35,8 +35,8 @@ metadata:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   acme:
-    # TODO: CHANGE THIS EMAIL
-    email: you@example.com
+    # TODO: Temporarily email. Change it before launch.
+    email: cert.manager.k7f9z@gmail.com
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-staging
@@ -55,8 +55,8 @@ metadata:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   acme:
-    # TODO: CHANGE THIS EMAIL
-    email: you@example.com
+    # TODO: Temporarily email. Change it before launch.
+    email: cert.manager.k7f9z@gmail.com
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-production
