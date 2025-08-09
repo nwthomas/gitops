@@ -13,15 +13,12 @@ metadata:
   name: argocd-server-ingress
   namespace: argocd
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.middlewares: argocd-argocd-allowlist@kubernetescrd
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    # traefik.ingress.kubernetes.io/router.middlewares: argocd-argocd-allowlist@kubernetescrd
     cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
 spec:
   ingressClassName: traefik
-  tls:
-    - hosts:
-        - argocd.home.local
-      secretName: argocd-tls
+  tls: []
   rules:
     - host: argocd.home.local
       http:
