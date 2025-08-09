@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/nwthomas/gitops.git
-    targetRevision: HEAD
+    targetRevision: main
     path: argocd/namespaces
   destination:
     server: https://kubernetes.default.svc

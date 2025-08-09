@@ -1,17 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd-app
+  name: prometheus-crds
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/nwthomas/gitops.git
+    repoURL: https://github.com/prometheus-operator/prometheus-operator
     targetRevision: main
-    path: argocd/apps/argocd
+    path: example/prometheus-operator-crd
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+    namespace: monitoring

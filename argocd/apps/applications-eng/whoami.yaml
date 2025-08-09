@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/cowboysysop/charts.git
-    targetRevision: HEAD
+    targetRevision: main
     path: charts/whoami
     helm:
       releaseName: whoami
