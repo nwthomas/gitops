@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-crds
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/prometheus-operator/prometheus-operator
+    targetRevision: main
+    path: bundle.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 45.7.0
+    helm:
+      releaseName: prometheus
+      values: |
+        prometheus:
+          prometheusSpec:
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: standard
+                  resources:
+                    requests:
+                      storage: 10Gi
+            retention: 30d
+        # TODO: Change this once secret manager/Vault is implemented
+        grafana:
+          adminPassword: "admin"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
