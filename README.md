@@ -23,7 +23,8 @@ While it's meant to be run on a Raspberry Pi, it should be equally valid anywher
 │   │   ├── applications-prd/
 │   │   │   └── whoami-app.yaml # Temporary placeholder
 │   │   ├── argo/
-│   │   │   └── argocd-ingress-app.yaml
+│   │   │   ├── argocd-ingress-app.yaml
+│   │   │   └── prometheus.yaml
 │   │   └── cert-manager/
 │   │   │   └── cert-manager.yaml
 │   ├── namespaces/
