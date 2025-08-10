@@ -9,35 +9,41 @@ While it's meant to be run on a Raspberry Pi, it should be equally valid anywher
 ## 🎖️ Features
 
 - App-of-apps: A root Argo CD Application which manages child apps
-- Namespaces: `argocd`, `cert-manager`, `applications-eng`, `applications-prd`
+- Namespaces: `applications-eng`, `applications-prd`, `argocd`, `cert-manager`, `monitoring`
 - Cert-manager: Jetstack Helm with CRDs + ClusterIssuers (staging/production) for Traefik HTTP-01
+- Monitoring: Prometheus Operator with Grafana, using custom NVMe storage
 - Argo CD UI ingress: Traefik with IP allowlist middleware and cert-manager TLS
 
 ## 📁 Project Structure
 
 ```
-├── argocd/
-│   ├── apps/
-│   │   ├── applications-eng/
-│   │   │   └── whoami-app.yaml # Temporary placeholder
-│   │   ├── applications-prd/
-│   │   │   └── whoami-app.yaml # Temporary placeholder
-│   │   ├── argo/
-│   │   │   ├── argocd-ingress-app.yaml
-│   │   │   └── prometheus.yaml
-│   │   └── cert-manager/
-│   │   │   └── cert-manager.yaml
-│   ├── namespaces/
-│   │   ├── applications-eng-app.yaml
-│   │   ├── applications-prd-app.yaml
-│   │   ├── argocd-app.yaml
-│   │   └── cert-manager-app.yaml
-│   └── root/
-│       └── root-app.yaml
-├── terraform/
-│   ├── namespaces.tf
-│   └── provider.tf
-└── README.md
+├── argocd/                              #
+│   ├── apps/                            #
+│   │   ├── applications-eng/            #
+│   │   │   └── whoami-app.yaml          # Temporary placeholder
+│   │   ├── applications-prd/            #
+│   │   │   └── whoami-app.yaml          # Temporary placeholder
+│   │   ├── argocd/                      #
+│   │   │   └── argocd-ingress-app.yaml  #
+│   │   ├── cert-manager/                #
+│   │   │   └── cert-manager.yaml        #
+│   │   └── monitoring/                  #
+│   │       ├── prometheus-app.yaml      # Prometheus Operator with Grafana
+│   │       ├── prometheus-crds.yaml     # Prometheus Operator CRDs
+│   │       ├── prometheus-crds-app.yaml # ArgoCD app for CRDs
+│   │       ├── nvme-storageclass.yaml   # Custom NVMe storage configuration
+│   │       └── nvme-storage-app.yaml    # ArgoCD app for NVMe storage
+│   ├── namespaces/                      #
+│   │   ├── applications-eng-app.yaml    #
+│   │   ├── applications-prd-app.yaml    #
+│   │   ├── argocd-app.yaml              #
+│   │   ├── cert-manager-app.yaml        #
+│   │   └── monitoring-app.yaml          #
+│   └── root/                            #
+│       └── root-app.yaml                #
+└── terraform/                           #
+    ├── namespaces.tf                    #
+    └── provider.tf                      #
 ```
 
 ## 🛠️ Built With
