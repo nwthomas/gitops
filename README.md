@@ -14,6 +14,10 @@ While it's meant to be run on a Raspberry Pi, it should be equally valid anywher
 - Monitoring: Prometheus Operator with Grafana, using custom NVMe storage
 - Argo CD UI ingress: Traefik with IP allowlist middleware and cert-manager TLS
 
+## 🧱 Project Management
+
+Remaining work in this repository can be found in this [Trello Kanban board](https://trello.com/b/HOJMq7WP/gitops).
+
 ## 📁 Project Structure
 
 ```
