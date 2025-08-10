@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/prometheus-operator/prometheus-operator
     targetRevision: main
-    path: example/prometheus-operator-crd
+    path: bundle.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
