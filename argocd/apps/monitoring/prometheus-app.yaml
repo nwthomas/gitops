@@ -1,23 +1,6 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prometheus-crds
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
-spec:
-  project: default
-  source:
-    repoURL: https://prometheus-community.github.io/helm-charts
-    chart: prometheus-operator-crds
-    # targetRevision can be pinned later to match kube-prometheus-stack if needed
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: monitoring
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
   name: prometheus-app
   namespace: argocd
   annotations:
