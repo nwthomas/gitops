@@ -50,6 +50,24 @@ Remaining work in this repository can be found in this [Trello Kanban board](htt
     └── provider.tf                      #
 ```
 
+## 🧐 Dashboard Access
+
+Until the internal ingress is setup up, it's necessary to port forward on the Raspberry Pis while tunneling into them with SSH. Use these commands to access dashboards:
+
+```
+# For ArgoCD
+# 1. SSH:
+ssh -L 8080:localhost:8080 <PI_USERNAME>@<PI_IP_ADDRESS>
+# 2. On device:
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+# For Grafana
+# 1. SSH:
+ssh -L 3000:localhost:3000 <PI_USERNAME>@<PI_IP_ADDRESS>
+# 2. On device:
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:443
+```
+
 ## 🛠️ Built With
 
 - [Argo CD](https://argo-cd.readthedocs.io/en/stable/)
