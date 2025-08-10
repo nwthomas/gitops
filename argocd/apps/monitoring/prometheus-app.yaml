@@ -4,7 +4,7 @@ metadata:
   name: prometheus-app
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
   source:
@@ -25,7 +25,7 @@ spec:
             storageSpec:
               volumeClaimTemplate:
                 spec:
-                  storageClassName: standard
+                  storageClassName: nvme-local-path
                   resources:
                     requests:
                       storage: 10Gi
