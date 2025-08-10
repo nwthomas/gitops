@@ -20,7 +20,7 @@ Remaining work in this repository can be found in this [Trello Kanban board](htt
 
 ## 📁 Project Structure
 
-```
+```basH
 ├── argocd/                              #
 │   ├── apps/                            #
 │   │   ├── applications-eng/            #
@@ -52,9 +52,9 @@ Remaining work in this repository can be found in this [Trello Kanban board](htt
 
 ## 🧐 Dashboard Access
 
-Until the internal ingress is setup up, it's necessary to port forward on the Raspberry Pis while tunneling into them with SSH. Use these commands to access dashboards:
+Until the internal ingress is set up, it's necessary to port forward on the Raspberry Pis while tunneling into them with SSH. Use these commands to access dashboards:
 
-```
+```bash
 # For ArgoCD
 # 1. SSH:
 ssh -L 8080:localhost:8080 <PI_USERNAME>@<PI_IP_ADDRESS>
