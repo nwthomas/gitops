@@ -4,7 +4,7 @@
 
 This repository contains Helm and Terraform files for declarative deployments for a home kubernetes cluster.
 
-While it's meant to be run on a Raspberry Pi, it should be equally valid anywhere Kubernetes can run.
+While it's meant to be run on Raspberry Pi devices, it should be equally valid anywhere Kubernetes can run.
 
 ## 🎖️ Features
 
