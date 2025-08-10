@@ -72,8 +72,10 @@ kubectl port-forward -n monitoring svc/prometheus-grafana 3000:443
 
 - [Argo CD](https://argo-cd.readthedocs.io/en/stable/)
 - [cert-manager](https://cert-manager.io/)
+- [Grafana](https://grafana.com/)
 - [Helm](https://helm.sh/docs/)
 - [Kubernetes](https://kubernetes.io/) (and [k3s](https://k3s.io/))
+- [Prometheus](https://prometheus.io/)
 - [Terraform](https://developer.hashicorp.com/terraform)
 - [Traefik](https://traefik.io/traefik)
 
@@ -83,5 +85,6 @@ MIT License - You are welcome to fork this repository and use it to spin up your
 
 ## 🙇🏻‍♂️ Acknowledgements
 
+- [Edede Oiwoh](https://github.com/ededejr) for inspiring me to build a home cluster and for bouncing ideas around
+- [rpi4cluster.com](https://rpi4cluster.com/) for tips on GitOps with Raspberry Pi setups (even if the notes weren't current)
 - [Tesla](https://www.tesla.com/) for teaching me proper GitOps processes and giving me a chance to move mountains with them
-- [rpi4cluster.com](https://rpi4cluster.com/) for various tips on GitOps with Raspberry Pi setups (even if the notes there weren't always current)
