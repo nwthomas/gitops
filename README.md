@@ -20,34 +20,45 @@ Remaining work in this repository can be found in this [Trello Kanban board](htt
 
 ## 📁 Project Structure
 
-```basH
-├── argocd/                              #
-│   ├── apps/                            #
-│   │   ├── applications-eng/            #
-│   │   │   └── whoami-app.yaml          # Temporary placeholder
-│   │   ├── applications-prd/            #
-│   │   │   └── whoami-app.yaml          # Temporary placeholder
-│   │   ├── argocd/                      #
-│   │   │   └── argocd-ingress-app.yaml  #
-│   │   ├── cert-manager/                #
-│   │   │   └── cert-manager.yaml        #
-│   │   └── monitoring/                  #
-│   │       ├── prometheus-app.yaml      # Prometheus Operator with Grafana
-│   │       ├── prometheus-crds.yaml     # Prometheus Operator CRDs
-│   │       ├── prometheus-crds-app.yaml # ArgoCD app for CRDs
-│   │       ├── nvme-storageclass.yaml   # Custom NVMe storage configuration
-│   │       └── nvme-storage-app.yaml    # ArgoCD app for NVMe storage
-│   ├── namespaces/                      #
-│   │   ├── applications-eng-app.yaml    #
-│   │   ├── applications-prd-app.yaml    #
-│   │   ├── argocd-app.yaml              #
-│   │   ├── cert-manager-app.yaml        #
-│   │   └── monitoring-app.yaml          #
-│   └── root/                            #
-│       └── root-app.yaml                #
-└── terraform/                           #
-    ├── namespaces.tf                    #
-    └── provider.tf                      #
+```bash
+├── argocd/                                   #
+│   ├── apps/                                 #
+│   │   ├── applications-eng/                 #
+│   │   │   └── whoami.yaml                   # Temporary placeholder
+│   │   ├── applications-prd/                 #
+│   │   │   └── whoami.yaml                   # Temporary placeholder
+│   │   ├── argocd/                           #
+│   │   │   └── argocd-ingress-app.yaml       #
+│   │   ├── cert-manager/                     #
+│   │   │   ├── cert-manager-app.yaml         # ArgoCD app for cert-manager
+│   │   │   └── cert-manager-issuers-app.yaml # ArgoCD app for ClusterIssuers
+│   │   └── monitoring/                       #
+│   │       ├── prometheus-app.yaml           # Prometheus Operator with Grafana
+│   │       ├── prometheus-crds.yaml          # Prometheus Operator CRDs
+│   │       ├── prometheus-crds-app.yaml      # ArgoCD app for CRDs
+│   │       ├── nvme-storageclass.yaml        # Custom NVMe storage configuration
+│   │       └── nvme-storage-app.yaml         # ArgoCD app for NVMe storage
+│   ├── namespaces/                           #
+│   │   ├── applications-eng-app.yaml         #
+│   │   ├── applications-prd-app.yaml         #
+│   │   ├── argocd-app.yaml                   #
+│   │   ├── cert-manager-app.yaml             #
+│   │   └── monitoring-app.yaml               #
+│   └── root/                                 #
+│       └── root-app.yaml                     #
+├── helm/                                     #
+│   └── cert-manager/                         #
+│       ├── Chart.yaml                        # Helm chart metadata
+│       ├── templates/                        #
+│       │   ├── letsencrypt-production.yaml   # Production Let's Encrypt ClusterIssuer
+│       │   ├── letsencrypt-staging.yaml      # Staging Let's Encrypt ClusterIssuer
+│       │   └── selfsigned.yaml               # Self-signed certificate ClusterIssuer
+│       ├── values.yaml                       # Default values
+│       ├── values-production.yaml            # Production environment values
+│       └── values-staging.yaml               # Staging environment values
+└── terraform/                                #
+    ├── namespaces.tf                         #
+    └── provider.tf                           #
 ```
 
 ## 🧐 Dashboard Access
