@@ -1,0 +1,19 @@
+{{- if .Values.letsencryptProduction.enabled }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  acme:
+    email: {{ .Values.letsencryptProduction.email | quote }}
+    server: {{ .Values.letsencryptProduction.server | quote }}
+    privateKeySecretRef:
+      name: {{ .Values.letsencryptProduction.privateKeySecretRef.name | quote }}
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: {{ .Values.ingressClassName | quote }}
+{{- end }}

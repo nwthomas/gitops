@@ -1,0 +1,16 @@
+# Staging environment values for cert-manager-issuers
+email: "cert.manager.staging@yourdomain.com"
+ingressClassName: "traefik"
+
+letsencryptStaging:
+  enabled: true
+  email: "cert.manager.staging@yourdomain.com"
+  server: "https://acme-staging-v02.api.letsencrypt.org/directory"
+  privateKeySecretRef:
+    name: "letsencrypt-staging"
+
+letsencryptProduction:
+  enabled: false # Disable production in staging
+
+selfsigned:
+  enabled: true
