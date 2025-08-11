@@ -1,67 +1,90 @@
-# GitOps Repository
+# GitOps
 
-This repository follows a GitOps approach with clear separation of concerns across different directories.
+## 🔎 About
 
-## Repository Structure
+This repository contains Helm and Terraform files for declarative deployments for a home kubernetes cluster.
 
+While it's meant to be run on Raspberry Pi devices, it should be equally valid anywhere Kubernetes can run.
+
+## 🎖️ Features
+
+- App-of-apps: A root Argo CD Application which manages child apps
+- Namespaces: `applications-eng`, `applications-prd`, `argocd`, `cert-manager`, `monitoring`
+- Cert-manager: Jetstack Helm with CRDs + ClusterIssuers (staging/production) for Traefik HTTP-01
+- Monitoring: Prometheus Operator with Grafana, using custom NVMe storage
+- Argo CD UI ingress: Traefik with IP allowlist middleware and cert-manager TLS
+
+## 🧱 Project Management
+
+Remaining work in this repository can be found in this [Trello Kanban board](https://trello.com/b/HOJMq7WP/gitops).
+
+## 📁 Project Structure
+
+```basH
+├── argocd/                              #
+│   ├── apps/                            #
+│   │   ├── applications-eng/            #
+│   │   │   └── whoami-app.yaml          # Temporary placeholder
+│   │   ├── applications-prd/            #
+│   │   │   └── whoami-app.yaml          # Temporary placeholder
+│   │   ├── argocd/                      #
+│   │   │   └── argocd-ingress-app.yaml  #
+│   │   ├── cert-manager/                #
+│   │   │   └── cert-manager.yaml        #
+│   │   └── monitoring/                  #
+│   │       ├── prometheus-app.yaml      # Prometheus Operator with Grafana
+│   │       ├── prometheus-crds.yaml     # Prometheus Operator CRDs
+│   │       ├── prometheus-crds-app.yaml # ArgoCD app for CRDs
+│   │       ├── nvme-storageclass.yaml   # Custom NVMe storage configuration
+│   │       └── nvme-storage-app.yaml    # ArgoCD app for NVMe storage
+│   ├── namespaces/                      #
+│   │   ├── applications-eng-app.yaml    #
+│   │   ├── applications-prd-app.yaml    #
+│   │   ├── argocd-app.yaml              #
+│   │   ├── cert-manager-app.yaml        #
+│   │   └── monitoring-app.yaml          #
+│   └── root/                            #
+│       └── root-app.yaml                #
+└── terraform/                           #
+    ├── namespaces.tf                    #
+    └── provider.tf                      #
 ```
-gitops/
-├── argocd/                 # ArgoCD applications and configurations
-│   ├── apps/              # Application definitions
-│   ├── namespaces/        # Namespace definitions
-│   └── root/              # Root application
-├── helm/                  # Helm charts
-│   ├── cert-manager/      # Cert-manager ClusterIssuers chart
-│   └── README.md
-├── terraform/             # Terraform infrastructure code
-│   ├── namespaces.tf
-│   └── provider.tf
-└── README.md
+
+## 🧐 Dashboard Access
+
+Until the internal ingress is set up, it's necessary to port forward on the Raspberry Pis while tunneling into them with SSH. Use these commands to access dashboards:
+
+```bash
+# For ArgoCD
+# 1. SSH:
+ssh -L 8080:localhost:8080 <PI_USERNAME>@<PI_IP_ADDRESS>
+# 2. On device:
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+# For Grafana
+# 1. SSH:
+ssh -L 3000:localhost:3000 <PI_USERNAME>@<PI_IP_ADDRESS>
+# 2. On device:
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:443
 ```
 
-## Directory Purposes
+## 🛠️ Built With
 
-### `argocd/`
+- [Argo CD](https://argo-cd.readthedocs.io/en/stable/)
+- [cert-manager](https://cert-manager.io/)
+- [Grafana](https://grafana.com/)
+- [Helm](https://helm.sh/docs/)
+- [Kubernetes](https://kubernetes.io/) (and [k3s](https://k3s.io/))
+- [Prometheus](https://prometheus.io/)
+- [Terraform](https://developer.hashicorp.com/terraform)
+- [Traefik](https://traefik.io/traefik)
 
-Contains all ArgoCD-related configurations:
+## 📄 License
 
-- **apps/**: Individual ArgoCD Application resources
-- **namespaces/**: Namespace definitions for ArgoCD
-- **root/**: Root application that manages other applications
+MIT License - You are welcome to fork this repository and use it to spin up your own home Kubernetes configurations.
 
-### `helm/`
+## 🙇🏻‍♂️ Acknowledgements
 
-Contains all Helm charts used by the GitOps workflow:
-
-- Charts are referenced by ArgoCD applications
-- Each chart can have environment-specific values
-- Charts can be tested independently
-
-### `terraform/`
-
-Contains infrastructure as code:
-
-- Kubernetes cluster provisioning
-- Namespace creation
-- Other infrastructure resources
-
-## Benefits of This Structure
-
-1. **Clear Separation**: Each tool has its own directory
-2. **Reusability**: Helm charts can be used by multiple ArgoCD apps
-3. **Maintainability**: Easy to find and modify specific components
-4. **Testing**: Each component can be tested independently
-5. **Documentation**: Clear structure for documentation
-
-## Workflow
-
-1. **Infrastructure**: Terraform provisions the cluster and namespaces
-2. **Applications**: ArgoCD deploys applications using Helm charts
-3. **Configuration**: Helm charts provide templated configurations
-
-## Getting Started
-
-1. Review the documentation in each directory
-2. Update repository URLs in ArgoCD applications
-3. Customize values for your environment
-4. Apply ArgoCD applications to your cluster
+- [Edede Oiwoh](https://github.com/ededejr) for inspiring me to build a home cluster and for bouncing ideas around
+- [rpi4cluster.com](https://rpi4cluster.com/) for tips on GitOps with Raspberry Pi setups (even if the notes weren't current)
+- [Tesla](https://www.tesla.com/) for teaching me proper GitOps processes and giving me a chance to move mountains with them
