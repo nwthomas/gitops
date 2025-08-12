@@ -1,28 +1,16 @@
-# Default values for cert-manager-issuers
-# This is a YAML-formatted file.
-
-# Email address for Let's Encrypt account
+# Default values for cert-manager
 email: "cert.manager.k7f9z@gmail.com"
-
-# Ingress class name for HTTP01 challenges
 ingressClassName: "traefik"
 
-# Let's Encrypt staging issuer configuration
 letsencryptStaging:
   enabled: true
   email: "cert.manager.k7f9z@gmail.com"
   server: "https://acme-staging-v02.api.letsencrypt.org/directory"
-  privateKeySecretRef:
-    name: "letsencrypt-staging"
-
-# Let's Encrypt production issuer configuration
+  
 letsencryptProduction:
   enabled: true
   email: "cert.manager.k7f9z@gmail.com"
   server: "https://acme-v02.api.letsencrypt.org/directory"
-  privateKeySecretRef:
-    name: "letsencrypt-production"
-
-# Self-signed issuer configuration
+  
 selfsigned:
   enabled: true

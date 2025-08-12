@@ -1,0 +1,10 @@
+# Default values for kubelet monitoring
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  scrapeTimeout: 10s
+  honorLabels: true
+  scheme: https
+  tlsConfig:
+    insecureSkipVerify: true
+  bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token

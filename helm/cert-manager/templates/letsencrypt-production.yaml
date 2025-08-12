@@ -11,7 +11,7 @@ spec:
     email: {{ .Values.letsencryptProduction.email | quote }}
     server: {{ .Values.letsencryptProduction.server | quote }}
     privateKeySecretRef:
-      name: {{ .Values.letsencryptProduction.privateKeySecretRef.name | quote }}
+      name: letsencrypt-production
     solvers:
       - http01:
           ingress:

@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: node-exporter-app
+  name: monitoring-traefik-service-monitor-app
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/nwthomas/gitops.git
     targetRevision: main
-    path: helm/node-exporter
+    path: helm/servicemonitors/traefik-servicemonitor
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

@@ -13,7 +13,7 @@ spec:
     email: {{ .Values.letsencryptStaging.email | quote }}
     server: {{ .Values.letsencryptStaging.server | quote }}
     privateKeySecretRef:
-      name: {{ .Values.letsencryptStaging.privateKeySecretRef.name | quote }}
+      name: letsencrypt-staging
     solvers:
       - http01:
           ingress:

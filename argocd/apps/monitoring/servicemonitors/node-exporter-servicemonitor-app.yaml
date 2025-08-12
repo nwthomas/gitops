@@ -1,19 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: applications-prd-whoami-prd-app
+  name: monitoring-node-exporter-servicemonitor-app
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/cowboysysop/charts.git
+    repoURL: https://github.com/nwthomas/gitops.git
     targetRevision: main
-    path: charts/whoami
-    helm:
-      releaseName: whoami
+    path: helm/servicemonitors/node-exporter-servicemonitor
   destination:
     server: https://kubernetes.default.svc
-    namespace: applications-prd
+    namespace: monitoring
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

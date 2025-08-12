@@ -11,22 +11,6 @@ spec:
     repoURL: https://github.com/nwthomas/gitops.git
     targetRevision: main
     path: helm/cert-manager
-    helm:
-      values: |
-        # Override default values if needed
-        email: "cert.manager.k7f9z@gmail.com"
-        ingressClassName: "traefik"
-
-        letsencryptStaging:
-          enabled: true
-          email: "cert.manager.k7f9z@gmail.com"
-          
-        letsencryptProduction:
-          enabled: true
-          email: "cert.manager.k7f9z@gmail.com"
-          
-        selfsigned:
-          enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
