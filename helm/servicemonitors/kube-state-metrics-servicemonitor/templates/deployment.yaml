@@ -1,27 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app.kubernetes.io/component: exporter
-    app.kubernetes.io/name: kube-state-metrics
-    app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 2.4.2
-  name: kube-state-metrics
+  name: {{ include "kube-state-metrics.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kube-state-metrics.labels" . | nindent 4 }}
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/part-of: kube-prometheus
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
+      {{- include "kube-state-metrics.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: exporter
-      app.kubernetes.io/name: kube-state-metrics
       app.kubernetes.io/part-of: kube-prometheus
   template:
     metadata:
       labels:
+        {{- include "kube-state-metrics.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: exporter
-        app.kubernetes.io/name: kube-state-metrics
         app.kubernetes.io/part-of: kube-prometheus
-        app.kubernetes.io/version: 2.4.2
     spec:
       automountServiceAccountToken: true
       containers:
@@ -55,4 +53,4 @@ spec:
             runAsUser: 65534
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
-      serviceAccountName: kube-state-metrics
+      serviceAccountName: {{ include "kube-state-metrics.fullname" . }}

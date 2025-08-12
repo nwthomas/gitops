@@ -1,12 +1,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
+  name: {{ include "traefik-servicemonitor.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
+    {{- include "traefik-servicemonitor.labels" . | nindent 4 }}
     app: traefik
     release: prometheus
-    name: traefik
-  name: traefik
-  namespace: {{ .Release.Namespace }}
+    name: {{ include "traefik-servicemonitor.fullname" . }}
 spec:
   endpoints:
     - port: metrics

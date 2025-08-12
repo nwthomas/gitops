@@ -1,11 +1,11 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  labels:
-    app.kubernetes.io/name: node-exporter
-    name: node-exporter
-  name: node-exporter
+  name: {{ include "node-exporter.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "node-exporter.labels" . | nindent 4 }}
+    name: {{ include "node-exporter.fullname" . }}
 spec:
   endpoints:
     - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -24,4 +24,4 @@ spec:
   jobLabel: app.kubernetes.io/name
   selector:
     matchLabels:
-      app.kubernetes.io/name: node-exporter
+      {{- include "node-exporter.selectorLabels" . | nindent 6 }}

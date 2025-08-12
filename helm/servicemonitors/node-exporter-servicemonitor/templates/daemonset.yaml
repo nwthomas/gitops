@@ -1,27 +1,24 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  labels:
-    app.kubernetes.io/component: exporter
-    app.kubernetes.io/name: node-exporter
-    app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
-    name: node-exporter
-  name: node-exporter
+  name: {{ include "node-exporter.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "node-exporter.labels" . | nindent 4 }}
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/part-of: kube-prometheus
 spec:
   selector:
     matchLabels:
+      {{- include "node-exporter.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: exporter
-      app.kubernetes.io/name: node-exporter
       app.kubernetes.io/part-of: kube-prometheus
   template:
     metadata:
       labels:
+        {{- include "node-exporter.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: exporter
-        app.kubernetes.io/name: node-exporter
         app.kubernetes.io/part-of: kube-prometheus
-        app.kubernetes.io/version: {{ .Chart.AppVersion }}
     spec:
       containers:
         - args:
@@ -74,7 +71,7 @@ spec:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       securityContext:
         {{- toYaml .Values.securityContext | nindent 8 }}
-      serviceAccountName: node-exporter
+      serviceAccountName: {{ include "node-exporter.fullname" . }}
       tolerations:
         {{- toYaml .Values.tolerations | nindent 8 }}
       volumes:

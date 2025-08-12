@@ -2,7 +2,9 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-production
+  name: {{ include "cert-manager.fullname" . }}-production
+  labels:
+    {{- include "cert-manager.labels" . | nindent 4 }}
   annotations:
     argocd.argoproj.io/sync-wave: "1"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
@@ -11,7 +13,7 @@ spec:
     email: {{ .Values.letsencryptProduction.email | quote }}
     server: {{ .Values.letsencryptProduction.server | quote }}
     privateKeySecretRef:
-      name: letsencrypt-production
+      name: {{ include "cert-manager.fullname" . }}-production
     solvers:
       - http01:
           ingress:

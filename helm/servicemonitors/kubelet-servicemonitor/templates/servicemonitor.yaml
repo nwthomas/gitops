@@ -1,11 +1,11 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  labels:
-    app.kubernetes.io/name: kubelet
-    name: kubelet
-  name: kubelet
+  name: {{ include "kubelet-servicemonitor.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kubelet-servicemonitor.labels" . | nindent 4 }}
+    name: {{ include "kubelet-servicemonitor.fullname" . }}
 spec:
   endpoints:
     - bearerTokenFile: {{ .Values.serviceMonitor.bearerTokenFile }}

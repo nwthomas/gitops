@@ -1,15 +1,14 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  labels:
-    app.kubernetes.io/component: exporter
-    app.kubernetes.io/name: kube-state-metrics
-    app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 1.9.7
-    name: kube-state-metrics
-    prometheus-enabled: "true"
-  name: kube-state-metrics
+  name: {{ include "kube-state-metrics.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kube-state-metrics.labels" . | nindent 4 }}
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/part-of: kube-prometheus
+    name: {{ include "kube-state-metrics.fullname" . }}
+    prometheus-enabled: "true"
 spec:
   namespaceSelector:
     matchNames:
@@ -21,6 +20,6 @@ spec:
   jobLabel: app.kubernetes.io/name
   selector:
     matchLabels:
+      {{- include "kube-state-metrics.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: exporter
-      app.kubernetes.io/name: kube-state-metrics
       app.kubernetes.io/part-of: kube-prometheus

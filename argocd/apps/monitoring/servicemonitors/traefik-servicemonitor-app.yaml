@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: monitoring-traefik-service-monitor-app
+  name: monitoring-traefik-servicemonitor-app
   namespace: argocd
 spec:
   project: default
