@@ -1,16 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: monitoring-namespace-app
+  name: kube-state-metrics-app
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/nwthomas/gitops.git
     targetRevision: main
-    path: argocd/apps/monitoring
-    directory:
-      recurse: true
+    path: helm/kube-state-metrics
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
