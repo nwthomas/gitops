@@ -1,0 +1,21 @@
+{{- if .Values.externalService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-external
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "prometheus.labels" . | nindent 4 }}
+spec:
+  selector:
+    prometheus: prometheus-persistant
+  type: {{ .Values.externalService.type }}
+  ports:
+    - name: web
+      protocol: TCP
+      port: {{ .Values.externalService.port }}
+      targetPort: web
+  {{- if .Values.externalService.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.externalService.loadBalancerIP }}
+  {{- end }}
+{{- end }}
