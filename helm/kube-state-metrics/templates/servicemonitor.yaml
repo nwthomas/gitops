@@ -9,7 +9,7 @@ metadata:
     name: kube-state-metrics
     prometheus-enabled: "true"
   name: kube-state-metrics
-  namespace: monitoring
+  namespace: {{ .Release.Namespace }}
 spec:
   namespaceSelector:
     matchNames:

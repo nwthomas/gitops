@@ -5,7 +5,7 @@ metadata:
     app.kubernetes.io/name: node-exporter
     name: node-exporter
   name: node-exporter
-  namespace: monitoring
+  namespace: {{ .Release.Namespace }}
 spec:
   endpoints:
     - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token

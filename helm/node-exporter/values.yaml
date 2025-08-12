@@ -1,0 +1,43 @@
+# Default values for node-exporter
+replicaCount: 1
+
+image:
+  repository: quay.io/prometheus/node-exporter
+  tag: "v1.3.1"
+  pullPolicy: IfNotPresent
+
+rbacProxy:
+  image:
+    repository: quay.io/brancz/kube-rbac-proxy
+    tag: "v0.12.0"
+
+service:
+  type: ClusterIP
+  port: 9100
+
+resources:
+  limits:
+    cpu: 250m
+    memory: 180Mi
+  requests:
+    cpu: 102m
+    memory: 180Mi
+
+rbacProxyResources:
+  limits:
+    cpu: 20m
+    memory: 40Mi
+  requests:
+    cpu: 10m
+    memory: 20Mi
+
+nodeSelector:
+  kubernetes.io/os: linux
+
+tolerations:
+  - operator: Exists
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+  runAsGroup: 65532

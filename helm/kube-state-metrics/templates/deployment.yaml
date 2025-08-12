@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/part-of: kube-prometheus
     app.kubernetes.io/version: 2.4.2
   name: kube-state-metrics
-  namespace: monitoring
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -25,7 +25,7 @@ spec:
     spec:
       automountServiceAccountToken: true
       containers:
-        - image: k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.4.2
+        - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -39,12 +39,7 @@ spec:
             - containerPort: 8081
               name: telemetry
           resources:
-            limits:
-              cpu: 20m
-              memory: 40Mi
-            requests:
-              cpu: 10m
-              memory: 20Mi
+            {{- toYaml .Values.resources | nindent 12 }}
           readinessProbe:
             httpGet:
               path: /
@@ -59,5 +54,5 @@ spec:
             readOnlyRootFilesystem: true
             runAsUser: 65534
       nodeSelector:
-        kubernetes.io/os: linux
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
       serviceAccountName: kube-state-metrics
