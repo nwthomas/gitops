@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prometheus
+  name: monitoring-prometheus-app
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/nwthomas/gitops.git
-    targetRevision: HEAD
+    targetRevision: main
     path: helm/prometheus
   destination:
     server: https://kubernetes.default.svc
