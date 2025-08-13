@@ -1,32 +1,19 @@
-## Nodes
+## Node Hardware
 
-I used Raspberry Pi 5 devices, specifically the 16gb version (3 CPU cores). I decided to run the cluster initially with 4 of them.
+I used Raspberry Pi 5 devices, specifically the 16gb version (4 CPU cores each, so 16 total CPU cores + 64gb memory). I decided to run the cluster initially with 4 of them.
 
-Here's the list of what I bought for each node:
+I plan to add a full PC with a 5090 to the cluster to allow for scheduling model training in the cluster.
+
+Here's the list of what I bought for each of the main control/worker nodes:
 1. [Raspberry Pi 5](https://www.amazon.com/dp/B0DSPYPKRG)
 2. [NVMe + POE+ Pi 5 Hat and Active Cooler](https://www.amazon.com/dp/B0D8JC3MXQ)
 3. [Samsung 2TB NVMe SSD](https://www.amazon.com/dp/B0DHLCRF91)
 4. [256gb Micro SD Card](https://www.amazon.com/dp/B08TJZDJ4D)
 
 
-## Node Setup
+## Node Networking
 
-TODO: Discuss RPi flashing micro sd, headless boot, and other node setup tasks
-
-First, setup your `/etc/hosts` file to reflect all the Pis in your cluster:
-
-```bash
-## edit the file
-sudo nano /etc/hosts
-
-## The file itself
-127.0.0.1          localhost
-
-192.168.0.1        red1 red1.local
-192.168.0.2        red2 red2.local
-192.168.0.3        red3 red3.local
-192.168.0.4        red4 red4.local
-```
+TODO: Discuss R Pi flashing micro sd, headless boot, and other node setup tasks
 
 Next, install the DHCP server for each device via this command:
 
@@ -50,7 +37,7 @@ static domain_name_servers=1.1.1.1 8.8.8.8
 nohook wpa_supplicant
 ```
 
-Fluxh your DHCP leases and restart your Pi afterwards:
+Flush your DHCP leases and restart your Pi afterwards:
 
 ```bash
 sudo ip addr flush dev wlan0
@@ -93,32 +80,41 @@ nmap -sP 192.168.0.1-254
 Then, edit your `/etc/hosts` file on the control node (whichever one you choose). Here's an example of mine:
 
 ```bash
-127.0.1.1       localhost
+127.0.1.1       localhost # This should already be in your hosts file
 
-192.168.0.11    red1 red1.local # Control node
-192.168.0.12    red2 red2.local
-192.168.0.13    red3 red3.local
-192.168.0.14    red4 red4.local
+192.168.0.11    node1 node1.local # Control node
+192.168.0.12    node2 node2.local
+192.168.0.13    node3 node3.local
+192.168.0.14    node4 node4.local
 ```
+
+TODO: Include section on generating key and copying it over to worker nodes
 
 Next, we're going to use a tool called Ansible to set up remote control over all our nodes. You might need to run this with `sudo`:
 
 ```bash
+# You may need to run this as root
+sudo -i
+
+# Install ansible
 apt install ansible
 ```
 
 Next, you'll want to create a file called `/etc/ansible/hosts` and add all our hosts to it. We're defining hosts and groups of hosts that Ansible will try to manage for us:
 
 ```bash
-# Edit file /etc/ansible/hosts
+# To edit the file (you make have to create this file)
+sudo nano /etc/ansible/hosts
+
+# File /etc/ansible/hosts
 [control]
-red1  ansible_connection=local
+node1  ansible_connection=local
 
 [workers]
-red1  ansible_connection=ssh
-red2  ansible_connection=ssh
-red3  ansible_connection=ssh
-red4  ansible_connection=ssh
+node1  ansible_connection=ssh
+node2  ansible_connection=ssh
+node3  ansible_connection=ssh
+node4  ansible_connection=ssh
 
 [cube:children]
 control
