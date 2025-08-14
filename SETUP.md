@@ -1,3 +1,7 @@
+# Cluster Setup
+
+The following is a loose record of exactly how I managed to set up my own home Kubernetes cluster. It is useful for others following this path or for myself in 6 months when I can't remember all of this.
+
 ## Node Hardware
 
 I used Raspberry Pi 5 devices, specifically the 16gb version (4 CPU cores each, so 16 total CPU cores + 64gb memory). I decided to run the cluster initially with 4 of them.
@@ -10,12 +14,33 @@ Here's the list of what I bought for each of the main control/worker nodes:
 3. [Samsung 2TB NVMe SSD](https://www.amazon.com/dp/B0DHLCRF91)
 4. [256gb Micro SD Card](https://www.amazon.com/dp/B08TJZDJ4D)
 
+## Node OS Software Installation
+
+After putting together your hardware, you'll need to go ahead and flash the Pi OS to an SD card. I used micro SD cards for the boot drive (the NVMe drives are for all other data used in the kube cluster).
+
+Download [Raspberry Pi Imager](https://www.raspberrypi.com/software/) and connect your micro SD card.
+
+When going through the flow, select the following options:
+
+1. Choose Raspberry Pi 5 for the device
+2. `Raspberry Pi OS 64 bit`
+3. Choose your SD card as the storage to write to
+4. Edit settings under `General` and set the hostname, a username/password for SSH (although we won't use it), configure the LAN, and set your locale
+5. Also, go to `Services` and enable SSH. I'd allow public-key authentication only (and set an authorized_keys key for your account)
+
+Go ahead and write to the device. Once it's done, remove your micro SD card.
+
+Insert it into the Pi and power it up. Your Pi will initiate the headless boot process, but you should be able to ssh into it eventually via:
+
+```bash
+ssh <your username>@<pi hostname>.local
+```
+
+Great job. You're ssh-ed into your Pi!
 
 ## Node Networking
 
-TODO: Discuss R Pi flashing micro sd, headless boot, and other node setup tasks
-
-Next, install the DHCP server for each device via this command:
+After you can ssh into your Pi, install the DHCP server for each device via this command:
 
 ```bash
 sudo apt upgrade
@@ -280,7 +305,48 @@ ansible cube -b -m lineinfile -a "path='/etc/environment' line='KUBECONFIG=/etc/
 
 This is the source of truth for each of the kube deployments (client and servers for control and workers).
 
+## Setting Up Helm
+
+Next, we need to install Helm in order to make use of Helm charts. Run these on the control node Pi:
+
+```bash
+# Download the install script
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+
+# Make it executable
+chmod +x get_helm.sh
+
+# Run the installer
+./get_helm.sh
+
+# Check that it's installed
+helm version
+```
+
+That's it! Onwards!
+
 ## Bootstrapping ArgoCD
 
 This repo has a variety of services and architecture patterns. Initially on the Kube cluster, we'll want to bootstrap a ArgoCD installation which will then point to this repo and allow Argo to start deploying itself as well as other services. This repo has an app-of-apps architecture pattern for deployments.
 
+First, create a namespace for ArgoCD (we'll later set up Terraform to handle this for us, but we're bootstrapping at the moment):
+
+```bash
+# Create the namespace
+kubectl create namespace argocd
+
+# Install ArgoCD
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# Validate the install worked 
+kubectl get pods -n argocd
+kubectl get svc -n argocd
+```
+
+Next, create an `argocd_boostrap.yaml` file in the control Pi. We're going to manually apply it to point to your gitops repository (realistically, a fork of this one):
+
+```bash
+touch argocd_bootstrap.yaml
+```
+
+Copy in the content from [this file](https://github.com/nwthomas/gitops/blob/main/argocd/root/root-app.yaml)
