@@ -105,7 +105,7 @@ nmap -sP 192.168.0.1-254
 Then, edit your `/etc/hosts` file on the control node (whichever one you choose). Here's an example of mine:
 
 ```bash
-127.0.1.1       localhost # This should already be in your hosts file
+127.0.1.1       node1 # There's already a localhost one, but add this as well
 
 192.168.0.11    node1 node1.local # Control node
 192.168.0.12    node2 node2.local
@@ -113,9 +113,36 @@ Then, edit your `/etc/hosts` file on the control node (whichever one you choose)
 192.168.0.14    node4 node4.local
 ```
 
-TODO: Include section on generating SSH key and copying it over to worker nodes
+[defaults]
+private_key_file = /Users/nathanthomas/.ssh/id_ed25519
 
-Next, we're going to use a tool called Ansible to set up remote control over all our nodes. You might need to run this with `sudo`:
+10.0.0.3        red1 red1.local # Control node
+10.0.0.4        red2 red2.local
+10.0.0.5        red3 red3.local
+10.0.0.6        red4 red4.local
+
+Next, we need to generate an RSA key and distribute it to our worker nodes in order for us to issue ssh commands from inside our control node. I'd advise NOT reusing your own SSH key you're using right now already to connect to each of the nodes. Ideally, we'll be able to tell later if the intra-node SSH key was being used.
+
+Run this on your control node Pi:
+
+```bash
+ssh-keygen -t ed25519 -C "ansible_key" -f ~/.ssh/anbsible_id_ed25519
+```
+
+Then, copy it to your computer and then to other Pis in the cluster. This will allow the control node to ssh into them:
+
+```bash
+# Copy from control node Pi to computer
+scp <your ssh username>@<your control node pi name>.local:~/.ssh/anbsible_id_ed25519.pub ~/ansible_id_ed25519.pub
+scp <your ssh username>@<your control node pi name>.local:~/.ssh/anbsible_id_ed25519 ~/ansible_id_ed25519
+
+# Copy from your computer to Pis
+ssh-copy-id -i ~/ansible_id_ed25519.pub -f nathanthomas@red2
+```
+
+Next, we're going to use a tool called Ansible to set up remote control over all our nodes. It will effectively allow us to issue install commands or customize all our nodes at once via single commands.
+
+Run the following commands:
 
 ```bash
 # You may need to run this as root
@@ -254,7 +281,7 @@ node1   Ready      control-plane,master   10m     v1.33.3+k3s1
 After this, you'll need to install k3s onto your worker nodes which you can do with Ansible:
 
 ```bash
-ansible workers -b -m shell -a "curl -sfL https://get.k3s.io | K3S_URL=https:/<your control node IP>:6443 K3S_TOKEN=some_random_password sh -"
+ansible workers -b -m shell -a "curl -sfL https://get.k3s.io | K3S_URL=https://<your control node IP>:6443 K3S_TOKEN=some_random_password sh -"
 ```
 
 Once you've done this, verify this worked via:
@@ -269,6 +296,13 @@ node1   Ready      control-plane,master   10m     v1.33.3+k3s1
 node2   Ready      <none>                 3m32s   v1.33.3+k3s1
 node3   Ready      <none>                 3m32s   v1.33.3+k3s1
 node3   Ready      <none>                 3m32s   v1.33.3+k3s1
+```
+
+If you're interested in total resources now in the cluster, you can check with this command:
+
+```bash
+# Long
+kubectl get nodes -o custom-columns=NAME:.metadata.name,CPU:.status.capacity.cpu,MEM:.status.capacity.memory
 ```
 
 You should also probably label the other nodes, so do something like this:
@@ -307,23 +341,33 @@ This is the source of truth for each of the kube deployments (client and servers
 
 ## Setting Up Helm
 
-Next, we need to install Helm in order to make use of Helm charts. Run these on the control node Pi:
+Next, we need to install Helm in order to make use of Helm charts. Run this on the control node Pi:
 
 ```bash
-# Download the install script
-curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-
-# Make it executable
-chmod +x get_helm.sh
-
-# Run the installer
-./get_helm.sh
-
-# Check that it's installed
-helm version
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 ```
 
 That's it! Onwards!
+
+## Swapping Traefik for Metallb
+
+K3s comes with Traefik which is pretty great. However, we want to be able to assign an external IP to service (like our dashboards), and it's just not as customizable as we'd like.
+
+Instead, let's move to using `metallb` as our load balancer for the cluster. [Documentation](https://metallb.io/?ref=rpi4cluster.com)
+
+Run these commands to install it:
+
+```bash
+# First add metallb repository to your helm
+helm repo add metallb https://metallb.github.io/metallb
+
+# Check if it was found
+helm search repo metallb
+
+# Install metallb
+helm upgrade --install metallb metallb/metallb --create-namespace \
+--namespace metallb-system --wait
+```
 
 ## Bootstrapping ArgoCD
 
