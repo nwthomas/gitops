@@ -163,7 +163,6 @@ sudo nano /etc/ansible/hosts
 node1  ansible_connection=local
 
 [workers]
-node1  ansible_connection=ssh
 node2  ansible_connection=ssh
 node3  ansible_connection=ssh
 node4  ansible_connection=ssh
@@ -355,7 +354,7 @@ K3s comes with Traefik which is pretty great. However, we want to be able to ass
 
 Instead, let's move to using `metallb` as our load balancer for the cluster. [Documentation](https://metallb.io/?ref=rpi4cluster.com)
 
-Run these commands to install it:
+Run these commands on your control node to install it:
 
 ```bash
 # First add metallb repository to your helm
@@ -368,6 +367,130 @@ helm search repo metallb
 helm upgrade --install metallb metallb/metallb --create-namespace \
 --namespace metallb-system --wait
 ```
+
+The command may take a second. You can check in another terminal tab while ssh-ed into your control node to check the installation process:
+
+```bash
+kubectl get pods -n metallb-system
+```
+
+Once install is done, the command from above will finish. If it hands longer than ~5 minutes, you have networking issues you'll need to resolve and god help you.
+
+Finally, apply this custum resource definition:
+
+```bash
+cat << 'EOF' | kubectl apply -f -
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: default-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.0.200-192.168.0.250 # replace this with your own IP range
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: default
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - default-pool
+EOF
+```
+
+## Storage
+
+Next, we're going to boostrap Longhorn for our file storage. This will enable us to use the NVMe drives on our Pis. We'll later move to using ArgoCD and Helm charts as the source of truth for these, but that will come later.
+
+Run these on the control node:
+
+```bash
+ansible cube -b -m apt -a "name=nfs-common state=present"
+ansible cube -b -m apt -a "name=open-iscsi state=present"
+ansible cube -b -m apt -a "name=util-linux state=present"
+```
+
+We'll be using Ansible a ton for this setup which will make all the pain there worth it.
+
+Go ahead and run this command to see all disk labels:
+
+```bash
+ansible cube -b -m shell -a "lsblk -f"
+```
+
+If you decided to go the route of NVMEs like I did, you'll actually need to format them.
+
+First, set the below in your `/etc/ansible/hosts`:
+
+```bash
+sudo nano /etc/ansible/hosts
+
+# File /etc/ansible/hosts
+[control]
+node1  ansible_connection=local var_hostname=node1 var_disk=<your nvme drive name here>
+
+[workers]
+node2  ansible_connection=ssh var_hostname=node2 var_disk=<your nvme drive name here>
+node3  ansible_connection=ssh var_hostname=node3 var_disk=<your nvme drive name here>
+node4  ansible_connection=ssh var_hostname=node4 var_disk=<your nvme drive name here>
+
+[cube:children]
+control
+workers
+```
+
+Then, run these commands (but triple check you set the right drives above beforehand):
+
+```bash
+# Wipe
+ansible workers -b -m shell -a "wipefs -a /dev/{{ var_disk }}"
+
+# Format to ext4
+ansible workers -b -m filesystem -a "fstype=ext4 dev=/dev/{{ var_disk }}"
+```
+
+Afterwards, get all drives and their available sizes with this command:
+
+```bash
+# Command
+ansible cube -b -m shell -a "lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT"
+
+# Response
+node1 | CHANGED | rc=0 >>
+f1f2c384-4619-4a93-be82-42bbfee0269c
+node2 | CHANGED | rc=0 >>
+5002bfe6-dcd1-4814-85ab-54b9c0fe710e
+node3 | CHANGED | rc=0 >>
+4f92985d-5d8f-4429-ab2c-b10c650a5d0b
+node4 | CHANGED | rc=0 >>
+b114d056-c935-4410-b490-02a3302b38d2
+```
+
+We'll get unique UUIDs for the drives in case the paths change. Let's go ahead and update our Ansible config to use these:
+
+```bash
+[control]
+node1  ansible_connection=local var_hostname=node1 var_disk=<your nvme drive name here> var_uuid=<your drive UUID here>
+
+[workers]
+node2  ansible_connection=ssh var_hostname=node2 var_disk=<your nvme drive name here> var_uuid=<your drive UUID here>
+node3  ansible_connection=ssh var_hostname=node3 var_disk=<your nvme drive name here> var_uuid=<your drive UUID here>
+node4  ansible_connection=ssh var_hostname=node4 var_disk=<your nvme drive name here> var_uuid=<your drive UUID here>
+
+[cube:children]
+control
+workers
+```
+
+Next, we'll go ahead and mount the storage disks via this command:
+
+```bash
+ansible cube -m ansible.posix.mount -a "path=/storage01 src=UUID={{ var_uuid }} fstype=ext4 state=mounted" -b
+```
+
+We'll now install longhorn to be able to interact with these drives.
 
 ## Bootstrapping ArgoCD
 
