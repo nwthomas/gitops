@@ -261,7 +261,11 @@ sudo reboot
 Install k3s via this command:
 
 ```bash
+# Install
 curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --disable servicelb --token some_random_password --node-taint CriticalAddonsOnly=true:NoExecute --bind-address 192.168.0.10 --disable-cloud-controller --disable local-storage
+
+# Verify the node taint with this
+kubectl describe node red1 | grep -i taint
 ```
 
 Be sure to replace "some_random_password" with a password you save and preserve. You'll need this to connect to the main k3s master node. Replace the bind address flag IP with your control node's IP that you set earlier.
@@ -490,7 +494,60 @@ Next, we'll go ahead and mount the storage disks via this command:
 ansible cube -m ansible.posix.mount -a "path=/storage01 src=UUID={{ var_uuid }} fstype=ext4 state=mounted" -b
 ```
 
-We'll now install longhorn to be able to interact with these drives.
+We'll now install longhorn to be able to interact with these drives. Fortunately, we can just use Helm again for this. We'll make ArgoCD pages to deploy it later:
+
+```bash
+# Run these on the control node
+cd
+helm repo add longhorn https://charts.longhorn.io
+helm repo update
+helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --set defaultSettings.defaultDataPath="/storage01" --version 1.9.1
+```
+
+I had a lot of trouble getting this to work correctly and had to fully delete all the resources and reinstall several times.
+
+You can check the pods for the deployment and the CRDs with these commands:
+
+```bash
+# Pods
+kubectl -n longhorn-system get pod
+
+# CRDs
+kubectl get crds | grep engineimages
+```
+
+Next, apply a config for it here:
+
+```bash
+# On your control node
+touch longhorn.yaml
+
+# File contents
+apiVersion: v1
+kind: Service
+metadata:
+  name: longhorn-ingress-lb
+  namespace: longhorn-system
+spec:
+  selector:
+    app: longhorn-ui
+  type: LoadBalancer
+  loadBalancerIP: <one of your IPs from the metallb range here>
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+
+# Then apply
+kubectl apply -f longhorn.yaml
+```
+
+Before we finish, verify that Longhorn is now the default storage class:
+
+```bash
+kubectl get storageclass
+```
 
 ## Bootstrapping ArgoCD
 
