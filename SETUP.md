@@ -33,14 +33,28 @@ Go ahead and write to the device. Once it's done, remove your micro SD card.
 Insert it into the Pi and power it up. Your Pi will initiate the headless boot process, but you should be able to ssh into it eventually via:
 
 ```bash
-ssh <your username>@<pi hostname>.local
+ssh <your username>@<Pi IP address>.local
 ```
 
 Great job. You're ssh-ed into your Pi!
 
 ## Node Networking
 
-After you can ssh into your Pi, install the DHCP server for each device via this command:
+You'll want to setup static IP addresses for your Pi devices. You should assign these on your router itself (whatever router setup you have).
+
+This will be unique to you, so I'll leave you to research this out and do it your yourself.
+
+After doing that, you should be able to ssh into Pis via `<your username>@<Pi IP address>`. To be able to reference all of your Pis by hostname on your main machine (such as your computer you're reading this on now), update your `/etc/hosts` file to list all of your Pis:
+
+```bash
+# Kubernetes cluster nodes
+192.168.0.11        node1 node1.local # Control node
+192.168.0.12        node2 node2.local
+192.168.0.13        node3 node3.local
+192.168.0.14        node4 node4.local
+```
+
+Next (while ssh-ed into each of your Pis), install the DHCP server for each device via this command:
 
 ```bash
 sudo apt upgrade
@@ -574,3 +588,18 @@ touch argocd_bootstrap.yaml
 ```
 
 Copy in the content from [this file](https://github.com/nwthomas/gitops/blob/main/argocd/root/root-app.yaml)
+
+Then, apply it to have the rocket takeoff and bootstrap Argo:
+
+```bash
+kubectl apply -f argocd_boostrap.yaml
+```
+
+Once applied, you'll want to login. But you'll need to get the initial admin password (change this later):
+
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode
+echo
+```
+
+TODO: Show setting up the external IP, logging in, and changing password + deploying more apps
