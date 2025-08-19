@@ -278,7 +278,7 @@ sudo systemctl status k3s
 First, set memory constraints for every node (including control) via appending this to the end of `/boot/firmware/cmdline.txt` (you will need to open with `sudo`):
 
 ```bash
-cgroup_enable=memory cgroup_memory=1
+cgroup_enable=memory cgroup_memory=1 cgroup_enable=cpuset swapaccount=1
 
 # Reboot when you're done
 sudo reboot
@@ -484,8 +484,7 @@ ansible workers -b -m filesystem -a "fstype=ext4 dev=/dev/{{ var_disk }}"
 Afterwards, get all drives and their available sizes with this command:
 
 ```bash
-# Command
-ansible cube -b -m shell -a "lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT"
+ansible cube -b -m shell -a "lsblk -f"
 
 # Response
 node1 | CHANGED | rc=0 >>
@@ -538,8 +537,30 @@ You can check the pods for the deployment and the CRDs with these commands:
 # Pods
 kubectl -n longhorn-system get pod
 
+# Response
+NAME                                                READY   STATUS      RESTARTS   AGE
+discover-proc-kubelet-cmdline                       0/1     Completed   0          31s
+engine-image-ei-b4bcf0a5-4c2tt                      1/1     Running     0          96s
+engine-image-ei-b4bcf0a5-fplzs                      1/1     Running     0          96s
+engine-image-ei-b4bcf0a5-nptbl                      1/1     Running     0          96s
+engine-image-ei-b4bcf0a5-ttmhg                      1/1     Running     0          96s
+instance-manager-4a529424618fd898f5b182591ed252d1   1/1     Running     0          63s
+instance-manager-8acb062def932e1d509146c2b7564a73   1/1     Running     0          57s
+instance-manager-f6f0478e3af0dd0843f02cb22a7f591b   1/1     Running     0          66s
+instance-manager-f7413a220c4171cc02cca50a7900a7f1   1/1     Running     0          51s
+longhorn-driver-deployer-5647c54d4f-mdhzv           1/1     Running     0          2m2s
+longhorn-manager-96glw                              2/2     Running     0          2m2s
+longhorn-manager-dt58x                              2/2     Running     0          2m2s
+longhorn-manager-vclq5                              2/2     Running     0          2m2s
+longhorn-manager-vfm6f                              2/2     Running     0          2m2s
+longhorn-ui-8666455ff7-vnkm5                        1/1     Running     0          2m2s
+longhorn-ui-8666455ff7-zmlwv                        1/1     Running     0          2m2s
+
 # CRDs
 kubectl get crds | grep engineimages
+
+# Response
+engineimages.longhorn.io                    2025-08-19T20:30:35Z
 ```
 
 Next, apply a config for it here:
@@ -572,7 +593,13 @@ kubectl apply -f longhorn.yaml
 Before we finish, verify that Longhorn is now the default storage class:
 
 ```bash
+# Run this command
 kubectl get storageclass
+
+# You'll get a response lik
+NAME                 PROVISIONER          RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+longhorn (default)   driver.longhorn.io   Delete          Immediate           true                   2m30s
+longhorn-static      driver.longhorn.io   Delete          Immediate           true                   2m27s
 ```
 
 ## Bootstrapping ArgoCD
@@ -593,6 +620,19 @@ kubectl get pods -n argocd
 kubectl get svc -n argocd
 ```
 
+Patch this to be a LoadBalancer type deployment so you can have an external IP here as well for the dashboard:
+
+```bash
+kubectl patch service argocd-server -n argocd --patch '{ "spec": { "type": "LoadBalancer", "loadBalancerIP": "<your IP here>" } }'
+```
+
+Once applied, you'll want to login. But you'll need to get the initial admin password (change this later):
+
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode
+echo
+```
+
 Next, create an `argocd_boostrap.yaml` file in the control Pi. We're going to manually apply it to point to your gitops repository (realistically, a fork of this one):
 
 ```bash
@@ -605,13 +645,6 @@ Then, apply it to have the rocket takeoff and bootstrap Argo:
 
 ```bash
 kubectl apply -f argocd_boostrap.yaml
-```
-
-Once applied, you'll want to login. But you'll need to get the initial admin password (change this later):
-
-```bash
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode
-echo
 ```
 
 TODO: Show setting up the external IP, logging in, and changing password + deploying more apps
