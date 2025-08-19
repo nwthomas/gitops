@@ -85,6 +85,26 @@ sudo reboot
 ip addr show wlan0 # Check for correct IP assignment
 ```
 
+If you used the Raspberry Pi OS instead of Debian (or some Ubuntu flavor), you'll need to instead run these commands:
+
+```bash
+# Check status of wired connection - should show something like "Wired connection 1"
+nmcli con show
+
+# Set static IP
+sudo nmcli con mod "Wired connection 1" ipv4.addresses <your initial IP for IP range here>/24
+sudo nmcli con mod "Wired connection 1" ipv4.gateway <your gateway IP>
+sudo nmcli con mod "Wired connection 1" ipv4.dns "<your gateway IP> 8.8.8.8"
+sudo nmcli con mod "Wired connection 1" ipv4.method manual
+sudo nmcli con up "Wired connection 1"
+
+# Turn off Wifi
+sudo nmcli radio wifi off
+sudo systemctl disable wpa_supplicant
+```
+
+The above + setting static IP at your router level should be sufficient to turn off Wifi and 
+
 Next, set a static hostname on the network. Example:
 
 ```bash
@@ -127,14 +147,6 @@ Then, edit your `/etc/hosts` file on the control node (whichever one you choose)
 192.168.0.14    node4 node4.local
 ```
 
-[defaults]
-private_key_file = /Users/nathanthomas/.ssh/id_ed25519
-
-10.0.0.3        red1 red1.local # Control node
-10.0.0.4        red2 red2.local
-10.0.0.5        red3 red3.local
-10.0.0.6        red4 red4.local
-
 Next, we need to generate an RSA key and distribute it to our worker nodes in order for us to issue ssh commands from inside our control node. I'd advise NOT reusing your own SSH key you're using right now already to connect to each of the nodes. Ideally, we'll be able to tell later if the intra-node SSH key was being used.
 
 Run this on your control node Pi:
@@ -151,7 +163,7 @@ scp <your ssh username>@<your control node pi name>.local:~/.ssh/anbsible_id_ed2
 scp <your ssh username>@<your control node pi name>.local:~/.ssh/anbsible_id_ed25519 ~/ansible_id_ed25519
 
 # Copy from your computer to Pis
-ssh-copy-id -i ~/ansible_id_ed25519.pub -f nathanthomas@red2
+ssh-copy-id -i ~/ansible_id_ed25519.pub -f nathanthomas@node2
 ```
 
 Next, we're going to use a tool called Ansible to set up remote control over all our nodes. It will effectively allow us to issue install commands or customize all our nodes at once via single commands.
@@ -279,7 +291,7 @@ Install k3s via this command:
 curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --disable servicelb --token some_random_password --node-taint CriticalAddonsOnly=true:NoExecute --bind-address 192.168.0.10 --disable-cloud-controller --disable local-storage
 
 # Verify the node taint with this
-kubectl describe node red1 | grep -i taint
+kubectl describe node node1 | grep -i taint
 ```
 
 Be sure to replace "some_random_password" with a password you save and preserve. You'll need this to connect to the main k3s master node. Replace the bind address flag IP with your control node's IP that you set earlier.
@@ -603,3 +615,17 @@ echo
 ```
 
 TODO: Show setting up the external IP, logging in, and changing password + deploying more apps
+
+## Misellanenous Commands
+
+To temporarily turn off a Kube node, use this command:
+
+```bash
+kubectl cordon <node-name>
+```
+
+To turn it back on, use:
+
+```bash
+kubectl uncordon <node-name>
+```
