@@ -602,6 +602,13 @@ longhorn (default)   driver.longhorn.io   Delete          Immediate           tr
 longhorn-static      driver.longhorn.io   Delete          Immediate           true                   2m27s
 ```
 
+Finally, I personally wanted my control node to be able to participate in distributed storage with its NVMe drive. I used this patch for the config to allow this even though the control node has a taint:
+
+```bash
+kubectl -n longhorn-system patch daemonset longhorn-manager \
+  -p '{"spec":{"template":{"spec":{"tolerations":[{"key":"CriticalAddonsOnly","operator":"Equal","value":"true","effect":"NoExecute"}]}}}}'
+```
+
 ## Bootstrapping ArgoCD
 
 This repo has a variety of services and architecture patterns. Initially on the Kube cluster, we'll want to bootstrap a ArgoCD installation which will then point to this repo and allow Argo to start deploying itself as well as other services. This repo has an app-of-apps architecture pattern for deployments.
@@ -661,4 +668,20 @@ To turn it back on, use:
 
 ```bash
 kubectl uncordon <node-name>
+```
+
+## Sealed Secrets
+
+TODO: Describe deploying sealed secrets setup
+
+We'll also need to install kubeseal, a CLI tool for encrypting secrets. Get the most recent version [from here](https://github.com/bitnami-labs/sealed-secrets/pkgs/container/sealed-secrets-kubeseal) and then install via:
+
+```bash
+# Install via these commands
+curl -sSL  https://github.com/bitnami-labs/sealed-secrets/releases/download/v<version here>/kubeseal-<version here>-linux-arm64.tar.gz | tar -xz
+sudo mv kubeseal /usr/local/bin/kubeseal
+chmod +x /usr/local/bin/kubeseal
+
+# Check it worked correctly
+kubeseal --version
 ```
