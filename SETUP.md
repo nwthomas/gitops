@@ -103,7 +103,18 @@ sudo nmcli radio wifi off
 sudo systemctl disable wpa_supplicant
 ```
 
-The above + setting static IP at your router level should be sufficient to turn off Wifi and 
+The above + setting static IP at your router level should be sufficient.
+
+Next, turn off wifi:
+
+```bash
+sudo nmcli radio wifi off
+sudo systemctl disable wpa_supplicant
+sudo ip link set wlan0 down
+
+# Check that WIFI is disabled
+nmcli radio
+```
 
 Next, set a static hostname on the network. Example:
 
@@ -294,6 +305,12 @@ curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --disable ser
 kubectl describe node node1 | grep -i taint
 ```
 
+If you want to remove the taint (which prevents non-critical resources, like your apps, from being installed and having pods run on the control node), run this:
+
+```bash
+kubectl taint nodes <your control node name> CriticalAddonsOnly=true:NoExecute-
+```
+
 Be sure to replace "some_random_password" with a password you save and preserve. You'll need this to connect to the main k3s master node. Replace the bind address flag IP with your control node's IP that you set earlier.
 
 Once you run and install this via the `curl` command, check the installation with `kubectl`:
@@ -341,11 +358,15 @@ You should also probably label the other nodes, so do something like this:
 kubectl label nodes node2 kubernetes.io/role=worker
 kubectl label nodes node3 kubernetes.io/role=worker
 kubectl label nodes node4 kubernetes.io/role=worker
+kubectl label nodes node5 kubernetes.io/role=worker
+kubectl label nodes node6 kubernetes.io/role=worker
 
 # Labels used for directing deployments to prefer certain nodes
 kubectl label nodes node2 node-type=worker
 kubectl label nodes node3 node-type=worker
 kubectl label nodes node4 node-type=worker
+kubectl label nodes node3 node-type=worker
+kubectl label nodes node6 node-type=worker
 ```
 
 Verify via showing all labels:
@@ -532,7 +553,7 @@ We'll now install longhorn to be able to interact with these drives. Fortunately
 cd
 helm repo add longhorn https://charts.longhorn.io
 helm repo update
-helm install longhorn longhorn/longhorn --namespace longhorn --create-namespace --set defaultSettings.defaultDataPath="/storage01" --version 1.9.1
+helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --set defaultSettings.defaultDataPath="/storage01" --version 1.9.1
 ```
 
 I had a lot of trouble getting this to work correctly and had to fully delete all the resources and reinstall several times.
@@ -541,7 +562,7 @@ You can check the pods for the deployment and the CRDs with these commands:
 
 ```bash
 # Pods
-kubectl -n longhorn get pod
+kubectl -n longhorn-system get pod
 
 # Response
 NAME                                                READY   STATUS      RESTARTS   AGE
@@ -580,7 +601,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: longhorn-ingress-lb
-  namespace: longhorn
+  namespace: longhorn-system
 spec:
   selector:
     app: longhorn-ui
@@ -611,7 +632,7 @@ longhorn-static      driver.longhorn.io   Delete          Immediate           tr
 Finally, I personally wanted my control node to be able to participate in distributed storage with its NVMe drive. I used this patch for the config to allow this even though the control node has a taint:
 
 ```bash
-kubectl -n longhorn patch daemonset longhorn-manager \
+kubectl -n longhorn-system patch daemonset longhorn-manager \
   -p '{"spec":{"template":{"spec":{"tolerations":[{"key":"CriticalAddonsOnly","operator":"Equal","value":"true","effect":"NoExecute"}]}}}}'
 ```
 
@@ -754,4 +775,44 @@ To turn it back on, use:
 
 ```bash
 kubectl uncordon <node-name>
+```
+
+## Delete K3s (Uninstall)
+
+On the control node, run this:
+
+```bash
+# Uninstall K3s
+sudo /usr/local/bin/k3s-uninstall.sh
+
+# Remove K3s binaries
+sudo rm -rf /usr/local/bin/k3s
+sudo rm -rf /usr/local/bin/k3s-agent
+
+# Remove K3s data
+sudo rm -rf /etc/rancher/k3s
+sudo rm -rf /var/lib/rancher/k3s
+sudo rm -rf /var/lib/kubelet
+sudo rm -rf /var/lib/cni
+sudo rm -rf /run/k3s
+sudo rm -rf /var/run/k3s
+```
+
+On the worker nodes, run this:
+
+```bash
+# Uninstall K3s
+sudo /usr/local/bin/k3s-agent-uninstall.sh
+
+# Remove K3s binaries
+sudo rm -rf /usr/local/bin/k3s
+sudo rm -rf /usr/local/bin/k3s-agent
+
+# Remove K3s data
+sudo rm -rf /etc/rancher/k3s
+sudo rm -rf /var/lib/rancher/k3s
+sudo rm -rf /var/lib/kubelet
+sudo rm -rf /var/lib/cni
+sudo rm -rf /run/k3s
+sudo rm -rf /var/run/k3s
 ```
