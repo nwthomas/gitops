@@ -20,7 +20,7 @@ spec:
               key: LONGHORN_LOAD_BALANCER_IP
   destination:
     server: https://kubernetes.default.svc
-    namespace: longhorn-system
+    namespace: longhorn
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

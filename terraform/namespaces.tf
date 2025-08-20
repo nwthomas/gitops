@@ -36,7 +36,7 @@ resource "kubernetes_namespace" "cert_manager" {
 
 resource "kubernetes_namespace" "longhorn_system" {
   metadata {
-    name = "longhorn-system"
+    name = "longhorn"
     labels = {
       "app.kubernetes.io/managed-by" = "terraform"
     }

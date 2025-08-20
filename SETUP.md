@@ -532,7 +532,7 @@ We'll now install longhorn to be able to interact with these drives. Fortunately
 cd
 helm repo add longhorn https://charts.longhorn.io
 helm repo update
-helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --set defaultSettings.defaultDataPath="/storage01" --version 1.9.1
+helm install longhorn longhorn/longhorn --namespace longhorn --create-namespace --set defaultSettings.defaultDataPath="/storage01" --version 1.9.1
 ```
 
 I had a lot of trouble getting this to work correctly and had to fully delete all the resources and reinstall several times.
@@ -541,7 +541,7 @@ You can check the pods for the deployment and the CRDs with these commands:
 
 ```bash
 # Pods
-kubectl -n longhorn-system get pod
+kubectl -n longhorn get pod
 
 # Response
 NAME                                                READY   STATUS      RESTARTS   AGE
@@ -580,7 +580,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: longhorn-ingress-lb
-  namespace: longhorn-system
+  namespace: longhorn
 spec:
   selector:
     app: longhorn-ui
@@ -611,7 +611,7 @@ longhorn-static      driver.longhorn.io   Delete          Immediate           tr
 Finally, I personally wanted my control node to be able to participate in distributed storage with its NVMe drive. I used this patch for the config to allow this even though the control node has a taint:
 
 ```bash
-kubectl -n longhorn-system patch daemonset longhorn-manager \
+kubectl -n longhorn patch daemonset longhorn-manager \
   -p '{"spec":{"template":{"spec":{"tolerations":[{"key":"CriticalAddonsOnly","operator":"Equal","value":"true","effect":"NoExecute"}]}}}}'
 ```
 
