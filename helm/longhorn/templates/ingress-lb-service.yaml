@@ -10,7 +10,9 @@ spec:
   selector:
     app: longhorn-ui
   type: LoadBalancer
-  loadBalancerIP: {{ .Values.secrets.loadBalancerIP }}
+  {{- if .Values.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.loadBalancerIP }}
+  {{- end }}
   externalTrafficPolicy: Local
   ports:
     - name: http
