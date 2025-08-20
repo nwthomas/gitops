@@ -712,6 +712,18 @@ spec:
 
 This secret is encrypted by your sealed secret controller on your cluster and can be safely committed. No one except your controller can decrypt it. You can also apply this to your cluster and also commit the file (even publicly like in this repo).
 
+```bash
+kubectl create -f mysealedsecret.yaml
+```
+
+Running the above command creates a regular secret in your cluster (inside whatever namepsace you defined earlier) which is merely base64 encoded. The sealed secrets controller in your cluster decrypts your encryptedData.
+
+You can also view these secrets once applied via:
+
+```bash
+kubectl get secret <secret-name> -n <namespace>
+```
+
 You should also get your master key and store it wherever you also store major secrets:
 
 ```bash

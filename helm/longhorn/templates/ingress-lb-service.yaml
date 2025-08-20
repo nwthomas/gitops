@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: longhorn-ingress-lb
+  namespace: longhorn-system
+  labels:
+    app: longhorn-ui
+    component: ingress-lb
+spec:
+  selector:
+    app: longhorn-ui
+  type: LoadBalancer
+  loadBalancerIP: {{ .Values.secrets.loadBalancerIP }}
+  externalTrafficPolicy: Local
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http

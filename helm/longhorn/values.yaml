@@ -21,3 +21,9 @@ longhorn:
       - key: "node-role.kubernetes.io/control-plane"
         operator: "Exists"
         effect: "NoSchedule"
+
+
+secrets:
+  loadBalancerIP:
+    name: "longhorn-secrets"
+    key: "LONGHORN_LOAD_BALANCER_IP"
