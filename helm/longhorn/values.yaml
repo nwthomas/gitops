@@ -1,0 +1,23 @@
+longhorn:
+  # Default settings for Longhorn
+  defaultSettings:
+    defaultDataPath: /storage01
+  
+  # Tolerations for control plane nodes
+  longhornManager:
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+  
+  longhornDriver:
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+  
+  longhornUI:
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"

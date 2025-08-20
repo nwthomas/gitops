@@ -1,0 +1,10 @@
+apiVersion: v2
+name: longhorn
+description: A Helm chart for Longhorn distributed block storage
+type: application
+version: 0.1.0
+appVersion: "1.6.0"
+dependencies:
+  - name: longhorn
+    version: 1.6.0
+    repository: https://charts.longhorn.io
