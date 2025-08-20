@@ -368,6 +368,12 @@ ansible cube -b -m lineinfile -a "path='/etc/environment' line='KUBECONFIG=/etc/
 
 This is the source of truth for each of the kube deployments (client and servers for control and workers).
 
+From this point forward, you can get all your pods and states by using this:
+
+```bash
+kubectl get pods --all-namespaces -o wide
+```
+
 ## Setting Up Helm
 
 Next, we need to install Helm in order to make use of Helm charts. Run this on the control node Pi:
@@ -656,6 +662,74 @@ kubectl apply -f argocd_boostrap.yaml
 
 TODO: Show setting up the external IP, logging in, and changing password + deploying more apps
 
+## Sealed Secrets
+
+Now that we have ArgoCD setup and you bootstrapped the application cluster, getting sealed secrets working should be as simple as deploying the `kube-system` namespace app and then deploying the `sealed-secrets-app`.
+
+After you do that, you'll also need to install kubeseal, a CLI tool for encrypting secrets. You'll be using this locally to make your secret before putting it into Git to be committed. 
+
+Get the most recent version [from here](https://github.com/bitnami-labs/sealed-secrets/pkgs/container/sealed-secrets-kubeseal) and then install via:
+
+```bash
+# Install via these commands
+curl -sSL  https://github.com/bitnami-labs/sealed-secrets/releases/download/v<version here>/kubeseal-<version here>-linux-arm64.tar.gz | tar -xz
+sudo mv kubeseal /usr/local/bin/kubeseal
+chmod +x /usr/local/bin/kubeseal
+
+# Check it worked correctly
+kubeseal --version
+```
+
+To seal a secret, here's an example (outputting to YAML and then encoding) of creating one:
+
+```bash
+# Create the secret
+echo -n bar | kubectl create secret generic mysecret --dry-run=client --from-file=foo=/dev/stdin -o yaml >mysecret.yaml
+
+# Encode the secret
+kubeseal --controller-name=sealed-secrets --controller-namespace=kube-system --format yaml <mysecret.yaml>mysealedsecret.yaml
+```
+
+This will end up looking something much like this:
+
+```bash
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: mysecret
+  namespace: default
+spec:
+  encryptedData:
+    foo: AgDEPWfG7iH8p2DBSqRGe+hVpRa1+d06hWffB1krTyF2iBpxTPY/rZw6Ba26dA+txlWYZN5uw/CxLyk+zs1WqU64qskHptC5dcbEuCPwXnZQbUL6x/HBzkr4sXwAcYGFKPXtCSG98o5E5F/Mx7PtFQAMcZ0Jo1e2OZt4vH07QMaDdTLwwPFrWGOiIcyOGJX/XFOeW/s7wGj31loIHi50uljGxCGns4l2DiU29mo7VSq4aHAOEWAM8jiyGPC8eapdrmYU2NpEBJJMAWwwsO6WkF6jAMIiDvKXMC1alYIYxIFJB7OcEyuLvddLbmn0fvh9hcQJe2bRSe/yT7AVvYoCWsSX1zji3IIPCzLTOHDzf74gsi2Gbt+FCyTYJNu2dzQpl5jIBctMwVOTF1H1154RFHyRoAGl5R3jgwbQ2kn1pK4O1w23FuLKHfLr8ExllPeoiSDykYetrvRuKcV2BUeAztbDs+aKXn4yfVHNpvryhyzEbm7804CyjDpSRkjC2tKcnrv1mEoCD5EyAqWvfIbFVnoj7mp8cOhLlDWz0cp32u1KAHxg21dK3K0XQfUDaqOiXa1TiBmGFedjyo/MpMKMbZTqs6TPpiEPiP6Eso9fr5u/9LQQY2V1eYpTChI8e824U3YUmo2ooC+GOGarUk5en1VQLC9yGf5XcppeZh23NAp9Egzlo3j+B25P2IEuLqiiqfyLLHc=
+  template:
+    data: null
+    metadata:
+      creationTimestamp: null
+      name: mysecret
+      namespace: default
+```
+
+This secret is encrypted by your sealed secret controller on your cluster and can be safely committed. No one except your controller can decrypt it. You can also apply this to your cluster and also commit the file (even publicly like in this repo).
+
+You should also get your master key and store it wherever you also store major secrets:
+
+```bash
+kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml >master.key
+```
+
+If you need to redeploy your cluster, you'll need this in order to use the same secrets. If that happens, you'll also need to apply the old master key which you can do via these commands:
+
+```bash
+# Apply the master key
+kubectl apply -f master.key
+
+# Delete the old pod so that it will restart and read the new key
+kubectl delete pod -n kube-system -l name=sealed-secrets-controller
+```
+
+TODO: Describe setting up Terraform-based applying of secrets from files in the repo (will use Atlantis)
+
 ## Misellanenous Commands
 
 To temporarily turn off a Kube node, use this command:
@@ -668,20 +742,4 @@ To turn it back on, use:
 
 ```bash
 kubectl uncordon <node-name>
-```
-
-## Sealed Secrets
-
-TODO: Describe deploying sealed secrets setup
-
-We'll also need to install kubeseal, a CLI tool for encrypting secrets. Get the most recent version [from here](https://github.com/bitnami-labs/sealed-secrets/pkgs/container/sealed-secrets-kubeseal) and then install via:
-
-```bash
-# Install via these commands
-curl -sSL  https://github.com/bitnami-labs/sealed-secrets/releases/download/v<version here>/kubeseal-<version here>-linux-arm64.tar.gz | tar -xz
-sudo mv kubeseal /usr/local/bin/kubeseal
-chmod +x /usr/local/bin/kubeseal
-
-# Check it worked correctly
-kubeseal --version
 ```
