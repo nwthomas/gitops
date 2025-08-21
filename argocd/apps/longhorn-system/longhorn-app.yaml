@@ -9,15 +9,6 @@ spec:
     repoURL: https://github.com/nwthomas/gitops.git
     targetRevision: main
     path: helm/longhorn
-    helm:
-      releaseName: longhorn
-      # This is required here as it's a secret used for the load balancer IP, not an environment variable
-      parameters:
-        - name: loadBalancerIP
-          valueFrom:
-            secretKeyRef:
-              name: longhorn-secrets
-              key: LONGHORN_LOAD_BALANCER_IP
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system
