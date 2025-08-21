@@ -1,3 +1,5 @@
+> NOTE: This repository is currently in a state of flux as I finalize details of my cluster and slowly both learn and also move to different architectural patterns.
+
 # GitOps
 
 ## 🔎 About
@@ -21,44 +23,24 @@ Remaining work in this repository can be found in this [Trello Kanban board](htt
 ## 📁 Project Structure
 
 ```bash
-├── argocd/                                   #
-│   ├── apps/                                 #
-│   │   ├── applications-eng/                 #
-│   │   │   └── whoami.yaml                   # Temporary placeholder
-│   │   ├── applications-prd/                 #
-│   │   │   └── whoami.yaml                   # Temporary placeholder
-│   │   ├── argocd/                           #
-│   │   │   └── argocd-ingress-app.yaml       #
-│   │   ├── cert-manager/                     #
-│   │   │   ├── cert-manager-app.yaml         # ArgoCD app for cert-manager
-│   │   │   └── cert-manager-issuers-app.yaml # ArgoCD app for ClusterIssuers
-│   │   └── monitoring/                       #
-│   │       ├── prometheus-app.yaml           # Prometheus Operator with Grafana
-│   │       ├── prometheus-crds.yaml          # Prometheus Operator CRDs
-│   │       ├── prometheus-crds-app.yaml      # ArgoCD app for CRDs
-│   │       ├── nvme-storageclass.yaml        # Custom NVMe storage configuration
-│   │       └── nvme-storage-app.yaml         # ArgoCD app for NVMe storage
-│   ├── namespaces/                           #
-│   │   ├── applications-eng-app.yaml         #
-│   │   ├── applications-prd-app.yaml         #
-│   │   ├── argocd-app.yaml                   #
-│   │   ├── cert-manager-app.yaml             #
-│   │   └── monitoring-app.yaml               #
-│   └── root/                                 #
-│       └── root-app.yaml                     #
-├── helm/                                     #
-│   └── cert-manager/                         #
-│       ├── Chart.yaml                        # Helm chart metadata
-│       ├── templates/                        #
-│       │   ├── letsencrypt-production.yaml   # Production Let's Encrypt ClusterIssuer
-│       │   ├── letsencrypt-staging.yaml      # Staging Let's Encrypt ClusterIssuer
-│       │   └── selfsigned.yaml               # Self-signed certificate ClusterIssuer
-│       ├── values.yaml                       # Default values
-│       ├── values-production.yaml            # Production environment values
-│       └── values-staging.yaml               # Staging environment values
-└── terraform/                                #
-    ├── namespaces.tf                         #
-    └── provider.tf                           #
+├── argocd/                                      # ArgoCD application definitions
+│   ├── apps/                                    # Individual application manifests
+│   │   ├── argocd/                              # ArgoCD self-management
+│   │   ├── cert-manager/                        # Certificate management
+│   │   ├── kube-system/                         # Core system components
+│   │   ├── longhorn-system/                     # Storage management
+│   │   └── monitoring/                          # Monitoring stack
+│   ├── namespaces/                              # Namespace management
+│   └── root/                                    # Root application
+├── helm/                                        # Helm charts
+│   ├── argocd/                                  # ArgoCD Helm chart
+│   ├── cert-manager/                            # Cert-manager ClusterIssuers
+│   ├── longhorn/                                # Longhorn storage
+│   ├── prometheus/                              # Prometheus monitoring
+│   └── servicemonitors/                         # Service monitors
+└── terraform/
+    ├── namespaces.tf                            # Namespace definitions
+    └── provider.tf                              # Terraform provider configuration
 ```
 
 ## 🧐 Dashboard Access
