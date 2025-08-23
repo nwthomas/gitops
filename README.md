@@ -11,10 +11,11 @@ While it's meant to be run on Raspberry Pi devices, it should be equally valid a
 ## 🎖️ Features
 
 - App-of-apps: A root Argo CD Application which manages child apps
-- Namespaces: `applications-eng`, `applications-prd`, `argocd`, `cert-manager`, `monitoring`
+- Namespaces: `argocd`, `cert-manager`, `kube-system`, `longhorn-system`, and `monitoring`
 - Cert-manager: Jetstack Helm with CRDs + ClusterIssuers (staging/production) for Traefik HTTP-01
 - Monitoring: Prometheus Operator with Grafana, using custom NVMe storage
-- Argo CD UI ingress: Traefik with IP allowlist middleware and cert-manager TLS
+- Argo CD UI: Externally-facing dashboard for controlling deployments and rollbacks
+- Longhorn UI: Externally-facing dashboard for controlling the distributed block storage setup
 
 ## 🧱 Project Management
 
@@ -45,21 +46,7 @@ Remaining work in this repository can be found in this [Trello Kanban board](htt
 
 ## 🧐 Dashboard Access
 
-Until the internal ingress is set up, it's necessary to port forward on the Raspberry Pis while tunneling into them with SSH. Use these commands to access dashboards:
-
-```bash
-# For ArgoCD
-# 1. SSH:
-ssh -L 8080:localhost:8080 <PI_USERNAME>@<PI_IP_ADDRESS>
-# 2. On device:
-kubectl port-forward svc/argocd-server -n argocd 8080:443
-
-# For Grafana
-# 1. SSH:
-ssh -L 3000:localhost:3000 <PI_USERNAME>@<PI_IP_ADDRESS>
-# 2. On device:
-kubectl port-forward -n monitoring svc/prometheus-grafana 3000:443
-```
+TODO: Coming soon
 
 ## 🛠️ Built With
 
@@ -79,5 +66,5 @@ MIT License - You are welcome to fork this repository and use it to spin up your
 ## 🙇🏻‍♂️ Acknowledgements
 
 - [Edede Oiwoh](https://github.com/ededejr) for inspiring me to build a home cluster and for bouncing ideas around
-- [rpi4cluster.com](https://rpi4cluster.com/) for tips on GitOps with Raspberry Pi setups (even if the notes weren't current and Helm/Argo configurations weren't files-based)
+- [rpi4cluster.com](https://rpi4cluster.com/) for tips on GitOps with Raspberry Pi setups (even if the notes weren't current and Helm/Argo configurations weren't file-based)
 - [Tesla](https://www.tesla.com/) for teaching me proper GitOps processes and giving me a chance to move mountains with them
