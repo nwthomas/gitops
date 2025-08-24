@@ -824,3 +824,45 @@ Good news! The hardest parts are behind us. Or rather, I should say that the har
 However, you can now utilize ArgoCD to do all the hard parts for you. Merely go to your ArgoCD dashboard, sync the monitoring namespace app, and then sync all the sub-apps. Boom. Now you have monitoring in your cluster.
 
 ## Accessing Prometheus and Grafana
+
+Until I get sealed secrets validated in how it works with _non-environment variable secrets_ (e.g. for port numbers and such in Argo/Helm), I'm manually applying LoadBalancer configurations for Prometheus and Grafana to access them.
+
+Adapt these with your own IP addresses and then access them at the IP + port you've set them to:
+
+```bash
+# For Prometheus
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-external
+  namespace: monitoring
+spec:
+  selector:
+    prometheus: prometheus-persistent
+  type: LoadBalancer
+  ports:
+    - name: web
+      protocol: TCP
+      port: 9090
+      targetPort: web
+  loadBalancerIP: <IP address that falls within the metallb range you previously set>
+
+# For Grafana
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  selector:
+    app: grafana
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 3000
+    targetPort: http
+  loadBalancerIP: <IP address that falls within the metallb range you previously set>
+
+```
+
+Make files for each of those and then use `kubectl apply -f <file name>` to get a working URL you can use (e.g. `http://<the IP you set>"<the port you set>`).
