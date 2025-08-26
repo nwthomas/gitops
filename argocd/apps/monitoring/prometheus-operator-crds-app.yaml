@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-operator-crds
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/nwthomas/gitops.git
+    targetRevision: main
+    path: helm/prometheus-operator-crds
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

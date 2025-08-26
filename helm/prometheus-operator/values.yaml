@@ -4,4 +4,5 @@
 # Enable CRDs (Custom Resource Definitions)
 # Set to false if CRDs are already installed in the cluster
 crds:
-  enabled: true
+  enabled: false
+  
