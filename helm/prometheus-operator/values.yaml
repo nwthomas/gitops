@@ -1,0 +1,6 @@
+# Default values for prometheus-operator
+# This chart replicates the bundle.yaml exactly
+
+# Enable CRDs (Custom Resource Definitions)
+crds:
+  enabled: true
