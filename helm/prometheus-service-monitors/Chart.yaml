@@ -1,0 +1,14 @@
+apiVersion: v2
+name: prometheus-service-monitors
+description: A Helm chart to install the Prometheus Service Monitors
+type: application
+version: 0.1.0
+appVersion: "0.0.0"
+keywords:
+  - monitoring
+  - prometheus
+  - service
+  - monitors
+home: https://github.com/nwthomas/gitops
+sources:
+  - https://github.com/nwthomas/gitops

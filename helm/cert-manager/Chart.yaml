@@ -3,4 +3,4 @@ name: cert-manager-issuers
 description: A Helm chart for cert-manager ClusterIssuers
 type: application
 version: 0.1.0
-appVersion: "1.0"
+appVersion: "0.1.0"

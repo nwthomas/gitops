@@ -816,3 +816,11 @@ sudo rm -rf /var/lib/cni
 sudo rm -rf /run/k3s
 sudo rm -rf /var/run/k3s
 ```
+
+## Setting Up Prometheus, Grafana, and Service Monitors
+
+Good news! The hardest parts are behind us. Or rather, I should say that the hardest parts are behind _you_. You don't want to know how much time I burned making the charts in this repository work correctly.
+
+However, you can now utilize ArgoCD to do all the hard parts for you. Merely go to your ArgoCD dashboard, sync the monitoring namespace app, and then sync all the sub-apps. Boom. Now you have monitoring in your cluster.
+
+## Accessing Prometheus and Grafana
