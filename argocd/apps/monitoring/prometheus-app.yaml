@@ -1,10 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prometheus-operator-app
+  name: prometheus-app
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argocd.argoproj.io
 spec:
   project: default
   source:
@@ -17,5 +15,3 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
-
