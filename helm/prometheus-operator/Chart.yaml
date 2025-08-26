@@ -8,6 +8,7 @@ keywords:
   - monitoring
   - prometheus
   - operator
+  - crds
 home: https://github.com/prometheus-operator/prometheus-operator
 sources:
   - https://github.com/prometheus-operator/prometheus-operator
