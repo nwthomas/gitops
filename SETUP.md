@@ -866,3 +866,5 @@ spec:
 ```
 
 Make files for each of those and then use `kubectl apply -f <file name>` to get a working URL you can use (e.g. `http://<the IP you set>"<the port you set>`).
+
+The default username/password for Grafana is `admin` and `admin`, but you should change the password immediately on accessing the dashboard.
