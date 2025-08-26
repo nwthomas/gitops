@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/nwthomas/gitops.git
     targetRevision: main
-    path: helm/prometheus-operator
+    path: helm/prometheus
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

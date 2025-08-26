@@ -1,0 +1,46 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus-persistent
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicas | default 1 }}
+  retention: {{ .Values.retention | default "7d" }}
+  resources:
+    requests:
+      memory: {{ .Values.resources.requests.memory | default "400Mi" }}
+      cpu: {{ .Values.resources.requests.cpu | default "100m" }}
+    limits:
+      memory: {{ .Values.resources.limits.memory | default "800Mi" }}
+      cpu: {{ .Values.resources.limits.cpu | default "200m" }}
+  nodeSelector:
+    {{- toYaml .Values.nodeSelector | nindent 4 }}
+  securityContext:
+    fsGroup: {{ .Values.securityContext.fsGroup | default 2000 }}
+    runAsNonRoot: {{ .Values.securityContext.runAsNonRoot | default true }}
+    runAsUser: {{ .Values.securityContext.runAsUser | default 1000 }}
+  serviceAccountName: prometheus
+  serviceMonitorSelector:
+    matchExpressions:
+    {{- range .Values.serviceMonitorSelector.matchExpressions }}
+    - key: {{ .key }}
+      operator: {{ .operator }}
+      values:
+      {{- range .values }}
+      - {{ . }}
+      {{- end }}
+    {{- end }}
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: {{ .Values.storage.storageClassName | default "longhorn" }}
+        resources:
+          requests:
+            storage: {{ .Values.storage.size | default "100Gi" }}
