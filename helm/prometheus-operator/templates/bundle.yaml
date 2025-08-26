@@ -69,6 +69,7 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator
     app.kubernetes.io/version: 0.85.0
+    app.kubernetes.io/instance: {{ .Release.Name }}
   name: prometheus-operator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -88,6 +89,8 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator
     app.kubernetes.io/version: 0.85.0
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   name: prometheus-operator
 rules:
 - apiGroups:
@@ -199,6 +202,8 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator
     app.kubernetes.io/version: 0.85.0
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   name: prometheus-operator
   namespace: {{ .Release.Namespace }}
 spec:
@@ -263,6 +268,8 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator
     app.kubernetes.io/version: 0.85.0
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   name: prometheus-operator
   namespace: {{ .Release.Namespace }}
 
@@ -275,6 +282,8 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator
     app.kubernetes.io/version: 0.85.0
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   name: prometheus-operator
   namespace: {{ .Release.Namespace }}
 spec:
