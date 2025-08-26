@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-grafana-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.storage.storageClassName | default "longhorn" }}
+  resources:
+    requests:
+      storage: {{ .Values.storage.size | default "10Gi" }}

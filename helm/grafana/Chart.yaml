@@ -1,0 +1,14 @@
+apiVersion: v2
+name: grafana
+description: A Helm chart for Grafana monitoring dashboard
+type: application
+version: 0.1.0
+appVersion: "latest"
+keywords:
+  - monitoring
+  - grafana
+  - dashboard
+  - visualization
+home: https://grafana.com/
+sources:
+  - https://github.com/grafana/grafana

@@ -1,0 +1,26 @@
+# Default values for grafana
+replicas: 1
+
+image:
+  repository: grafana/grafana
+  tag: latest
+
+resources:
+  requests:
+    memory: "100Mi"
+    cpu: "100m"
+  limits:
+    memory: "200Mi"
+    cpu: "200m"
+
+nodeSelector:
+  node-type: worker
+
+securityContext:
+  fsGroup: 65534
+  runAsNonRoot: true
+  runAsUser: 65534
+
+storage:
+  storageClassName: "longhorn"
+  size: "10Gi"
