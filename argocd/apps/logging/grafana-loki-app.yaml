@@ -1,19 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: grafana-promtail-app
+  name: grafana-loki-app
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://grafana.github.io/helm-charts
-    targetRevision: 6.15.0
-    chart: promtail
-    helm:
-      values: |
-        daemonset:
-          tolerations:
-            - operator: Exists
+    targetRevision: 6.37.0
+    chart: loki
   destination:
     server: https://kubernetes.default.svc
     namespace: logging
