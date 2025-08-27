@@ -68,3 +68,4 @@ MIT License - You are welcome to fork this repository and use it to spin up your
 - [Edede Oiwoh](https://github.com/ededejr) for inspiring me to build a home cluster and for bouncing ideas around
 - [rpi4cluster.com](https://rpi4cluster.com/) for tips on GitOps with Raspberry Pi setups (even if the notes weren't current and Helm/Argo configurations weren't file-based)
 - [Tesla](https://www.tesla.com/) for teaching me proper GitOps processes and giving me a chance to move mountains with them
+- [gitops-patterns repository](https://github.com/cloudogu/gitops-patterns) for what will likely be ongoing sources of truth for modern architecture patterns
