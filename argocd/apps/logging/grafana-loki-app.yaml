@@ -7,8 +7,21 @@ spec:
   project: default
   source:
     repoURL: https://grafana.github.io/helm-charts
-    targetRevision: 6.37.0
-    chart: loki
+    targetRevision: 1.8.11
+    chart: loki-simple-scalable
+    helm:
+      values: |
+        loki:
+          auth_enabled: false
+          storage:
+            type: local
+            local:
+              chunks_directory: /var/loki/chunks
+              rules_directory: /var/loki/rules
+        persistence:
+          enabled: true
+          storageClassName: longhorn
+          size: 50Gi
   destination:
     server: https://kubernetes.default.svc
     namespace: logging
