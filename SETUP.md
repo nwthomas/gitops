@@ -868,3 +868,12 @@ spec:
 Make files for each of those and then use `kubectl apply -f <file name>` to get a working URL you can use (e.g. `http://<the IP you set>"<the port you set>`).
 
 The default username/password for Grafana is `admin` and `admin`, but you should change the password immediately on accessing the dashboard.
+
+TODO: Add section on setting up initial data source and adding dashboards. Also, maybe some content on using Prometheus.
+
+## Adding Loki and Alloy
+
+As it turns out, we're not quite done with our monitoring configuration. K3s doesn't quite work as easily with our monitoring setup as we'd like given it's a lighter weight setup than full K8s.
+
+To fix this, we need to add Grafana Loki and Alloy.
+

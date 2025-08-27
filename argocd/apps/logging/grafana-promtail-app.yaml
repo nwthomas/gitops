@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana-promtail-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/nwthomas/gitops.git
+    targetRevision: main
+    path: helm/grafana-promtail
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: logging
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
