@@ -17,7 +17,7 @@
 *.orig
 *~
 # Various IDEs
-.project
+.projectme
 .idea/
 *.tmproj
 .vscode/
@@ -54,5 +54,5 @@ build/
 *.tar.gz
 *.tgz
 
-# Extracted chart dependencies (should not be committed)
-charts/
+# .tgz files (build artifacts - should not be committed)
+*.tgz
