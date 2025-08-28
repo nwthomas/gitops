@@ -59,10 +59,6 @@ TODO: Coming soon
 - [Terraform](https://developer.hashicorp.com/terraform)
 - [Traefik](https://traefik.io/traefik)
 
-## 📄 License
-
-MIT License - You are welcome to fork this repository and use it to spin up your own home Kubernetes configurations.
-
 ## 🙇🏻‍♂️ Acknowledgements
 
 - [Edede Oiwoh](https://github.com/ededejr) for inspiring me to build a home cluster and for bouncing ideas around
