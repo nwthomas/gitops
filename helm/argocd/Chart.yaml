@@ -14,3 +14,7 @@ sources:
 maintainers:
   - name: ArgoCD Team
     email: argocd@argoproj.io
+dependencies:
+  - name: argo-cd
+    version: 5.51.6
+    repository: https://argoproj.github.io/argo-helm
