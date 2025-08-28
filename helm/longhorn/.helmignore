@@ -53,3 +53,6 @@ dist/
 build/
 *.tar.gz
 *.tgz
+
+# Extracted chart dependencies (should not be committed)
+charts/
