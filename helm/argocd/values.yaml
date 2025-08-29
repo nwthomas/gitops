@@ -1,5 +1,6 @@
 # ArgoCD Helm Chart Values
 # This chart deploys ArgoCD using the official argo-cd Helm chart
+releaseName: argocd
 
 argo-cd:
   # Global settings
