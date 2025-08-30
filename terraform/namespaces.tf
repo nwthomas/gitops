@@ -25,9 +25,36 @@ resource "kubernetes_namespace" "argocd" {
   }
 }
 
+resource "kubernetes_namespace" "atlantis" {
+  metadata {
+    name = "atlantis"
+    labels = {
+      "app.kubernetes.io/managed-by" = "terraform"
+    }
+  }
+}
+
 resource "kubernetes_namespace" "cert_manager" {
   metadata {
     name = "cert-manager"
+    labels = {
+      "app.kubernetes.io/managed-by" = "terraform"
+    }
+  }
+}
+
+resource "kubernetes_namespace" "kube_system" {
+  metadata {
+    name = "kube-system"
+    labels = {
+      "app.kubernetes.io/managed-by" = "terraform"
+    }
+  }
+}
+
+resource "kubernetes_namespace" "logging" {
+  metadata {
+    name = "logging"
     labels = {
       "app.kubernetes.io/managed-by" = "terraform"
     }
