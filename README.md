@@ -4,9 +4,9 @@
 
 ## 🔎 About
 
-This repository contains Helm and Terraform files for declarative deployments for a home kubernetes cluster.
+This repository contains ArgoCD, Helm, and Terraform files for declarative deployments with [Kubernetes](https://kubernetes.io/), specifically [k3s](https://k3s.io/).
 
-While it's meant to be run on Raspberry Pi devices, it should be equally valid anywhere Kubernetes can run.
+You can use these files to stand up your own on-prem Kubernetes cluster. While this repository was built to be run on Raspberry Pi devices, it should be equally valid anywhere Kubernetes can run.
 
 ## 🎖️ Features
 
