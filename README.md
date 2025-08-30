@@ -13,13 +13,16 @@ You can use these files to stand up your own on-prem Kubernetes cluster. While t
 - App-of-apps: A root Argo CD Application which manages child apps
 - Namespaces: `argocd`, `cert-manager`, `kube-system`, `longhorn-system`, and `monitoring`
 - Cert-manager: Jetstack Helm with CRDs + ClusterIssuers (staging/production) for Traefik HTTP-01
-- Monitoring: Prometheus Operator with Grafana, using custom NVMe storage
-- Argo CD UI: Externally-facing dashboard for controlling deployments and rollbacks
-- Longhorn UI: Externally-facing dashboard for controlling the distributed block storage setup
+- Monitoring: Prometheus Operator with Grafana, using custom NVMe storage through Longhorn
+- Dashboard UI for:
+    - Argo CD: For controlling deployments and rollbacks
+    - Grafana: For building dashboards against Prometheus data
+    - Longhorn: For controlling the distributed block storage setup
+    - Prometheus: For querying against raw data from pods/nodes/deployment resources
 
 ## 🧱 Project Management
 
-Remaining work in this repository can be found in this [Trello Kanban board](https://trello.com/b/HOJMq7WP/gitops).
+Work for this repository is house in this [Trello board](https://trello.com/b/HOJMq7WP/gitops).
 
 ## 📁 Project Structure
 
@@ -44,18 +47,20 @@ Remaining work in this repository can be found in this [Trello Kanban board](htt
     └── provider.tf                              # Terraform provider configuration
 ```
 
-## 🧐 Dashboard Access
-
-TODO: Coming soon
-
 ## 🛠️ Built With
 
 - [Argo CD](https://argo-cd.readthedocs.io/en/stable/)
-- [cert-manager](https://cert-manager.io/)
+- [Cert Manager](https://cert-manager.io/)
 - [Grafana](https://grafana.com/)
+- [Grafana Loki](https://grafana.com/docs/loki/latest/)
+- [Grafana Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) (soon to be removed for Grafana Alloy)
 - [Helm](https://helm.sh/docs/)
-- [Kubernetes](https://kubernetes.io/) (and [k3s](https://k3s.io/))
-- [Prometheus](https://prometheus.io/)
+- [Kubernetes](https://kubernetes.io/), specifically [K3s](https://k3s.io/)
+- [Longhorn](https://longhorn.io/)
+- [Metal LB](https://metallb.io/)
+- [OpenFaaS](https://www.openfaas.com/) (coming soon)
+- [Prometheus](https://prometheus.io/) (including Prometheus Operator)
+- [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets)
 - [Terraform](https://developer.hashicorp.com/terraform)
 - [Traefik](https://traefik.io/traefik)
 
