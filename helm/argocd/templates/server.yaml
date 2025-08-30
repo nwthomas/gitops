@@ -598,3 +598,12 @@ spec:
       app.kubernetes.io/name: argocd-server
   policyTypes:
   - Ingress
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/name: argocd-secret
+    app.kubernetes.io/part-of: argocd
+  name: argocd-secret
+type: Opaque

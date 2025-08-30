@@ -1,4 +1,4 @@
-> NOTE: This repository is currently in a state of flux as I finalize details of my cluster and slowly both learn and also move to different architectural patterns. In particular, the Helm and Terraform files will likely be drastically updated later as I migrate files and (eventually) bring Atlantis online for Terraform applying.
+> NOTE: This repository is currently in a state of flux as I finalize details of my cluster and slowly both learn and also move to different architectural patterns. In particular, the Helm and Terraform files will likely be drastically updated later as I migrate files and (eventually) bring [Atlantis](https://www.runatlantis.io) online for applying Terraform changes.
 
 # GitOps
 
@@ -30,23 +30,26 @@ Work for this repository is house in this [Trello board](https://trello.com/b/HO
 
 ```bash
 ├── argocd/                                      # ArgoCD application definitions
-│   ├── apps/                                    # Individual application manifests
-│   │   ├── argocd/                              # ArgoCD self-management
-│   │   ├── cert-manager/                        # Certificate management
-│   │   ├── kube-system/                         # Core system components
-│   │   ├── longhorn-system/                     # Storage management
-│   │   └── monitoring/                          # Monitoring stack
-│   ├── namespaces/                              # Namespace management
-│   └── root/                                    # Root application
+│   ├── apps/                                    # Application-level deployments
+│   │   ├── argocd/                              #
+│   │   ├── cert-manager/                        #
+│   │   ├── kube-system/                         #
+│   │   ├── logging/                             #
+│   │   ├── longhorn-system/                     #
+│   │   └── monitoring/                          #
+│   ├── namespaces/                              # Namespace-level deployments
+│   └── root/                                    # Root ArgoCD application deployment
 ├── helm/                                        # Helm charts
-│   ├── argocd/                                  # ArgoCD Helm chart
-│   ├── cert-manager/                            # Cert-manager ClusterIssuers
-│   ├── longhorn/                                # Longhorn storage
-│   ├── prometheus/                              # Prometheus monitoring
-│   └── servicemonitors/                         # Service monitors
-└── terraform/
-    ├── namespaces.tf                            # Namespace definitions
-    └── provider.tf                              # Terraform provider configuration
+│   ├── argocd/                                  #
+│   ├── cert-manager/                            #
+│   ├── grafana/                                 #
+│   ├── longhorn/                                #
+│   ├── prometheus/                              #
+│   ├── prometheus-operator/                     #
+│   └── prometheus-service-monitors/             #
+└── terraform/                                   # Terraform configurations (WIP)
+    ├── namespaces.tf                            #
+    └── provider.tf                              #
 ```
 
 ## 🛠️ Built With
@@ -82,5 +85,5 @@ Here's the hardware list of what each of the control/worker nodes is using:
 
 - [Edede Oiwoh](https://github.com/ededejr) for inspiring me to build a home cluster and for bouncing ideas around
 - [rpi4cluster.com](https://rpi4cluster.com/) for tips on GitOps with Raspberry Pi setups (even if the notes weren't current and Helm/Argo configurations weren't file-based)
-- [Tesla](https://www.tesla.com/) for teaching me proper GitOps processes and giving me a chance to move mountains with them
+- [Twitter](https://x.com) (now X), [Loom](https://www.loom.com/), and [Tesla](https://www.tesla.com/) for teaching me proper GitOps processes and giving me a chance to move mountains with them
 - [gitops-patterns repository](https://github.com/cloudogu/gitops-patterns) for what will likely be ongoing sources of truth for modern architecture patterns
