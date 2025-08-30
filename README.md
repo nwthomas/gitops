@@ -10,10 +10,12 @@ You can use these files to stand up your own on-prem Kubernetes cluster. While t
 
 ## 🎖️ Features
 
-- App-of-apps: A root Argo CD Application which manages child apps
-- Namespaces: `argocd`, `cert-manager`, `kube-system`, `longhorn-system`, and `monitoring`
-- Cert-manager: Jetstack Helm with CRDs + ClusterIssuers (staging/production) for Traefik HTTP-01
-- Monitoring: Prometheus Operator with Grafana, using custom NVMe storage through Longhorn
+- App-of-apps: A root Argo CD Application deployment schema which recursively manages child apps
+- Namespace deployments: `argocd`, `cert-manager`, `kube-system`, `logging`, `longhorn-system`, and `monitoring`
+- Cert-manager: X.509 certificate management for Kubernetes
+- Longhorn: Distributed on-prem file storage
+- Metal LB: An on-prem native software load balancer
+- Monitoring: Prometheus Operator with Grafana using storage PVC through Longhorn
 - Dashboard UI for:
     - Argo CD: For controlling deployments and rollbacks
     - Grafana: For building dashboards against Prometheus data
@@ -48,6 +50,18 @@ Work for this repository is house in this [Trello board](https://trello.com/b/HO
 ```
 
 ## 🛠️ Built With
+
+### Hardware
+
+The cluster this repo's files runs on uses Raspberry Pi 5 devices, specifically the 16gb version.
+
+Here's the hardware list of what each of the control/worker nodes is using:
+1. [Raspberry Pi 5](https://www.amazon.com/dp/B0DSPYPKRG)
+2. [NVMe + POE+ Pi 5 Hat and Active Cooler](https://www.amazon.com/dp/B0D8JC3MXQ)
+3. [Samsung 2TB NVMe SSD](https://www.amazon.com/dp/B0DHLCRF91)
+4. [256gb Micro SD Card](https://www.amazon.com/dp/B08TJZDJ4D)
+
+### Software
 
 - [Argo CD](https://argo-cd.readthedocs.io/en/stable/)
 - [Cert Manager](https://cert-manager.io/)
