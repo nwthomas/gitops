@@ -1,3 +1,5 @@
+> NOTE: This is a rough record of my journey to set up my Kubernetes cluster. I'm going to migrate this to an article or better documentation when I get the chance.
+
 # Cluster Setup
 
 The following is a loose record of exactly how I managed to set up my own home Kubernetes cluster. It is useful for others following this path or for myself in 6 months when I can't remember all of this.
@@ -823,7 +825,7 @@ Good news! The hardest parts are behind us. Or rather, I should say that the har
 
 However, you can now utilize ArgoCD to do all the hard parts for you. Merely go to your ArgoCD dashboard, sync the monitoring namespace app, and then sync all the sub-apps. Boom. Now you have monitoring in your cluster.
 
-## Accessing Prometheus and Grafana
+## Accessing Prometheus and Grafana Dashboards
 
 Until I get sealed secrets validated in how it works with _non-environment variable secrets_ (e.g. for port numbers and such in Argo/Helm), I'm manually applying LoadBalancer configurations for Prometheus and Grafana to access them.
 
@@ -877,3 +879,8 @@ As it turns out, we're not quite done with our monitoring configuration. K3s doe
 
 To fix this, we need to add Grafana Loki and Alloy.
 
+## Finishing Up
+
+The last thing that you should do is hop into the ArgoCD dashboard (via whatever IP you set it to for external) and deploy all the root/namespaces/apps there.
+
+You'll also end up redeploying ArgoCD there, so it's now fully in control of its own deployment as well.
