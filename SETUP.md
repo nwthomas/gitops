@@ -176,7 +176,7 @@ scp <your ssh username>@<your control node pi name>.local:~/.ssh/anbsible_id_ed2
 scp <your ssh username>@<your control node pi name>.local:~/.ssh/anbsible_id_ed25519 ~/ansible_id_ed25519
 
 # Copy from your computer to Pis
-ssh-copy-id -i ~/ansible_id_ed25519.pub -f nathanthomas@node2
+ssh-copy-id -i ~/ansible_id_ed25519.pub -f <your username>@node2
 ```
 
 Next, we're going to use a tool called Ansible to set up remote control over all our nodes. It will effectively allow us to issue install commands or customize all our nodes at once via single commands.
@@ -263,7 +263,7 @@ ansible cube -m apt -a "name=iptables state=present" --become
 # Reboot
 ansible workers -b -m shell -a "reboot"
 
-# Manually install on each node
+# Alternately, manually install on each node
 apt -y install iptables
 ```
 
@@ -504,10 +504,10 @@ Then, run these commands (but triple check you set the right drives above before
 
 ```bash
 # Wipe
-ansible workers -b -m shell -a "wipefs -a /dev/{{ var_disk }}"
+ansible new -b -m shell -a "wipefs -a /dev/{{ var_disk }}"
 
 # Format to ext4
-ansible workers -b -m filesystem -a "fstype=ext4 dev=/dev/{{ var_disk }}"
+ansible new -b -m filesystem -a "fstype=ext4 dev=/dev/{{ var_disk }}"
 ```
 
 Afterwards, get all drives and their available sizes with this command:

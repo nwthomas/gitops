@@ -158,9 +158,9 @@ persistence:
   # -- mkfs parameters of the default Longhorn StorageClass.
   defaultMkfsParams: ""
   # -- Replica count of the default Longhorn StorageClass.
-  defaultClassReplicaCount: 3
+  defaultClassReplicaCount: 4
   # -- Data locality of the default Longhorn StorageClass. (Options: "disabled", "best-effort")
-  defaultDataLocality: disabled
+  defaultDataLocality: best-effort
   # -- Reclaim policy that provides instructions for handling of a volume after its claim is released. (Options: "Retain", "Delete")
   reclaimPolicy: Delete
   # -- VolumeBindingMode controls when volume binding and dynamic provisioning should occur. (Options: "Immediate", "WaitForFirstConsumer") (Defaults to "Immediate")
@@ -232,9 +232,9 @@ defaultSettings:
   # -- Default data locality. A Longhorn volume has data locality if a local replica of the volume exists on the same node as the pod that is using the volume.
   defaultDataLocality: ~
   # -- Setting that allows scheduling on nodes with healthy replicas of the same volume. This setting is disabled by default.
-  replicaSoftAntiAffinity: ~
+  replicaSoftAntiAffinity: enabled
   # -- Setting that automatically rebalances replicas when an available node is discovered.
-  replicaAutoBalance: ~
+  replicaAutoBalance: best-effort
   # -- Percentage of storage that can be allocated relative to hard drive capacity. The default value is "100".
   storageOverProvisioningPercentage: ~
   # -- Percentage of minimum available disk capacity. When the minimum available capacity exceeds the total available capacity, the disk becomes unschedulable until more space is made available for use. The default value is "25".
@@ -246,7 +246,7 @@ defaultSettings:
   # -- The Upgrade Responder sends a notification whenever a new Longhorn version that you can upgrade to becomes available. The default value is https://longhorn-upgrade-responder.rancher.io/v1/checkupgrade.
   upgradeResponderURL: ~
   # -- Default number of replicas for volumes created using the Longhorn UI. For Kubernetes configuration, modify the `numberOfReplicas` field in the StorageClass. The default value is "3".
-  defaultReplicaCount: ~
+  defaultReplicaCount: 4
   # -- Default name of Longhorn static StorageClass. "storageClassName" is assigned to PVs and PVCs that are created for an existing Longhorn volume. "storageClassName" can also be used as a label, so it is possible to use a Longhorn StorageClass to bind a workload to an existing PV without creating a Kubernetes StorageClass object. "storageClassName" needs to be an existing StorageClass. The default value is "longhorn-static".
   defaultLonghornStaticStorageClass: ~
   # -- Number of minutes that Longhorn keeps a failed backup resource. When the value is "0", automatic deletion is disabled.
@@ -279,9 +279,9 @@ defaultSettings:
   # -- Setting that prevents Longhorn Manager from scheduling replicas on a cordoned Kubernetes node. This setting is enabled by default.
   disableSchedulingOnCordonedNode: ~
   # -- Setting that allows Longhorn to schedule new replicas of a volume to nodes in the same zone as existing healthy replicas. Nodes that do not belong to any zone are treated as existing in the zone that contains healthy replicas. When identifying zones, Longhorn relies on the label "topology.kubernetes.io/zone=<Zone name of the node>" in the Kubernetes node object.
-  replicaZoneSoftAntiAffinity: ~
+  replicaZoneSoftAntiAffinity: enabled
   # -- Setting that allows scheduling on disks with existing healthy replicas of the same volume. This setting is enabled by default.
-  replicaDiskSoftAntiAffinity: ~
+  replicaDiskSoftAntiAffinity: enabled
   # -- Policy that defines the action Longhorn takes when a volume is stuck with a StatefulSet or Deployment pod on a node that failed.
   nodeDownPodDeletionPolicy: ~
   # -- Policy that defines the action Longhorn takes when a node with the last healthy replica of a volume is drained.
