@@ -24,7 +24,7 @@ You can use these files to stand up your own on-prem Kubernetes cluster. While t
 
 ## 🧱 Project Management
 
-Work for this repository is house in this [Trello board](https://trello.com/b/HOJMq7WP/gitops).
+Work for this repository is housed in this [Trello board](https://trello.com/b/HOJMq7WP/gitops).
 
 ## 📁 Project Structure
 
