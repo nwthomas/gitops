@@ -18,10 +18,12 @@ spec:
             local:
               chunks_directory: /var/loki/chunks
               rules_directory: /var/loki/rules
+            tsdb:
+              retention: 7d
         persistence:
           enabled: true
           storageClassName: longhorn
-          size: 50Gi
+          size: 100Gi
   destination:
     server: https://kubernetes.default.svc
     namespace: logging
