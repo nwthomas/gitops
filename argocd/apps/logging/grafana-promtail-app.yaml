@@ -14,6 +14,14 @@ spec:
         daemonset:
           tolerations:
             - operator: Exists
+        config:
+          clients:
+            - url: http://loki-gateway/loki/api/v1/push
+              timeout: 30s
+              backoff_config:
+                min_period: 500ms
+                max_period: 5m
+                max_retries: 10
   destination:
     server: https://kubernetes.default.svc
     namespace: logging
