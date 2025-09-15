@@ -1,15 +1,6 @@
 resource "kubernetes_namespace" "applications_eng" {
   metadata {
-    name = "applications-eng"
-    labels = {
-      "app.kubernetes.io/managed-by" = "terraform"
-    }
-  }
-}
-
-resource "kubernetes_namespace" "applications_prd" {
-  metadata {
-    name = "applications-prd"
+    name = "applications"
     labels = {
       "app.kubernetes.io/managed-by" = "terraform"
     }

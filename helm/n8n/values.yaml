@@ -33,13 +33,13 @@ hostAliases: []
 # Ingress
 #
 ingress:
-  enabled: false
+  enabled: true
   annotations: {}
   # define a custom ingress class Name, like "traefik" or "nginx"
   className: ""
   hosts:
-    - host: workflow.example.com
-      paths: []
+    - host: n8n.yourdomain.com  # Replace with your domain
+      paths: ["/"]
   tls: []
     # - hosts:
     #    - workflow.example.com
@@ -49,7 +49,9 @@ ingress:
 # The config: {} dictionary is converted to environmental variables in the ConfigMap.
 main:
   # See https://docs.n8n.io/hosting/configuration/environment-variables/ for all values.
-  config: {}
+  config:
+    n8n:
+      secure_cookie: false
   #    n8n:
   #     license:
   #       activation:
