@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "applications_eng" {
+resource "kubernetes_namespace" "applications" {
   metadata {
     name = "applications"
     labels = {
