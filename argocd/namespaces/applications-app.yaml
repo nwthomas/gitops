@@ -1,19 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: application-eng-app
+  name: applications-app
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/nwthomas/gitops.git
     targetRevision: main
-    path: argocd/apps/application-eng
+    path: argocd/apps/applications
     directory:
       recurse: true
   destination:
     server: https://kubernetes.default.svc
-    namespace: application-eng
+    namespace: applications
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
