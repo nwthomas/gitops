@@ -85,9 +85,9 @@ main:
   #
   persistence:
     # If true, use a Persistent Volume Claim, If false, use emptyDir
-    enabled: false
+    enabled: true
     # what type volume, possible options are [existing, emptyDir, dynamic] dynamic for Dynamic Volume Provisioning, existing for using an existing Claim
-    type: emptyDir
+    type: dynamic
     # Persistent Volume Storage Class
     # If defined, storageClassName: <storageClass>
     # If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -95,7 +95,7 @@ main:
     #   set, choosing the default provisioner.  (gp2 on AWS, standard on
     #   GKE, AWS & OpenStack)
     #
-    # storageClass: "-"
+    storageClass: "longhorn"
     # PVC annotations
     #
     # If you need this annotation include it under `values.yml` file and pvc.yml template will add it.
