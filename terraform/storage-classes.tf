@@ -2,7 +2,9 @@ resource "kubernetes_storage_class" "longhorn_default" {
   metadata {
     name = "longhorn"
     labels = {
-      "app.kubernetes.io/managed-by" = "terraform"
+      "app.kubernetes.io/managed-by" = var.managed_by
+      "environment"                  = var.environment
+      "cluster"                      = var.cluster_name
     }
   }
   storage_provisioner    = "driver.longhorn.io"
@@ -11,10 +13,10 @@ resource "kubernetes_storage_class" "longhorn_default" {
   allow_volume_expansion = true
   
   parameters = {
-    "numberOfReplicas"    = "3"
-    "staleReplicaTimeout" = "2880"
+    "numberOfReplicas"    = tostring(var.longhorn_replicas)
+    "staleReplicaTimeout" = tostring(var.longhorn_stale_replica_timeout)
     "fromBackup"          = ""
-    "fsType"              = "ext4"
+    "fsType"              = var.longhorn_fs_type
     "dataLocality"        = "disabled"
   }
 }
@@ -23,7 +25,9 @@ resource "kubernetes_storage_class" "longhorn_high_availability" {
   metadata {
     name = "longhorn-ha"
     labels = {
-      "app.kubernetes.io/managed-by" = "terraform"
+      "app.kubernetes.io/managed-by" = var.managed_by
+      "environment"                  = var.environment
+      "cluster"                      = var.cluster_name
     }
   }
   storage_provisioner    = "driver.longhorn.io"
@@ -32,10 +36,10 @@ resource "kubernetes_storage_class" "longhorn_high_availability" {
   allow_volume_expansion = true
   
   parameters = {
-    "numberOfReplicas"    = "6"
-    "staleReplicaTimeout" = "2880"
+    "numberOfReplicas"    = tostring(var.longhorn_ha_replicas)
+    "staleReplicaTimeout" = tostring(var.longhorn_stale_replica_timeout)
     "fromBackup"          = ""
-    "fsType"              = "ext4"
+    "fsType"              = var.longhorn_fs_type
     "dataLocality"        = "best-effort"
   }
 }
@@ -44,7 +48,9 @@ resource "kubernetes_storage_class" "longhorn_fast" {
   metadata {
     name = "longhorn-fast"
     labels = {
-      "app.kubernetes.io/managed-by" = "terraform"
+      "app.kubernetes.io/managed-by" = var.managed_by
+      "environment"                  = var.environment
+      "cluster"                      = var.cluster_name
     }
   }
   storage_provisioner    = "driver.longhorn.io"
@@ -53,10 +59,10 @@ resource "kubernetes_storage_class" "longhorn_fast" {
   allow_volume_expansion = true
   
   parameters = {
-    "numberOfReplicas"    = "2"
-    "staleReplicaTimeout" = "2880"
+    "numberOfReplicas"    = tostring(var.longhorn_fast_replicas)
+    "staleReplicaTimeout" = tostring(var.longhorn_stale_replica_timeout)
     "fromBackup"          = ""
-    "fsType"              = "ext4"
+    "fsType"              = var.longhorn_fs_type
     "dataLocality"        = "strict-local"
   }
 }
@@ -65,7 +71,9 @@ resource "kubernetes_storage_class" "longhorn_retain" {
   metadata {
     name = "longhorn-retain"
     labels = {
-      "app.kubernetes.io/managed-by" = "terraform"
+      "app.kubernetes.io/managed-by" = var.managed_by
+      "environment"                  = var.environment
+      "cluster"                      = var.cluster_name
     }
   }
   storage_provisioner    = "driver.longhorn.io"
@@ -74,10 +82,10 @@ resource "kubernetes_storage_class" "longhorn_retain" {
   allow_volume_expansion = true
   
   parameters = {
-    "numberOfReplicas"    = "3"
-    "staleReplicaTimeout" = "2880"
+    "numberOfReplicas"    = tostring(var.longhorn_replicas)
+    "staleReplicaTimeout" = tostring(var.longhorn_stale_replica_timeout)
     "fromBackup"          = ""
-    "fsType"              = "ext4"
+    "fsType"              = var.longhorn_fs_type
     "dataLocality"        = "disabled"
   }
 }

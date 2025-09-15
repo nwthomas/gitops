@@ -879,6 +879,12 @@ As it turns out, we're not quite done with our monitoring configuration. K3s doe
 
 To fix this, we need to add Grafana Loki and Alloy.
 
+TODO: Describe setting up Loki and Alloy.
+
+## Adding n8n
+
+TODO: Describe deploying n8n
+
 ## Finishing Up
 
 The last thing that you should do is hop into the ArgoCD dashboard (via whatever IP you set it to for external) and deploy all the root/namespaces/apps there.
