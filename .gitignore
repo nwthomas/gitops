@@ -38,3 +38,4 @@ terraform.rc
 
 ## Miscellaneous
 .DS_Store
+charts/
