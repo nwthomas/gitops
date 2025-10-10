@@ -1,6 +1,7 @@
 # Default values for prometheus
 replicas: 1
 retention: "7d"
+retentionSize: "60GB"
 
 resources:
   requests:

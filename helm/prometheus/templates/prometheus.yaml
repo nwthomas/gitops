@@ -11,6 +11,7 @@ metadata:
 spec:
   replicas: {{ .Values.replicas | default 1 }}
   retention: {{ .Values.retention | default "7d" }}
+  retentionSize: {{ .Values.retentionSize | default "60GB" }}
   resources:
     requests:
       memory: {{ .Values.resources.requests.memory | default "400Mi" }}
