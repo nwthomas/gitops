@@ -273,6 +273,12 @@ Finally, logout of the control node and get ready for the next section:
 logout
 ```
 
+By the way, you can get CPUs temperature, RP1 I/O controller temperature, SSD temperature, and fan speed:
+
+```bash
+ansible all -m shell -a "sudo apt update -y && sudo apt install -y lm-sensors && yes | sudo sensors-detect && echo CPU: \$((\$(cat /sys/class/thermal/thermal_zone0/temp)/1000))°C && sensors 2>/dev/null || true"
+```
+
 ## Setting Up Kubernetes / K3s
 
 At any time during this guide, you can run the following commands to start/stop k3s:
