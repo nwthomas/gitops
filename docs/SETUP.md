@@ -71,11 +71,10 @@ Then, add a static IP to the `dchpcd.conf` file:
 sudo nano /etc/dhcpcd.conf
 
 # Add something like this to the bottom. It will be different for you depending on your router IP ranges.
-interface wlan0
+interface eth0
 static ip_address=192.168.0.18/24
 static routers=192.168.0.1
 static domain_name_servers=1.1.1.1 8.8.8.8
-nohook wpa_supplicant
 ```
 
 Flush your DHCP leases and restart your Pi afterwards:
@@ -103,6 +102,11 @@ sudo nmcli con up "Wired connection 1"
 # Turn off Wifi
 sudo nmcli radio wifi off
 sudo systemctl disable wpa_supplicant
+
+# As an aside, you can turn wifi on at any time you want with this
+sudo nmcli radio wifi on
+sudo systemctl enable wpa_supplicant
+sudo systemctl start wpa_supplicant
 ```
 
 The above + setting static IP at your router level should be sufficient.
