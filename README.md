@@ -8,7 +8,7 @@ This repository contains ArgoCD, Helm, and Terraform files for declarative deplo
 
 You can use these files to stand up your own on-prem Kubernetes cluster. While this repository was built to be run on Raspberry Pi devices, it should be equally valid anywhere Kubernetes can run.
 
-If you want to implement this for yourself, please follow the [setup document](./SETUP.md) (which is actively being updated).
+If you want to implement this for yourself, please follow the [setup document](./docs/SETUP.md) (which is actively being updated).
 
 ## 🎖️ Features
 
