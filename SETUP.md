@@ -279,6 +279,16 @@ By the way, you can get CPUs temperature, RP1 I/O controller temperature, SSD te
 ansible all -m shell -a "sudo apt update -y && sudo apt install -y lm-sensors && yes | sudo sensors-detect && echo CPU: \$((\$(cat /sys/class/thermal/thermal_zone0/temp)/1000))°C && sensors 2>/dev/null || true"
 ```
 
+TODO: Add additional useful ansible commands (shoudl work out of the box if all other steps in this guide are followed) including:
+
+```bash
+# Get sensor temp readings (CPU, NVMe, memory)
+ansible cube -m shell -a "sensors"
+
+# Get sensor temp readings (CPU, NVMe, memory) + Nvidia GPU temp readings
+ansible cube -m shell -a "sensors && nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader"
+```
+
 ## Setting Up Kubernetes / K3s
 
 At any time during this guide, you can run the following commands to start/stop k3s:
@@ -889,7 +899,28 @@ TODO: Describe setting up Loki and Alloy.
 
 ## Adding n8n
 
-TODO: Describe deploying n8n
+This repository already has a full configuration for n8n. Once you have ArgoCD functional, you should be able to just go to the n8n application and deploy it. The only caveat is that you'll need to manually set a LoadBalancer deployment type in order to view it in the browser. You can `kubectl apply` a file with this in it:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: n8n-app-loadbalancer
+  namespace: applications
+spec:
+  selector:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/instance: n8n-app
+  type: LoadBalancer
+  loadBalancerIP: <your-ip-address-here>
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+```
+
+TODO: Update with information on sealed secret for IP load balancer address once that's functional.
 
 ## Finishing Up
 
