@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "nvidia-device-plugin.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nvidia-device-plugin.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "nvidia-device-plugin.selectorLabels" . | nindent 6 }}
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        {{- include "nvidia-device-plugin.selectorLabels" . | nindent 8 }}
+    spec:
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      priorityClassName: "system-node-critical"
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: nvidia-device-plugin-ctr
+        args: ["--fail-on-init-error=false"]
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        volumeMounts:
+          {{- toYaml .Values.volumeMounts | nindent 10 }}
+        env:
+        - name: PASS_DEVICE_SPECS
+          value: "true"
+        - name: FAIL_ON_INIT_ERROR
+          value: "false"
+        - name: DEVICE_LIST_STRATEGY
+          value: envvar
+        - name: DEVICE_ID_STRATEGY
+          value: uuid
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: all
+        - name: NVIDIA_DRIVER_CAPABILITIES
+          value: "compute,utility"
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
+      hostNetwork: true

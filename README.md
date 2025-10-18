@@ -50,9 +50,11 @@ Work for this repository is housed in this [Trello board](https://trello.com/b/H
 │   ├── grafana/                                 #
 │   ├── longhorn/                                #
 │   ├── n8n/                                     #
+│   ├── nvidia-device-plugin/                    #
 │   ├── prometheus/                              #
 │   ├── prometheus-operator/                     #
-│   └── prometheus-service-monitors/             #
+│   ├── prometheus-service-monitors/             #
+│   └── vLLM/                                    #
 └── terraform/                                   # Terraform configurations
     ├── namespaces.tf                            # Kubernetes namespace definitions
     ├── provider.tf                              # Terraform provider configuration
@@ -87,11 +89,13 @@ Here's the hardware list of what each of the control/worker nodes is using:
 - [Longhorn](https://longhorn.io/)
 - [Metal LB](https://metallb.io/)
 - [n8n](https://n8n.io/)
+- [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)
 - [OpenFaaS](https://www.openfaas.com/) (coming soon)
 - [Prometheus](https://prometheus.io/) (including Prometheus Operator)
 - [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets)
 - [Terraform](https://developer.hashicorp.com/terraform)
 - [Traefik](https://traefik.io/traefik)
+- [vLLM](https://docs.vllm.ai/en/latest/index.html)
 
 ## 🙇🏻‍♂️ Acknowledgements
 

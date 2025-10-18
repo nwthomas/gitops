@@ -1,0 +1,42 @@
+image:
+  repository: nvcr.io/nvidia/k8s-device-plugin
+  tag: v0.17.1
+  pullPolicy: IfNotPresent
+
+nodeSelector:
+  # Target GPU nodes specifically
+  kubernetes.io/arch: amd64
+
+tolerations:
+  # Allow scheduling on GPU nodes with the gpu taint
+  - key: gpu
+    operator: Equal
+    value: "true"
+    effect: NoSchedule
+
+resources:
+  limits:
+    memory: 128Mi
+    cpu: 100m
+  requests:
+    memory: 64Mi
+    cpu: 50m
+
+# Security context for the device plugin
+securityContext:
+  privileged: true
+
+# Mount the NVIDIA libraries and device files
+volumeMounts:
+  - name: device-plugin
+    mountPath: /var/lib/kubelet/device-plugins
+  - name: dev
+    mountPath: /dev
+
+volumes:
+  - name: device-plugin
+    hostPath:
+      path: /var/lib/kubelet/device-plugins
+  - name: dev
+    hostPath:
+      path: /dev

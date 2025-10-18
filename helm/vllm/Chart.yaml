@@ -1,0 +1,6 @@
+apiVersion: v2
+name: vllm
+description: vLLM inference server for large language models
+type: application
+version: 0.1.0
+appVersion: "latest"

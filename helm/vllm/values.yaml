@@ -1,0 +1,82 @@
+image:
+  repository: vllm/vllm-openai
+  tag: latest
+  pullPolicy: Always
+
+replicaCount: 1
+
+# GPU configuration
+gpu:
+  # Number of GPUs to request
+  count: 1
+  # Memory limit for the container (important for GPU workloads)
+  memoryLimit: "100Gi"
+  # CPU resources
+  cpuLimit: "8"
+  cpuRequest: "4"
+
+# Model configuration
+model:
+  # Hugging Face model name - can be overridden
+  name: "openai/gpt-oss-20b"
+  # Model download directory
+  downloadDir: "/models"
+  # Tensor parallel size (should match GPU count)
+  tensorParallelSize: 1
+
+# Service configuration
+service:
+  type: LoadBalancer
+  port: 8000
+  targetPort: 8000
+  # Set a specific IP from your MetalLB range
+  loadBalancerIP: ""
+
+# Resource requests and limits
+resources:
+  limits:
+    nvidia.com/gpu: 1
+    memory: "24Gi"
+    cpu: "4"
+  requests:
+    nvidia.com/gpu: 1
+    memory: "8Gi"
+    cpu: "2"
+
+# Node affinity and tolerations for GPU nodes
+nodeSelector: {}
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - red5
+
+tolerations:
+  - key: gpu
+    operator: Equal
+    value: "true"
+    effect: NoSchedule
+
+# Persistent volume for model storage (optional)
+persistence:
+  enabled: true
+  storageClass: "longhorn"
+  size: "50Gi"
+  accessMode: ReadWriteOnce
+
+# Environment variables
+env:
+  - name: NVIDIA_VISIBLE_DEVICES
+    value: "all"
+  - name: NVIDIA_DRIVER_CAPABILITIES
+    value: "compute,utility"
+
+# Security context
+securityContext:
+  runAsNonRoot: false
+  runAsUser: 0
