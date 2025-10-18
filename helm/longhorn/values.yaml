@@ -3,21 +3,33 @@ longhorn:
   defaultSettings:
     defaultDataPath: /storage01
   
-  # Tolerations for control plane nodes
+  # Tolerations for control plane nodes and GPU nodes
   longhornManager:
     tolerations:
       - key: "node-role.kubernetes.io/control-plane"
         operator: "Exists"
         effect: "NoSchedule"
-  
+      - key: "gpu"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+
   longhornDriver:
     tolerations:
       - key: "node-role.kubernetes.io/control-plane"
         operator: "Exists"
         effect: "NoSchedule"
-  
+      - key: "gpu"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+
   longhornUI:
     tolerations:
       - key: "node-role.kubernetes.io/control-plane"
         operator: "Exists"
+        effect: "NoSchedule"
+      - key: "gpu"
+        operator: "Equal"
+        value: "true"
         effect: "NoSchedule"
