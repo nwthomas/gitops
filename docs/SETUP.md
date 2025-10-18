@@ -283,6 +283,12 @@ By the way, you can get CPUs temperature, RP1 I/O controller temperature, SSD te
 ansible all -m shell -a "sudo apt update -y && sudo apt install -y lm-sensors && yes | sudo sensors-detect && echo CPU: \$((\$(cat /sys/class/thermal/thermal_zone0/temp)/1000))°C && sensors 2>/dev/null || true"
 ```
 
+If you're just interested in core temps, use this command after installing `lm-sensors` on every node:
+
+```bash
+ansible cube -m shell -a "sensors"
+```
+
 TODO: Add additional useful ansible commands (shoudl work out of the box if all other steps in this guide are followed) including:
 
 ```bash
@@ -415,6 +421,17 @@ From this point forward, you can get all your pods and states by using this:
 
 ```bash
 kubectl get pods --all-namespaces -o wide
+```
+
+If you ever want to upgrade the version on each of the nodes, you can just run these commands:
+
+```bash
+# Upgrading control node
+sudo k3s-uninstall.sh
+curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=<version-such-as-v1.33.5+k3s1> sh -
+
+# Upgrading agents (workers) nodes
+curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=<version-such-as-v1.33.5+k3s1> K3S_URL=https://<server>:6443 K3S_TOKEN=<token> sh -
 ```
 
 ## Setting Up Helm
