@@ -36,11 +36,11 @@ service:
 resources:
   limits:
     nvidia.com/gpu: 1
-    memory: "24Gi"
+    memory: "32Gi"
     cpu: "4"
   requests:
     nvidia.com/gpu: 1
-    memory: "8Gi"
+    memory: "32Gi"
     cpu: "2"
 
 # Node affinity and tolerations for GPU nodes
@@ -66,7 +66,7 @@ tolerations:
 persistence:
   enabled: true
   storageClass: "longhorn"
-  size: "50Gi"
+  size: "200Gi"
   accessMode: ReadWriteOnce
 
 # Environment variables
