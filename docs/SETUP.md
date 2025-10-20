@@ -503,9 +503,9 @@ Next, we're going to boostrap Longhorn for our file storage. This will enable us
 Run these on the control node:
 
 ```bash
-ansible cube -b -m apt -a "name=nfs-common state=present"
-ansible cube -b -m apt -a "name=open-iscsi state=present"
-ansible cube -b -m apt -a "name=util-linux state=present"
+ansible cube -b -K -m apt -a "name=nfs-common state=present"
+ansible cube -b -K -m apt -a "name=open-iscsi state=present"
+ansible cube -b -K -m apt -a "name=util-linux state=present"
 ```
 
 We'll be using Ansible a ton for this setup which will make all the pain there worth it.
@@ -541,16 +541,16 @@ Then, run these commands (but triple check you set the right drives above before
 
 ```bash
 # Wipe
-ansible new -b -m shell -a "wipefs -a /dev/{{ var_disk }}"
+ansible cube -b -K -m shell -a "wipefs -a /dev/{{ var_disk }}"
 
 # Format to ext4
-ansible new -b -m filesystem -a "fstype=ext4 dev=/dev/{{ var_disk }}"
+ansible cube -b -K -m filesystem -a "fstype=ext4 dev=/dev/{{ var_disk }}"
 ```
 
 Afterwards, get all drives and their available sizes with this command:
 
 ```bash
-ansible cube -b -m shell -a "lsblk -f"
+ansible cube -b  -K-m shell -a "lsblk -f"
 
 # Response
 node1 | CHANGED | rc=0 >>
@@ -582,7 +582,7 @@ workers
 Next, we'll go ahead and mount the storage disks via this command:
 
 ```bash
-ansible cube -m ansible.posix.mount -a "path=/storage01 src=UUID={{ var_uuid }} fstype=ext4 state=mounted" -b
+ansible cube -b -K -m ansible.posix.mount -a "path=/storage01 src=UUID={{ var_uuid }} fstype=ext4 state=mounted"
 ```
 
 We'll now install longhorn to be able to interact with these drives. Fortunately, we can just use Helm again for this. We'll make ArgoCD pages to deploy it later:
