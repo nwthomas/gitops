@@ -948,3 +948,81 @@ TODO: Update with information on sealed secret for IP load balancer address once
 The last thing that you should do is hop into the ArgoCD dashboard (via whatever IP you set it to for external) and deploy all the root/namespaces/apps there.
 
 You'll also end up redeploying ArgoCD there, so it's now fully in control of its own deployment as well.
+
+## MISCELLANEOUS
+
+#### Setting Up Wake-on-LAN
+
+First, you need to set up the right settings in your device's OS (the nest steps commands are for Ubuntu).
+
+To do this, begin by running these commands locally on the node to set up the OS WOL:
+
+```bash
+# All steps pulled from https://pimylifeup.com/ubuntu-enable-wake-on-lan/
+
+# Get the network interface name
+nmcli connection show
+```
+
+That should output someting like this:
+
+```bash
+NAME                UUID                                  TYPE      DEVICE 
+Wired connection 1  fd179af5-6b4d-35aa-97c4-3e14bfe9ee81  ethernet  enp1s0 
+```
+
+Also, get the network adapter MAC address for later use:
+
+```bash
+nmcli device show "<NETWORK DEVICE NAME>" | grep "GENERAL.HWADDR"
+```
+
+These should give you the interface name and MAC address which we'll be using shortly. Also, you'll want the broadcast address for your subnet (e.g. take the IPs from your nodes and append `255` at the end, such as `192.168.1.255`).
+
+Next, let's check out existing WOL setting:
+
+```bash
+# CONNECTION NAME = something like "Wired connection 1" from earlier
+nmcli connection show "<CONNECTION NAME>" | grep 802-3-ethernet.wake-on-lan
+```
+
+That should output something like this:
+
+```bash
+802-3-ethernet.wake-on-lan:             default
+802-3-ethernet.wake-on-lan-password:    --
+```
+
+Let's update it to be enabled with this command:
+
+```bash
+nmcli connection modify "<CONNECTION NAME>" 802-3-ethernet.wake-on-lan magic
+```
+
+If you check the WOL setting again, it should say "magic" which means it's enabled.
+
+Next, go into your BIOS and disable the settings for ErP Ready and enable "Resume by PCI-e/Networking Devices". This is different for every motherboard, so I'll leave it up to you to google through enabling BIOS WOL for your motherboard. There's usually a wealth of resources out there.
+
+Once all of this is complete, you can add this alias to your terminal config on any machine on the same network that you want to use WOL from:
+
+```bash
+alias wol<node-name-here>="wakeonlan -i <broadcase-ip-address-for-subnet> <device-mac-address>"
+```
+
+If you're using MacOS, you can install the `wakeonlan` package (from the alias above) to run it:
+
+```bash
+brew install wakeonlan
+```
+
+We're done! If everything works right, we should just be able to run this in our terminal any time we want to start our node up (with the node name replaced here from your alias):
+
+```bash
+wol<node-name-here>
+```
+
+As an aside, you can also add an alias on the node in question to shut it down when you're ssh-ed into it:
+
+```bash
+alias shutdown="systemctl poweroff"
+```
