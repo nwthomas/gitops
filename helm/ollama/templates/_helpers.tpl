@@ -1,7 +1,18 @@
 {{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts
+*/}}
+{{- define "ollama.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Expand the name of the chart.
 */}}
-{{- define "vllm.name" -}}
+{{- define "ollama.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +21,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "vllm.fullname" -}}
+{{- define "ollama.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +37,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "vllm.chart" -}}
+{{- define "ollama.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "vllm.labels" -}}
-helm.sh/chart: {{ include "vllm.chart" . }}
-{{ include "vllm.selectorLabels" . }}
+{{- define "ollama.labels" -}}
+helm.sh/chart: {{ include "ollama.chart" . }}
+{{ include "ollama.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,7 +56,25 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "vllm.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "vllm.name" . }}
+{{- define "ollama.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "ollama.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "ollama.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "ollama.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+Models mount path
+*/}}
+{{- define "ollama.modelsMountPath" -}}
+{{- printf "%s/models" (((.Values).ollama).mountPath | default "/root/.ollama") }}
+{{- end -}}

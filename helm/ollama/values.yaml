@@ -1,0 +1,290 @@
+# Custom values for ollama-helm with GPU support
+# Based on official otwld/ollama-helm chart with custom configurations
+
+# -- Number of replicas
+replicaCount: 1
+
+# Knative configuration
+knative:
+  # -- Enable Knative integration
+  enabled: false
+  # -- Knative service container concurrency
+  containerConcurrency: 0
+  # -- Knative service timeout seconds
+  timeoutSeconds: 300
+  # -- Knative service response start timeout seconds
+  responseStartTimeoutSeconds: 300
+  # -- Knative service idle timeout seconds
+  idleTimeoutSeconds: 300
+  # -- Knative service annotations
+  annotations: {}
+
+# Docker image
+image:
+  # -- Docker image registry
+  repository: ollama/ollama
+  # -- Docker image tag
+  tag: latest
+  # -- Docker pull policy
+  pullPolicy: Always
+
+# Ollama parameters
+ollama:
+  # Port Ollama is listening on
+  port: 11434
+
+  gpu:
+    # -- Enable GPU integration
+    enabled: true
+
+    # -- GPU type: 'nvidia' or 'amd'
+    type: 'nvidia'
+
+    # -- Specify the number of GPU
+    number: 1
+
+    # -- only for nvidia cards
+    nvidiaResource: "nvidia.com/gpu"
+
+  # -- List of models to pull at container startup
+  models:
+    pull:
+      - gpt-oss:20b
+      # Alternative unquantized models (if available):
+      # - llama2:70b  # Unquantized Llama 2 70B
+      # - codellama:34b  # Unquantized Code Llama 34B
+
+  # -- Add insecure flag for pulling at container startup
+  insecure: false
+
+  # -- Override ollama-data volume mount path, default: "/root/.ollama"
+  mountPath: ""
+
+# Service account
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use
+  name: ""
+
+# -- Map of annotations to add to the pods
+podAnnotations: {}
+
+# -- Map of labels to add to the pods
+podLabels: {}
+
+# -- Pod Security Context
+podSecurityContext: {}
+
+# -- Priority Class Name
+priorityClassName: ""
+
+# -- Container Security Context
+securityContext:
+  runAsNonRoot: false
+  runAsUser: 0
+
+# -- Specify runtime class for NVIDIA GPU support
+runtimeClassName: nvidia
+
+# Configure Service
+service:
+  # -- Service type
+  type: LoadBalancer
+  # -- Service port
+  port: 11434
+  # -- Service node port when service type is 'NodePort'
+  nodePort: 31434
+  # -- Load Balancer IP address (set your MetalLB IP here if needed)
+  loadBalancerIP: ""
+  # -- Annotations to add to the service
+  annotations: {}
+  # -- Labels to add to the service
+  labels: {}
+
+# Configure Deployment
+deployment:
+  # -- Labels to add to the deployment
+  labels: {}
+
+# Configure the ingress resource that allows you to access the
+ingress:
+  # -- Enable ingress controller resource
+  enabled: false
+  # -- IngressClass that will be used to implement the Ingress
+  className: ""
+  # -- Additional annotations for the Ingress resource
+  annotations: {}
+  # The list of hostnames to be covered with this ingress record
+  hosts:
+    - host: ollama.local
+      paths:
+        - path: /
+          pathType: Prefix
+  # -- The tls configuration for hostnames
+  tls: []
+
+# Configure resource requests and limits
+resources:
+  # -- Pod requests
+  requests:
+    nvidia.com/gpu: 1
+    memory: "80Gi"  # Increased for unquantized models
+    cpu: "4"
+  # -- Pod limits
+  limits:
+    nvidia.com/gpu: 1
+    memory: "80Gi"  # Increased for unquantized models
+    cpu: "8"
+
+# Configure extra options for liveness probe
+livenessProbe:
+  # -- Enable livenessProbe
+  enabled: true
+  # -- Request path for livenessProbe
+  path: /
+  # -- Initial delay seconds for livenessProbe (increased for model download)
+  initialDelaySeconds: 300  # 5 minutes to allow model download
+  # -- Period seconds for livenessProbe
+  periodSeconds: 30
+  # -- Timeout seconds for livenessProbe
+  timeoutSeconds: 10
+  # -- Failure threshold for livenessProbe (increased for model download)
+  failureThreshold: 10  # More failures allowed during startup
+  # -- Success threshold for livenessProbe
+  successThreshold: 1
+
+# Configure extra options for readiness probe
+readinessProbe:
+  # -- Enable readinessProbe
+  enabled: true
+  # -- Request path for readinessProbe
+  path: /
+  # -- Initial delay seconds for readinessProbe (increased for model download)
+  initialDelaySeconds: 180  # 3 minutes to allow model download
+  # -- Period seconds for readinessProbe
+  periodSeconds: 10
+  # -- Timeout seconds for readinessProbe
+  timeoutSeconds: 5
+  # -- Failure threshold for readinessProbe (increased for model download)
+  failureThreshold: 10  # More failures allowed during startup
+  # -- Success threshold for readinessProbe
+  successThreshold: 1
+
+# Configure autoscaling
+autoscaling:
+  # -- Enable autoscaling
+  enabled: false
+  # -- Number of minimum replicas
+  minReplicas: 1
+  # -- Number of maximum replicas
+  maxReplicas: 100
+  # -- CPU usage to target replica
+  targetCPUUtilizationPercentage: 80
+
+# -- Additional volumes on the output Deployment definition
+volumes:
+  - name: nvidia-libs
+    hostPath:
+      path: /usr/lib/x86_64-linux-gnu
+  - name: nvidia-driver
+    hostPath:
+      path: /usr/local/nvidia
+
+# -- Additional volumeMounts on the output Deployment definition
+volumeMounts:
+  - name: nvidia-libs
+    mountPath: /usr/lib/x86_64-linux-gnu
+    readOnly: true
+  - name: nvidia-driver
+    mountPath: /usr/local/nvidia
+    readOnly: true
+
+# -- Additional arguments on the output Deployment definition
+extraArgs: []
+
+# -- Additional environments variables on the output Deployment definition
+extraEnv:
+  - name: NVIDIA_VISIBLE_DEVICES
+    value: "all"
+  - name: NVIDIA_DRIVER_CAPABILITIES
+    value: "compute,utility"
+  - name: OLLAMA_HOST
+    value: "0.0.0.0:11434"
+
+# -- Additional environment variables from external sources
+extraEnvFrom: []
+
+# Enable persistence using Persistent Volume Claims
+persistentVolume:
+  # -- Enable persistence using PVC
+  enabled: true
+  # -- Ollama server data Persistent Volume access modes
+  accessModes:
+    - ReadWriteOnce
+  # -- Ollama server data Persistent Volume annotations
+  annotations: {}
+  # -- Existing PVC name (if you want to use an existing PVC)
+  existingClaim: ""
+  # -- Ollama server data Persistent Volume size
+  # Increased for unquantized models (can be 20-40GB+ each)
+  size: 500Gi
+  # -- Ollama server data Persistent Volume Storage Class
+  storageClass: "longhorn"
+  # -- Ollama server data Persistent Volume Binding Mode
+  volumeMode: ""
+  # -- Subdirectory of Ollama server data Persistent Volume to mount
+  subPath: ""
+  # -- Pre-existing PV to attach this claim to
+  volumeName: ""
+
+# -- Node labels for pod assignment (target GPU nodes)
+nodeSelector:
+  gpu: "true"
+
+# -- Tolerations for pod assignment
+tolerations: []
+
+# -- Affinity for pod assignment
+affinity: {}
+
+# -- Lifecycle for pod assignment
+lifecycle: {}
+
+# How to replace existing pods
+updateStrategy:
+  # -- Deployment strategy can be "Recreate" or "RollingUpdate"
+  type: "Recreate"
+
+# -- Topology Spread Constraints for pod assignment
+topologySpreadConstraints: {}
+
+# -- Wait for a grace period
+terminationGracePeriodSeconds: 120
+
+# -- Init containers to add to the pod
+initContainers: []
+
+# -- Use the host's ipc namespace
+hostIPC: false
+
+# -- Use the host's pid namespace
+hostPID: false
+
+# -- Use the host's network namespace
+hostNetwork: false
+
+# -- Extra K8s manifests to deploy
+extraObjects: []
+
+# Test connection pods
+tests:
+  enabled: true
+  # -- Labels to add to the tests
+  labels: {}
+  # -- Annotations to add to the tests
+  annotations: {}
