@@ -1,6 +1,6 @@
 image:
   repository: vllm/vllm-openai
-  tag: latest
+  tag: gptoss
   pullPolicy: Always
 
 replicaCount: 1
@@ -60,8 +60,39 @@ env:
     value: "all"
   - name: NVIDIA_DRIVER_CAPABILITIES
     value: "compute,utility"
+  - name: LD_LIBRARY_PATH
+    value: "/usr/local/nvidia/lib64:/usr/local/cuda/lib64:$(LD_LIBRARY_PATH)"
+  - name: VLLM_ATTENTION_BACKEND
+    value: "TRITON_ATTN_VLLM_V1"
 
 # Security context
 securityContext:
   runAsNonRoot: false
   runAsUser: 0
+
+# Runtime class for NVIDIA GPU support
+runtimeClassName: nvidia
+
+# Volume mounts for shared memory and NVIDIA libraries
+volumeMounts:
+  - name: shm
+    mountPath: /dev/shm
+  - name: nvidia-libs
+    mountPath: /usr/lib/x86_64-linux-gnu
+    readOnly: true
+  - name: nvidia-driver
+    mountPath: /usr/local/nvidia
+    readOnly: true
+
+# Volumes for shared memory and NVIDIA libraries
+volumes:
+  - name: shm
+    emptyDir:
+      medium: Memory
+      sizeLimit: "2Gi"
+  - name: nvidia-libs
+    hostPath:
+      path: /usr/lib/x86_64-linux-gnu
+  - name: nvidia-driver
+    hostPath:
+      path: /usr/local/nvidia

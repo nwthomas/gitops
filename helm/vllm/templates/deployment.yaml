@@ -15,6 +15,9 @@ spec:
       labels:
         {{- include "vllm.selectorLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.runtimeClassName }}
+      runtimeClassName: {{ .Values.runtimeClassName }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -54,10 +57,13 @@ spec:
         {{- toYaml .Values.env | nindent 8 }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
-        {{- if .Values.persistence.enabled }}
         volumeMounts:
+        {{- if .Values.persistence.enabled }}
         - name: model-storage
           mountPath: {{ .Values.model.downloadDir }}
+        {{- end }}
+        {{- if .Values.volumeMounts }}
+        {{- toYaml .Values.volumeMounts | nindent 8 }}
         {{- end }}
         readinessProbe:
           httpGet:
@@ -71,13 +77,16 @@ spec:
           httpGet:
             path: /health
             port: http
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          timeoutSeconds: 10
-          failureThreshold: 3
-      {{- if .Values.persistence.enabled }}
+          initialDelaySeconds: 600
+          periodSeconds: 60
+          timeoutSeconds: 30
+          failureThreshold: 5
       volumes:
+      {{- if .Values.persistence.enabled }}
       - name: model-storage
         persistentVolumeClaim:
           claimName: {{ include "vllm.fullname" . }}-models
+      {{- end }}
+      {{- if .Values.volumes }}
+      {{- toYaml .Values.volumes | nindent 6 }}
       {{- end }}

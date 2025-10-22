@@ -37,6 +37,9 @@ spec:
           value: "true"
         - name: FAIL_ON_INIT_ERROR
           value: "false"
+        {{- if .Values.env }}
+        {{- toYaml .Values.env | nindent 8 }}
+        {{- else }}
         - name: DEVICE_LIST_STRATEGY
           value: envvar
         - name: DEVICE_ID_STRATEGY
@@ -45,6 +48,7 @@ spec:
           value: all
         - name: NVIDIA_DRIVER_CAPABILITIES
           value: "compute,utility"
+        {{- end }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
       hostNetwork: true
