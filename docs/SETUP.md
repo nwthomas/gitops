@@ -327,7 +327,7 @@ Install k3s via this command:
 
 ```bash
 # Install
-curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --disable servicelb --token some_random_password --node-taint CriticalAddonsOnly=true:NoExecute --bind-address 192.168.0.10 --disable-cloud-controller --disable local-storage
+curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --disable servicelb --token <some random password> --node-taint CriticalAddonsOnly=true:NoExecute --bind-address <control node ip address> --disable-cloud-controller --disable local-storage
 
 # Verify the node taint with this
 kubectl describe node node1 | grep -i taint
@@ -412,7 +412,7 @@ kubectl get nodes -o custom-columns=NAME:.metadata.name,TAINTS:.spec.taints --no
 Lastly, change the source of the kubeconfig like so via Ansible:
 
 ```bash
-ansible cube -b -m lineinfile -a "path='/etc/environment' line='KUBECONFIG=/etc/rancher/k3s/k3s.yaml'"
+ansible cube -b -K -m lineinfile -a "path='/etc/environment' line='KUBECONFIG=/etc/rancher/k3s/k3s.yaml'"
 ```
 
 This is the source of truth for each of the kube deployments (client and servers for control and workers).
