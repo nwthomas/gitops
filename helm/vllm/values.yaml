@@ -44,23 +44,8 @@ resources:
     cpu: "2"
 
 # Node affinity and tolerations for GPU nodes
-nodeSelector: {}
-
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - red5
-
-tolerations:
-  - key: gpu
-    operator: Equal
-    value: "true"
-    effect: NoSchedule
+nodeSelector:
+  gpu: "true"
 
 # Persistent volume for model storage (optional)
 persistence:

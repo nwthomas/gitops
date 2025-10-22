@@ -6,13 +6,7 @@ image:
 nodeSelector:
   # Target GPU nodes specifically
   kubernetes.io/arch: amd64
-
-tolerations:
-  # Allow scheduling on GPU nodes with the gpu taint
-  - key: gpu
-    operator: Equal
-    value: "true"
-    effect: NoSchedule
+  gpu: "true"
 
 resources:
   limits:
