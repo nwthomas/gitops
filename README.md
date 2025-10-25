@@ -19,6 +19,7 @@ If you want to implement this for yourself, please follow the [setup document](.
 - Metal LB: An on-prem native software load balancer
 - Monitoring: Prometheus Operator with Grafana using storage PVC through Longhorn
 - n8n: Workflow automation platform with persistent storage
+- Ollama: Runtime for AI models on a GPU node
 - Dashboard UI for:
     - Argo CD: For controlling deployments and rollbacks
     - Grafana: For building dashboards against Prometheus data
@@ -73,7 +74,7 @@ Here's the hardware list of what each of the control/worker nodes is using:
 3. [Samsung 2TB NVMe SSD](https://www.amazon.com/dp/B0DHLCRF91)
 4. [256gb Micro SD Card](https://www.amazon.com/dp/B08TJZDJ4D)
 
-> It's worth noting that one of my nodes is a computer running Ubuntu with a nice GPU, but that's really outside the scope of any guides I'd give for deploying this repository. The only part of this that will impact you is any apps that have node affinity for that setup, but you can easily remove that from your own deployments.
+> It's worth noting that one of my nodes is a computer running Ubuntu with a nice GPU, but that's really outside the scope of any guides I'd give for deploying this repository. The only part of this that will impact you is any apps that have node affinity for that setup (like the `nvidia-device-plugin-app` and `ollama-app` deployments), but you can easily remove that from your own deployments.
 >
 > The rest of the nodes are Raspberry Pi 5s as described above.
 
@@ -83,19 +84,19 @@ Here's the hardware list of what each of the control/worker nodes is using:
 - [Cert Manager](https://cert-manager.io/)
 - [Grafana](https://grafana.com/)
 - [Grafana Loki](https://grafana.com/docs/loki/latest/)
-- [Grafana Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) (soon to be removed for Grafana Alloy)
+- [Grafana Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/)
 - [Helm](https://helm.sh/docs/)
 - [Kubernetes](https://kubernetes.io/), specifically [K3s](https://k3s.io/)
 - [Longhorn](https://longhorn.io/)
 - [Metal LB](https://metallb.io/)
 - [n8n](https://n8n.io/)
 - [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)
+- [Ollama](https://ollama.com/) (vLLM does not support RTX 5090 FE cards right now)
 - [OpenFaaS](https://www.openfaas.com/) (coming soon)
-- [Prometheus](https://prometheus.io/) (including Prometheus Operator)
+- [Prometheus](https://prometheus.io/) and [Prometheus Operator](https://github.com/prometheus-operator/prometheus-operator)
 - [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets)
 - [Terraform](https://developer.hashicorp.com/terraform)
 - [Traefik](https://traefik.io/traefik)
-- [vLLM](https://docs.vllm.ai/en/latest/index.html)
 
 ## 🙇🏻‍♂️ Acknowledgements
 
