@@ -51,10 +51,10 @@ Work for this repository is housed in this [Trello board](https://trello.com/b/H
 │   ├── longhorn/                                #
 │   ├── n8n/                                     #
 │   ├── nvidia-device-plugin/                    #
+│   ├── ollama-app/                              # vLLM doesn't support 5090 FE cards right now, so Ollama it is
 │   ├── prometheus/                              #
 │   ├── prometheus-operator/                     #
 │   ├── prometheus-service-monitors/             #
-│   └── vLLM/                                    #
 └── terraform/                                   # Terraform configurations
     ├── namespaces.tf                            # Kubernetes namespace definitions
     ├── provider.tf                              # Terraform provider configuration
