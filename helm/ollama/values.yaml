@@ -50,7 +50,6 @@ ollama:
   models:
     pull:
       - gpt-oss:20b
-      - deepseek-coder-v2:16b
       - qwen3:30b
     
     # -- Custom model configurations
@@ -59,6 +58,10 @@ ollama:
         template: |
           FROM gpt-oss:20b
           PARAMETER num_ctx 131072
+      - name: qwen3:30b-256k
+        template: |
+          FROM qwen3:30b
+          PARAMETER num_ctx 262144
 
   # -- Add insecure flag for pulling at container startup
   insecure: false
