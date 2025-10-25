@@ -50,9 +50,13 @@ ollama:
   models:
     pull:
       - gpt-oss:20b
-      # Alternative unquantized models (if available):
-      # - llama2:70b  # Unquantized Llama 2 70B
-      # - codellama:34b  # Unquantized Code Llama 34B
+    
+    # -- Custom model configurations
+    create:
+      - name: gpt-oss:20b-128k
+        template: |
+          FROM gpt-oss:20b
+          PARAMETER num_ctx 131072
 
   # -- Add insecure flag for pulling at container startup
   insecure: false
