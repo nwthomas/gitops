@@ -50,6 +50,8 @@ ollama:
   models:
     pull:
       - gpt-oss:20b
+      - deepseek-coder-v2:16b
+      - qwen3:30b
     
     # -- Custom model configurations
     create:
