@@ -215,6 +215,8 @@ extraEnv:
     value: "compute,utility"
   - name: OLLAMA_HOST
     value: "0.0.0.0:11434"
+  - name: OLLAMA_NUM_CTX
+    value: "131072"
 
 # -- Additional environment variables from external sources
 extraEnvFrom: []
