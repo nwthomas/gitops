@@ -2,10 +2,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "ollama.fullname" . }}-lb-ip-patch-{{ now | date "20060102-150405" }}
+  name: {{ include "ollama.fullname" . }}-lb-ip-patch
   namespace: {{ include "ollama.namespace" . }}
   labels:
     {{- include "ollama.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   ttlSecondsAfterFinished: 30
   template:
@@ -21,49 +24,9 @@ spec:
           args:
             - |
               set -e
-              echo "Starting loadBalancerIP patch job..."
-              
-              # Check if service account exists
-              echo "Checking if service account exists..."
-              if ! kubectl get serviceaccount {{ include "ollama.fullname" . }}-patch-job -n {{ include "ollama.namespace" . }} >/dev/null 2>&1; then
-                echo "Error: Service account '{{ include "ollama.fullname" . }}-patch-job' not found in namespace '{{ include "ollama.namespace" . }}'"
-                exit 1
-              fi
-              echo "Service account found, proceeding..."
-              
-              # Check if secret exists
-              echo "Checking if secret exists..."
-              if ! kubectl get secret {{ include "ollama.fullname" . }}-lb-ip -n {{ include "ollama.namespace" . }} >/dev/null 2>&1; then
-                echo "Error: Secret '{{ include "ollama.fullname" . }}-lb-ip' not found in namespace '{{ include "ollama.namespace" . }}'"
-                exit 1
-              fi
-              echo "Secret found, proceeding..."
-              
-              # Retrieve the IP address stored in a secret
-              echo "Retrieving loadBalancerIP from secret..."
               IP=$(kubectl get secret {{ include "ollama.fullname" . }}-lb-ip -n {{ include "ollama.namespace" . }} -o jsonpath="{.data.loadBalancerIP}" | base64 -d)
-              
-              if [[ -z "$IP" ]]; then
-                echo "Error: loadBalancerIP not found in secret"
-                echo "Secret contents:"
-                kubectl get secret {{ include "ollama.fullname" . }}-lb-ip -n {{ include "ollama.namespace" . }} -o yaml
-                exit 1
-              fi
-              
-              echo "Found loadBalancerIP: $IP"
-              
-              # Check if service already has the correct loadBalancerIP
               CURRENT_IP=$(kubectl get svc {{ include "ollama.fullname" . }} -n {{ include "ollama.namespace" . }} -o jsonpath="{.spec.loadBalancerIP}" 2>/dev/null || echo "")
-              
-              if [[ "$CURRENT_IP" == "$IP" ]]; then
-                echo "Service already has the correct loadBalancerIP: $IP"
-                echo "No patching needed, exiting successfully."
-                exit 0
+              if [[ "$CURRENT_IP" != "$IP" ]]; then
+                kubectl patch svc {{ include "ollama.fullname" . }} -n {{ include "ollama.namespace" . }} -p '{"spec":{"loadBalancerIP":"'$IP'"}}' --type=merge
               fi
-              
-              echo "Current loadBalancerIP: $CURRENT_IP"
-              echo "Target loadBalancerIP: $IP"
-              echo "Patching Service {{ include "ollama.fullname" . }} with loadBalancerIP=$IP"
-              kubectl patch svc {{ include "ollama.fullname" . }} -n {{ include "ollama.namespace" . }} -p '{"spec":{"loadBalancerIP":"'$IP'"}}' --type=merge
-              echo "Service patched successfully!"
 {{- end }}

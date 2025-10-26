@@ -19,12 +19,37 @@
 # Various IDEs
 .project
 .idea/
-.drone.yml
 *.tmproj
 .vscode/
-
-#others
-.github
-kind-config.yml
-ci/
-
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.
+# Node modules (if any)
+node_modules/
+# Python cache (if any)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.venv
+# Documentation
+README.md
+docs/
+*.md
+# Test files
+test/
+tests/
+*_test.go
+*.test
+# Build artifacts
+dist/
+build/
+*.tar.gz
+*.tgz

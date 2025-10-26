@@ -18,13 +18,10 @@ metadata:
 rules:
 - apiGroups: [""]
   resources: ["secrets"]
-  verbs: ["get", "list", "watch"]
+  verbs: ["get"]
 - apiGroups: [""]
   resources: ["services"]
-  verbs: ["get", "list", "patch", "update"]
-- apiGroups: [""]
-  resources: ["serviceaccounts"]
-  verbs: ["get"]
+  verbs: ["get", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
