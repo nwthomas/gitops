@@ -76,6 +76,25 @@ serviceAccount:
   # -- The name of the service account to use
   name: ""
 
+# RBAC configuration
+rbac:
+  # -- Specifies whether RBAC resources should be created
+  create: true
+
+# Sealed Secret configuration
+sealedSecret:
+  # -- Specifies whether a sealed secret should be created
+  create: true
+  # -- Encrypted data for the sealed secret
+  encryptedData:
+    # -- Encrypted loadBalancerIP value (update this with your actual encrypted value)
+    loadBalancerIP: "AgBDEhn10OPXJ/eEAns/sPjgRwNVXXp9l83pDfcEJcMsQmpJZBfnBZfDQC9uoKANzzqrW9OA8rUz416Mc+kU+7veHHN0UX1RBYDRSqAK1LWf4mTa3s2tAt3f4433ZXsc/7w0UHYE6FP9fkOjGqMs5XA+QQkuSPQVM/qYq67ZQ79Urmp4zzxWojKHTPhcPnYcUXQHpLpVC9+R42dBqxCNp+m525e3RNPMwbjW5uL4NszOTP8/yZEbsQgiglmeBzXHVUhwUiegDk8wqS9jEsCIwZJzyE4MUKz0TKTsZXLVb2qzcaX1DGUX4VbOB2jHJ9gNJccZtbvlrlevWi9CRCfsFR+5au0k2E8pisOAMl13hxEuX+Rg3kLN7NqKK9TrgUFbSqzn45ESHvq9Ev/j/1AUOfv4QJnx7O4Vpt+XWoQPM8H3cxkABxuibMZw7aeINb1ZrrVVImY7r25knGCoghdM30iSCqlrw64UIf1/dZB9DbQB96oV9qCmWAbTaRJAMlQ8p5nte04Wf2bkr7GmYJCsqzK7/BrA63tLGeL1TSbriOL+H12G8XmRxksB6VjGw/8zTQ0pejCh2cv3fP9ewMCjlO18xtzdPHZNBrxm4J6r1/cvOfT21j43FcNZc7mmQrbU0dEWkS00tEDBZOJsAh+XX0RMrB8uOBiXvjVFEXSfcEJpi6uvkWans0rNV25LJ08ATiVnoELsW0YCkNIg"
+
+# Patch Job configuration
+patchJob:
+  # -- Specifies whether a patch job should be created
+  create: true
+
 # -- Map of annotations to add to the pods
 podAnnotations: {}
 
