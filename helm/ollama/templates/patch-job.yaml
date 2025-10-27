@@ -15,7 +15,7 @@ spec:
     metadata:
       name: {{ include "ollama.fullname" . }}-lb-ip-patch
     spec:
-      serviceAccountName: {{ include "ollama.fullname" . }}-patch-job
+      serviceAccountName: {{ include "ollama.serviceAccountName" . }}
       restartPolicy: OnFailure
       containers:
         - name: kubectl
