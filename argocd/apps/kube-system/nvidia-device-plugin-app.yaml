@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/nwthomas/gitops.git
-    targetRevision: HEAD
+    targetRevision: main
     path: helm/nvidia-device-plugin
   destination:
     server: https://kubernetes.default.svc
