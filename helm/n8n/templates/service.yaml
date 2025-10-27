@@ -11,7 +11,10 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ default "ClusterIP_" .Values.main.service.type }}
+  type: {{ default "ClusterIP" .Values.main.service.type }}
+  {{- if and (eq .Values.main.service.type "LoadBalancer") .Values.main.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.main.service.loadBalancerIP }}
+  {{- end }}
   ports:
     - port: {{ default 80 .Values.main.service.port }}
       targetPort: http

@@ -241,9 +241,11 @@ main:
     annotations: {}
     # -- Service types allow you to specify what kind of Service you want.
     # E.g., ClusterIP, NodePort, LoadBalancer, ExternalName
-    type: ClusterIP
+    type: LoadBalancer
     # -- Service port
     port: 80
+    # -- Load Balancer IP address (set your MetalLB IP here if needed)
+    loadBalancerIP: ""
 
   resources: {}
   # We usually recommend not specifying default resources and to leave this as a conscious
@@ -673,6 +675,25 @@ extraTemplateManifests: []
 #      name: my-config
 #    stringData:
 #      image_name: {{ .Values.image.repository }}
+
+# Sealed Secret configuration
+sealedSecret:
+  # -- Specifies whether a sealed secret should be created
+  create: true
+  # -- Encrypted data for the sealed secret
+  encryptedData:
+    # -- Encrypted loadBalancerIP value (update this with your actual encrypted value)
+    loadBalancerIP: "AgABFoiSJHseVezp9nvubIVZc3DT7Ha3FB6Vj7BotN5uIzSxETa2jvosQ3Qnt4u8yfoarZi4MPql/aUT5FJ5TrC21XFjU70jOfZWAFQg8SyySW6qbPNzdR07dJkN8j24289YuGBr7+tNqE0Agu8nWmA01TXTceACywYeMPvC91a5xgStQPH0o9gPzCWRDaPd0l/5CZDnqUbbd8k+fwPtOhBjVboc98jZTgXjkgZIyi/37Yn7KbpcsL+zkNwJuSuIxn6q6ITQTvIjVgH8vvmGMcQw/2nQ7QuAu5PWBe/AiG5/ODSPvFCmbctsDkZV0RcnfvX1dXCk71eaXUbgNK77TDw7/IXTVuq9ntQ/GYfLglUTyfsMKfO3XUxHTpi9QfQIu4QRstM4ubPKfUgv4CvjdupR88jI7Ofhz0T5Nc/B2Rx1A2rcsASVVoUmryihpu1nD8k2A21ZlUrLYAQnXFbVyJGlwNzIV5HN28xhWqqTTY6egEjwK9qSlFebw65RCNBjUfilSGGgbFl5DIsI9xM2VfrGKLmNslvrjkhz4CLsbdPpX5nO5+/e22vngmIYGdBNXvkxfSmbZBT9R41rNeVgsH45SDVMwax7S7/kGgkvxY1QcV4r0HfYWJjs3bJdEBTSTmH6N1v/EAjcdTuNYCsO4Lu7RSfKCtU+8/WWpXkrntwxy7oiXsCJnzk07KdgYvqR6+tu1VUmxq7cnKzJ"
+
+# Patch Job configuration
+patchJob:
+  # -- Specifies whether a patch job should be created
+  create: true
+
+# RBAC configuration
+rbac:
+  # -- Specifies whether RBAC resources should be created
+  create: true
 
 # Bitnami Valkey configuration
 # https://artifacthub.io/packages/helm/bitnami/valkey
