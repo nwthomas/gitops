@@ -211,22 +211,10 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
 
 # -- Additional volumes on the output Deployment definition
-volumes:
-  - name: nvidia-libs
-    hostPath:
-      path: /usr/lib/x86_64-linux-gnu
-  - name: nvidia-driver
-    hostPath:
-      path: /usr/local/nvidia
+volumes: []
 
 # -- Additional volumeMounts on the output Deployment definition
-volumeMounts:
-  - name: nvidia-libs
-    mountPath: /usr/lib/x86_64-linux-gnu
-    readOnly: true
-  - name: nvidia-driver
-    mountPath: /usr/local/nvidia
-    readOnly: true
+volumeMounts: []
 
 # -- Additional arguments on the output Deployment definition
 extraArgs: []
