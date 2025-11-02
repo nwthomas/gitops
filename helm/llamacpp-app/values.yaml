@@ -1,0 +1,260 @@
+# Custom values for llama.cpp server with RTX 5090 GPU support
+# Based on phymbert/llama.cpp Kubernetes example
+# Adapted for Longhorn storage and MetalLB LoadBalancer
+
+# -- Number of replicas
+replicaCount: 1
+
+# Kubernetes images
+images:
+  server:
+    # -- Server image repository
+    repository: ghcr.io/ggerganov/llama.cpp
+    # -- Server image name (will be combined with tag)
+    name: server-cuda
+    # -- Server image tag
+    tag: latest
+  downloader:
+    # -- Downloader image for model download job
+    repository: curlimages/curl
+    # -- Downloader image tag
+    tag: latest
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+
+# Model configuration
+model:
+  # -- Path where models are stored
+  path: /models
+  # -- Model alias for API
+  alias: gpt-oss-20b
+  # -- HuggingFace repository
+  repo: ggml-org
+  # -- Model file to download from HuggingFace
+  file: gpt-oss-20b-GGUF/gpt-oss-20b-mxfp4.gguf
+  # -- Expected model size (for PVC)
+  size: 50Gi
+  # -- SHA256 checksum for model validation (optional, leave empty to skip validation)
+  sha256: ""
+
+# Server configuration
+server:
+  # -- Command to run
+  command: /llama-server
+  # -- Host to bind to
+  host: 0.0.0.0
+  # -- Port to listen on
+  port: 8080
+  # -- Enable completions endpoint
+  completions: true
+  # -- Enable embeddings endpoint
+  embeddings: false
+  # -- Enable metrics endpoint (Prometheus)
+  metrics: true
+  # -- KV cache configuration
+  kvCache:
+    size: 8192
+  # -- Number of parallel processing slots
+  slots: 4
+  # -- Logging configuration
+  log:
+    format: text
+    disabled: false
+  # -- Extra arguments for llama-server
+  extraArgs:
+    - -fa  # Enable flash attention
+    - -ngl
+    - "99"  # Offload 99 layers to GPU
+
+# GPU configuration
+gpu:
+  # -- Enable GPU support
+  enabled: true
+  # -- GPU resource name
+  nvidiaResource: "nvidia.com/gpu"
+  # -- Number of GPUs
+  number: 1
+
+# -- Runtime class for NVIDIA GPU support
+runtimeClassName: nvidia
+
+# Service account
+serviceAccount:
+  # -- Create service account
+  create: true
+  # -- Automount API credentials
+  automount: true
+  # -- Service account annotations
+  annotations: {}
+  # -- Service account name
+  name: ""
+
+# RBAC configuration
+rbac:
+  # -- Create RBAC resources
+  create: true
+
+# Sealed Secret configuration (for LoadBalancer IP)
+sealedSecret:
+  # -- Create sealed secret
+  create: true
+  # -- Encrypted LoadBalancer IP
+  encryptedData:
+    loadBalancerIP: "AgB9BfXMVhTCGzzow8N3WmPC35eFnQtAVIKzIOewm4TinCGSJA12iAf1UAkDwEfdvoypFHGH+VZlo77tAOQ+wR7Mq3BSCQfBROELG4zW5ghiWDmaU7HNslVoEeD97YHbKjxQVUFCqaRUOJHfFSEOJNwX8QYEaP+flI9T5lqBd9cAvZYJQCbohIY2Gro5CgSxkxVLn5E39OxW/OUML8WUwQDgQauf/vFGvy28e31cSRo3dZsFvPLUTYaEAAQypkvmvuohN/Azub9f6wZPKfau20JyfG26clzhrIp4u8APzcsn9GLStODwfnGSpj67hX1UG4CG0rMTK66DRF1XDDZSzTOAPc4kQhmpoQR9VoW4KpRDPPcYqYLIJj2BzTLK45Gx0nwymCiBIP/9G9BArXv0eQz924jVjhlZX1V11LJhxiVX4lzvkjZYoEo/Uw+88XXXc4+RScuFYQXKXqUjG83+Zy5En4+7CGvGbgIOwKvv5pTda5nklAot/Kk28TqdubLURhE6ZWwunSkmB6VAndjWrrMSR3Z/9nIxM31fDR3JAiflAcjJFpkr8LDmVDyg6iAg3vemySn4t4O1N+3X6EICuSr2jJ/NdVFse5mQTG4JbUFwFWUo7UjTcmEkRuUfyck24LRzt8YVoo77fRHCkFQpU37G+pM6uTN1AY8AgNwYQ9kT4I6twkm6lVgu32XVsG0RfbxLl/mP1NiTPz1S"
+
+# Patch Job configuration
+patchJob:
+  # -- Create patch job for LoadBalancer IP
+  create: true
+
+# Service configuration
+service:
+  # -- Service type (ClusterIP, NodePort, or LoadBalancer)
+  type: LoadBalancer
+  # -- Service port
+  port: 8080
+  # -- LoadBalancer IP (will be patched from sealed secret)
+  loadBalancerIP: ""
+
+# Ingress configuration
+ingresses:
+  completions:
+    # -- Enable ingress for completions endpoint
+    enabled: false
+    # -- Ingress class name
+    className: nginx
+    # -- Ingress annotations
+    annotations: {}
+    # -- Ingress hosts
+    hosts:
+      - paths:
+          - path: /v1/completions
+            pathType: Prefix
+    # -- TLS configuration
+    tls: []
+  embeddings:
+    # -- Enable ingress for embeddings endpoint
+    enabled: false
+    # -- Ingress class name
+    className: nginx
+    # -- Ingress annotations
+    annotations: {}
+    # -- Ingress hosts
+    hosts:
+      - paths:
+          - path: /v1/embeddings
+            pathType: Prefix
+    # -- TLS configuration
+    tls: []
+
+# Persistence configuration
+persistence:
+  # -- Storage class for PVC (using Longhorn)
+  storageClass: "longhorn"
+  # -- Access mode
+  accessMode: ReadWriteOnce
+
+# Resource limits
+resources:
+  requests:
+    nvidia.com/gpu: 1
+    memory: "32Gi"
+    cpu: "8"
+  limits:
+    nvidia.com/gpu: 1
+    memory: "64Gi"
+    cpu: "16"
+
+# Autoscaling configuration
+autoscaling:
+  # -- Enable horizontal pod autoscaling
+  enabled: false
+  # -- Minimum replicas
+  minReplicas: 1
+  # -- Maximum replicas
+  maxReplicas: 4
+  # -- Target CPU utilization percentage
+  targetCPUUtilizationPercentage: 80
+  # -- Target memory utilization percentage
+  targetMemoryUtilizationPercentage: 80
+
+# Liveness probe
+livenessProbe:
+  enabled: true
+  path: /health
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 6
+  successThreshold: 1
+
+# Readiness probe
+readinessProbe:
+  enabled: true
+  path: /health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+# Security context
+securityContext:
+  runAsNonRoot: false
+  runAsUser: 0
+
+# Pod security context
+podSecurityContext: {}
+
+# -- Pod annotations
+podAnnotations: {}
+
+# -- Pod labels
+podLabels: {}
+
+# -- Image pull secrets
+imagePullSecrets: []
+
+# -- Node selector (target GPU nodes)
+nodeSelector:
+  gpu: "true"
+
+# -- Tolerations
+tolerations: []
+
+# -- Affinity
+affinity: {}
+
+# -- Additional volumes
+volumes: []
+
+# -- Additional volume mounts
+volumeMounts: []
+
+# -- Extra environment variables
+extraEnv:
+  - name: NVIDIA_VISIBLE_DEVICES
+    value: "all"
+  - name: NVIDIA_DRIVER_CAPABILITIES
+    value: "compute,utility"
+  - name: CUDA_VERSION
+    value: "12.8"
+
+# -- Extra environment variables from sources
+extraEnvFrom: []
+
+# Deployment strategy
+updateStrategy:
+  type: Recreate
+
+# -- Termination grace period
+terminationGracePeriodSeconds: 120
+
+# -- Host IPC
+hostIPC: false
+
+# -- Host PID
+hostPID: false
+
+# -- Host network
+hostNetwork: false

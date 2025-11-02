@@ -1,0 +1,172 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "server.llama.cpp.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "server.llama.cpp.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  {{- if or .Values.updateStrategy.type .Values.updateStrategy.rollingUpdate }}
+  strategy: {{ .Values.updateStrategy | toYaml | nindent 4 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "server.llama.cpp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.server.metrics }}
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '{{ .Values.server.port }}'
+        {{- end }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "server.llama.cpp.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "server.llama.cpp.serviceAccountName" . }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.runtimeClassName }}
+      runtimeClassName: {{ .Values.runtimeClassName | quote }}
+      {{- end }}
+      {{- if .Values.hostIPC }}
+      hostIPC: {{ .Values.hostIPC }}
+      {{- end }}
+      {{- if .Values.hostPID }}
+      hostPID: {{ .Values.hostPID }}
+      {{- end }}
+      {{- if .Values.hostNetwork }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.name }}-{{ .Values.images.server.tag }}"
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+        env:
+          {{- with .Values.extraEnv }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+        envFrom:
+          {{- with .Values.extraEnvFrom }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- if .Values.resources }}
+        resources:
+          {{- $limits := default dict .Values.resources.limits }}
+          {{- if .Values.gpu.enabled }}
+            {{- $gpuLimit := dict (.Values.gpu.nvidiaResource | default "nvidia.com/gpu") (.Values.gpu.number | default 1) }}
+            {{- $limits = merge $limits $gpuLimit }}
+          {{- end }}
+          {{- $resources := deepCopy (dict "limits" $limits) | mergeOverwrite .Values.resources }}
+          {{- toYaml $resources | nindent 12 }}
+        {{- end}}
+        command:
+        - {{ .Values.server.command }}
+        args:
+        - --host
+        - {{ .Values.server.host }}
+        - --port
+        - "{{ .Values.server.port }}"
+        - --model
+        - {{ .Values.model.path }}/{{ regexReplaceAll "(.*/)?(.*)" .Values.model.file "${2}" }}
+        - --cont-batching
+        - --alias
+        - {{ .Values.model.alias }}
+        - --ctx-size
+        - "{{ .Values.server.kvCache.size }}"
+        - --parallel
+        - "{{ .Values.server.slots }}"
+        {{- if .Values.server.embeddings }}
+        - --embedding
+        {{- end }}
+        {{- if .Values.server.metrics }}
+        - --metrics
+        {{- end }}
+        - --log-format
+        - {{ .Values.server.log.format }}
+        {{- if .Values.server.log.disabled }}
+        - --log-disable
+        {{- end }}
+        {{- with .Values.server.extraArgs }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.server.port }}
+          protocol: TCP
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.livenessProbe.path }}
+            port: http
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.readinessProbe.path }}
+            port: http
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+        {{- end }}
+        volumeMounts:
+        - mountPath: {{ .Values.model.path }}
+          name: models
+          readOnly: true
+        {{- with .Values.volumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      volumes:
+      - name: models
+        persistentVolumeClaim:
+          claimName: {{ include "server.llama.cpp.fullname" . }}
+          readOnly: true
+      {{- with .Values.volumes }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.gpu.enabled .Values.tolerations }}
+      tolerations:
+        {{- if .Values.gpu.enabled }}
+        - key: "{{(.Values.gpu.nvidiaResource | default "nvidia.com/gpu")}}"
+          operator: Exists
+          effect: NoSchedule
+        {{- end }}
+        {{- with .Values.tolerations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}

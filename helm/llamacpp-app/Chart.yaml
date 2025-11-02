@@ -1,0 +1,6 @@
+apiVersion: v2
+name: llamacpp-app
+description: llama.cpp Helm chart for Kubernetes with RTX 5090 GPU support
+type: application
+version: 0.1.0
+appVersion: "latest"

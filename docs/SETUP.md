@@ -747,7 +747,12 @@ To seal a secret, here's an example (outputting to YAML and then encoding) of cr
 echo -n bar | kubectl create secret generic mysecret --dry-run=client --from-file=foo=/dev/stdin -o yaml >mysecret.yaml
 
 # Encode the secret
-kubeseal --controller-name=sealed-secrets --controller-namespace=kube-system --format yaml <mysecret.yaml>mysealedsecret.yaml
+kubeseal --controller-name=sealed-secrets \
+  --controller-namespace=kube-system \
+  --format yaml \
+  --scope namespace-wide \
+  < mysecret.yaml \
+  > mysealedsecret.yaml
 ```
 
 This will end up looking something much like this:
