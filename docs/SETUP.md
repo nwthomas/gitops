@@ -744,7 +744,15 @@ To seal a secret, here's an example (outputting to YAML and then encoding) of cr
 
 ```bash
 # Create the secret
-echo -n bar | kubectl create secret generic mysecret --dry-run=client --from-file=foo=/dev/stdin -o yaml >mysecret.yaml
+echo -n bar | kubectl create secret generic mysecret \
+  --from-file=foo=/dev/stdin \
+  --type=Opaque \
+  --namespace=<service namespace here> \
+  --dry-run=client \
+  -o yaml | yq '.metadata.name = "<secret name here>"' > mysecret.yaml
+
+# View the sealed secret
+cat mysecret.yaml
 
 # Encode the secret
 kubeseal --controller-name=sealed-secrets \
@@ -753,9 +761,12 @@ kubeseal --controller-name=sealed-secrets \
   --scope namespace-wide \
   < mysecret.yaml \
   > mysealedsecret.yaml
+
+# Get the secret hash if that's all you need (as in my setups in this repo)
+cat mysealedsecret.yaml | grep "<secret name here>:" | awk '{print $2}'
 ```
 
-This will end up looking something much like this:
+The full sealed secret will end up looking something much like this:
 
 ```bash
 apiVersion: bitnami.com/v1alpha1
@@ -776,6 +787,8 @@ spec:
 ```
 
 This secret is encrypted by your sealed secret controller on your cluster and can be safely committed. No one except your controller can decrypt it. You can also apply this to your cluster and also commit the file (even publicly like in this repo).
+
+If you want to just manually apply a secret in your cluster, you can do that like this:
 
 ```bash
 kubectl create -f mysealedsecret.yaml

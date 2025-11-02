@@ -39,6 +39,9 @@ spec:
         - name: download-model
           image: "{{ .Values.images.downloader.repository }}:{{ .Values.images.downloader.tag }}"
           imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
           env:
             - name: MODEL_PATH
               value: {{ .Values.model.path | quote }}
@@ -78,7 +81,7 @@ spec:
 
               # Download model from HuggingFace
               echo "Downloading from HuggingFace (this may take several minutes for ~12GB file)..."
-              wget -q --show-progress -c -O "${MODEL_PATH}/${MODEL_FILE}" \
+              curl -L --progress-bar -o "${MODEL_PATH}/${MODEL_FILE}" \
                 "https://huggingface.co/${MODEL_DOWNLOAD_REPO}/resolve/main/${MODEL_DOWNLOAD_FILE}"
 
               {{- if .Values.model.sha256 }}

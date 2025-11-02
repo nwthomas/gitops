@@ -60,7 +60,7 @@ spec:
       - name: {{ .Chart.Name }}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
-        image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.name }}-{{ .Values.images.server.tag }}"
+        image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
         imagePullPolicy: {{ .Values.images.pullPolicy }}
         env:
           {{- with .Values.extraEnv }}
@@ -80,8 +80,6 @@ spec:
           {{- $resources := deepCopy (dict "limits" $limits) | mergeOverwrite .Values.resources }}
           {{- toYaml $resources | nindent 12 }}
         {{- end}}
-        command:
-        - {{ .Values.server.command }}
         args:
         - --host
         - {{ .Values.server.host }}
@@ -101,11 +99,6 @@ spec:
         {{- end }}
         {{- if .Values.server.metrics }}
         - --metrics
-        {{- end }}
-        - --log-format
-        - {{ .Values.server.log.format }}
-        {{- if .Values.server.log.disabled }}
-        - --log-disable
         {{- end }}
         {{- with .Values.server.extraArgs }}
         {{- toYaml . | nindent 8 }}

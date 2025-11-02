@@ -9,11 +9,9 @@ replicaCount: 1
 images:
   server:
     # -- Server image repository
-    repository: ghcr.io/ggerganov/llama.cpp
-    # -- Server image name (will be combined with tag)
-    name: server-cuda
-    # -- Server image tag
-    tag: latest
+    repository: ghcr.io/ggml-org/llama.cpp
+    # -- Server image tag (e.g., server-cuda, b1234, latest)
+    tag: server-cuda
   downloader:
     # -- Downloader image for model download job
     repository: curlimages/curl
@@ -62,7 +60,8 @@ server:
     disabled: false
   # -- Extra arguments for llama-server
   extraArgs:
-    - -fa  # Enable flash attention
+    - --flash-attn
+    - "on"
     - -ngl
     - "99"  # Offload 99 layers to GPU
 
