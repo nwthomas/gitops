@@ -963,7 +963,7 @@ You can then choose to import a pre-built dashboard (although you can definitely
 
 From here, use numbers from the Prometheus website to import pre-built websites:
 
-![New Dashboard Import Number](./assets/new-dashboard-import-number.png)
+![New Dashboard Import Number](./assets/new-dashboard-number.png)
 
 I like these pre-built dashboards:
 
@@ -978,7 +978,7 @@ You can search through all the community premade dashboards [on the Prometheus w
 
 Once you enter the number and click "Load", finalize with this screen:
 
-![New Dashboard Import Finalize](./assets/new-dashboard-import-finalize.png)
+![New Dashboard Import Finalize](./assets/new-dashboard-finalize.png)
 
 Great job! Let's move on to metrics!
 
