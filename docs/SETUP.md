@@ -926,7 +926,61 @@ Make files for each of those and then use `kubectl apply -f <file name>` to get 
 
 The default username/password for Grafana is `admin` and `admin`, but you should change the password immediately on accessing the dashboard.
 
-TODO: Add section on setting up initial data source and adding dashboards. Also, maybe some content on using Prometheus.
+Once logged in, go to add a new data source here:
+
+![New Data Source](./assets/new-data-source.png)
+
+Get the IP and port for your Promethues instance using this command:
+
+```bash
+root@control01:~/monitoring/grafana# kubectl get services -n monitoring
+NAME                  TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)             AGE
+.
+.
+prometheus-external   LoadBalancer   10.43.167.23    192.168.0.205   9090:32545/TCP      12d
+prometheus            ClusterIP      10.43.108.243   <none>          9090/TCP            12d
+.
+.
+```
+
+In the above example with demo data, you'd use 10.43.108.24:9090 as your IP and port for the data source.
+
+From there, select Prometheus as your new data source:
+
+![New Prometheus Data Source](./assets/prometheus-data-source.png)
+
+Add the IP and port we just got to this input:
+
+![New Prometheus Data Source URL](./assets/prometheus-data-source-url.png)
+
+Scroll to the bottom and click "Save and Test." From here, you should be goop to add dashboards. You can do this by going to this location:
+
+![New Dashboard](./assets/new-dashboard.png)
+
+You can then choose to import a pre-built dashboard (although you can definitely build your own later if you want):
+
+![New Dashboard Import](./assets/new-dashboard-import.png)
+
+From here, use numbers from the Prometheus website to import pre-built websites:
+
+![New Dashboard Import Number](./assets/new-dashboard-import-number.png)
+
+I like these pre-built dashboards:
+
+```bash
+6417 - Kubernetes Cluster (Prometheus)
+7249 - Kubernetes Cluster
+8171 - Kubernetes Nodes
+13032 - Longhorn
+```
+
+You can search through all the community premade dashboards [on the Prometheus website here](https://grafana.com/grafana/dashboards/).
+
+Once you enter the number and click "Load", finalize with this screen:
+
+![New Dashboard Import Finalize](./assets/new-dashboard-import-finalize.png)
+
+Great job! Let's move on to metrics!
 
 ## Adding Loki and Alloy
 
