@@ -959,7 +959,7 @@ Scroll to the bottom and click "Save and Test." From here, you should be goop to
 
 You can then choose to import a pre-built dashboard (although you can definitely build your own later if you want):
 
-![New Dashboard Import](./assets/new-dashboard-import.png)
+![New Dashboard Import](./assets/new-dashboard-import-button.png)
 
 From here, use numbers from the Prometheus website to import pre-built websites:
 
