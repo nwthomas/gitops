@@ -29,10 +29,10 @@ ollama:
       - gpt-oss:20b
       - qwen2.5vl:7b
     create:
-      - name: gpt-oss:20b-128k-context
+      - name: gpt-oss:20b-64k-context
         template: |
           FROM gpt-oss:20b
-          PARAMETER num_ctx 131072
+          PARAMETER num_ctx 65536
           PARAMETER num_batch 1
           PARAMETER num_gpu 1
       - name: deepseek-r1:32b-64k-context
@@ -145,10 +145,8 @@ extraEnv:
     value: "0"
   - name: OLLAMA_FLASH_ATTENTION
     value: "true"
-  - name: OLLAMA_GPU_OVERHEAD
-    value: "0.1"
   - name: OLLAMA_HOST
-    value: "0.0.0.0:11434"
+    value: "http://0.0.0.0:11434"
   - name: OLLAMA_KEEP_ALIVE
     value: "60m"
   - name: OLLAMA_LLM_LIBRARY
@@ -157,8 +155,8 @@ extraEnv:
     value: "2m"
   - name: OLLAMA_NUM_PARALLEL
     value: "1"
-  - name: CUDA_VISIBLE_DEVICES
-    value: "0"
+  - name: OLLAMA_USE_GPU
+    value: "true"
   - name: NVIDIA_DRIVER_CAPABILITIES
     value: "compute,utility"
   - name: NVIDIA_VISIBLE_DEVICES
