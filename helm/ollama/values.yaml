@@ -143,14 +143,22 @@ extraEnv:
     value: "131072"
   - name: OLLAMA_DEBUG
     value: "0"
+  - name: OLLAMA_FLASH_ATTENTION
+    value: "true"
+  - name: OLLAMA_GPU_OVERHEAD
+    value: "0.1"
   - name: OLLAMA_HOST
     value: "0.0.0.0:11434"
   - name: OLLAMA_KEEP_ALIVE
     value: "60m"
+  - name: OLLAMA_LLM_LIBRARY
+    value: "cuda"
   - name: OLLAMA_LOAD_TIMEOUT
     value: "2m"
   - name: OLLAMA_NUM_PARALLEL
-    value: "2"
+    value: "1"
+  - name: CUDA_VISIBLE_DEVICES
+    value: "0"
   - name: NVIDIA_DRIVER_CAPABILITIES
     value: "compute,utility"
   - name: NVIDIA_VISIBLE_DEVICES
