@@ -1,6 +1,6 @@
 image:
   repository: nvcr.io/nvidia/k8s-device-plugin
-  tag: v0.17.1
+  tag: v0.18.0
   pullPolicy: IfNotPresent
 
 nodeSelector:
@@ -29,8 +29,6 @@ tolerations:
 
 # Environment variables for nvidia-device-plugin
 env:
-  - name: DEVICE_DISCOVERY_STRATEGY
-    value: "tegra"  # Use tegra discovery strategy
   - name: DEVICE_LIST_STRATEGY
     value: "envvar"  # Use envvar for device list strategy
   - name: DEVICE_ID_STRATEGY

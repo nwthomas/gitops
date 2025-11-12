@@ -161,6 +161,10 @@ extraEnv:
     value: "compute,utility"
   - name: NVIDIA_VISIBLE_DEVICES
     value: "all"
+  - name: DP_DISABLE_TELEGRA
+    value: "1"
+  - name: FAIL_ON_INIT_ERROR
+    value: "false"
 
 extraEnvFrom: []
 
@@ -177,6 +181,7 @@ persistentVolume:
   volumeName: ""
 
 nodeSelector:
+  kubernetes.io/arch: amd64
   gpu: "true"
 
 tolerations: []
