@@ -1098,3 +1098,57 @@ As an aside, you can also add an alias on the node in question to shut it down w
 ```bash
 alias shutdown="systemctl poweroff"
 ```
+
+Once you're done with all of the above, you'll need to go into your BIOS and ensure the following settings are setup:
+
+1. ErP is disabled
+2. Wake on PCIe is enabled
+
+#### GPU Node Setup
+
+Follow Nvidia's setup steps here for `nvidia-container-toolkit`:
+
+https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
+
+
+
+TODO
+
+Test with `containerd` that the Nvidia GPU is available:
+
+```bash
+sudo ctr image pull docker.io/nvidia/cuda:12.3.2-base-ubuntu22.04
+
+sudo ctr run --rm --gpus 0 -t docker.io/nvidia/cuda:12.3.2-base-ubuntu22.04 cuda-12.3.2-base-ubuntu22.04 nvidia-smi
+```
+
+If there are any issues with `containerd`, make sure that the following is set up for the `/etc/containerd/config.d/99-nvidia.toml` file:
+
+```toml
+
+```
+
+#### Helpful Commands
+
+````bash
+version = 2
+
+[plugins]
+
+  [plugins."io.containerd.grpc.v1.cri"]
+
+    [plugins."io.containerd.grpc.v1.cri".containerd]
+
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          runtime_type = "io.containerd.runc.v2"
+
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
+          privileged_without_host_devices = false
+          runtime_root = ""
+          runtime_type = "io.containerd.runc.v2"
+
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
+            BinaryName = "/usr/bin/nvidia-container-runtime"
+````

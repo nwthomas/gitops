@@ -4,7 +4,6 @@ image:
   pullPolicy: IfNotPresent
 
 nodeSelector:
-  # Target GPU nodes specifically
   kubernetes.io/arch: amd64
   gpu: "true"
 
@@ -16,21 +15,18 @@ resources:
     memory: 64Mi
     cpu: 50m
 
-# Security context for the device plugin
 securityContext:
   privileged: true
 
-# Tolerations for GPU nodes
 tolerations:
   - key: gpu
     operator: Equal
     value: "true"
     effect: NoExecute
 
-# Environment variables for nvidia-device-plugin
 env:
   - name: DEVICE_LIST_STRATEGY
-    value: "envvar"  # Use envvar for device list strategy
+    value: "envvar"
   - name: DEVICE_ID_STRATEGY
     value: "uuid"
   - name: NVIDIA_VISIBLE_DEVICES
@@ -38,7 +34,6 @@ env:
   - name: NVIDIA_DRIVER_CAPABILITIES
     value: "compute,utility"
 
-# Mount the NVIDIA libraries and device files
 volumeMounts:
   - name: device-plugin
     mountPath: /var/lib/kubelet/device-plugins
