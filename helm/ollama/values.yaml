@@ -1,4 +1,3 @@
-# Custom values for ollama-helm with GPU support
 # Based on official otwld/ollama-helm chart with custom configurations
 
 replicaCount: 1
@@ -172,9 +171,11 @@ persistentVolume:
   enabled: true
   accessModes:
     - ReadWriteOnce
-  annotations: {}
+  annotations:
+    # Set the number of replicas for this Longhorn volume by overriding the storage class default
+    longhorn.io/number-of-replicas: "1"
   existingClaim: ""
-  size: 500Gi
+  size: 200Gi
   storageClass: "longhorn"
   volumeMode: ""
   subPath: ""

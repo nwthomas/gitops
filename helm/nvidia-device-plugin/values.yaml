@@ -3,6 +3,8 @@ image:
   tag: v0.18.0
   pullPolicy: IfNotPresent
 
+failOnInitError: false
+
 nodeSelector:
   kubernetes.io/arch: amd64
   gpu: "true"
@@ -33,6 +35,17 @@ env:
     value: "all"
   - name: NVIDIA_DRIVER_CAPABILITIES
     value: "compute,utility"
+  # Set NVIDIA driver root to help locate driver libraries
+  # Default is "/" which should work with privileged containers
+  - name: NVIDIA_DRIVER_ROOT
+    value: "/"
+  # Device discovery strategy: "auto" (default) or "nvml"
+  # Try "auto" first - with libraries mounted, it should detect NVML automatically
+  # If "auto" still fails, uncomment below and set to "nvml" explicitly
+  # - name: DEVICE_DISCOVERY_STRATEGY
+  #   value: "nvml"
+  # Don't set LD_LIBRARY_PATH - it causes glibc conflicts
+  # The container should find libraries through privileged mode access to host
 
 volumeMounts:
   - name: device-plugin

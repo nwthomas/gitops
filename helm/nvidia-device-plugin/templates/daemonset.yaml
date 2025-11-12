@@ -25,7 +25,7 @@ spec:
       - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: nvidia-device-plugin-ctr
-        args: ["--fail-on-init-error=false"]
+        command: ["nvidia-device-plugin"]
         securityContext:
           {{- toYaml .Values.securityContext | nindent 10 }}
         resources:
@@ -35,8 +35,13 @@ spec:
         env:
         - name: PASS_DEVICE_SPECS
           value: "true"
+        {{- if typeIs "bool" .Values.failOnInitError }}
+        - name: FAIL_ON_INIT_ERROR
+          value: {{ .Values.failOnInitError | quote }}
+        {{- else }}
         - name: FAIL_ON_INIT_ERROR
           value: "false"
+        {{- end }}
         {{- if .Values.env }}
         {{- toYaml .Values.env | nindent 8 }}
         {{- else }}
@@ -51,4 +56,3 @@ spec:
         {{- end }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
-      hostNetwork: true
