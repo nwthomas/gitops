@@ -23,8 +23,6 @@ ollama:
         template: |
           FROM gpt-oss:20b
           PARAMETER num_ctx 65536
-          PARAMETER num_batch 1
-          PARAMETER num_gpu 1
   insecure: false
   mountPath: ""
 
@@ -125,16 +123,18 @@ extraArgs: []
 extraEnv:
   - name: OLLAMA_CONTEXT_LENGTH
     value: "131072"
+  # Change to "1" for verbose logging with more error logs and "0" for normal logging
   - name: OLLAMA_DEBUG
-    value: "0"
+    value: "1"
   - name: OLLAMA_FLASH_ATTENTION
     value: "true"
   - name: OLLAMA_HOST
     value: "http://0.0.0.0:11434"
   - name: OLLAMA_KEEP_ALIVE
     value: "60m"
+  # This is a critial value - "cuda" is not sufficient, but version is needed
   - name: OLLAMA_LLM_LIBRARY
-    value: "cuda"
+    value: "cuda_v13"
   - name: OLLAMA_LOAD_TIMEOUT
     value: "2m"
   - name: OLLAMA_NUM_PARALLEL
@@ -144,11 +144,9 @@ extraEnv:
   - name: NVIDIA_DRIVER_CAPABILITIES
     value: "compute,utility"
   - name: LD_LIBRARY_PATH
-    value: "/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu"
-  - name: DP_DISABLE_TELEGRA
-    value: "1"
-  - name: FAIL_ON_INIT_ERROR
-    value: "false"
+    value: "/usr/lib/ollama:/usr/lib/ollama/cuda_v13:/usr/lib/x86_64-linux-gnu"
+  - name: CUDA_VISIBLE_DEVICES
+    value: "0"
 
 extraEnvFrom: []
 
