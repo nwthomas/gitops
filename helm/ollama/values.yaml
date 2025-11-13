@@ -160,6 +160,8 @@ extraEnv:
     value: "compute,utility"
   - name: NVIDIA_VISIBLE_DEVICES
     value: "all"
+  - name: LD_LIBRARY_PATH
+    value: "/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu"
   - name: DP_DISABLE_TELEGRA
     value: "1"
   - name: FAIL_ON_INIT_ERROR
