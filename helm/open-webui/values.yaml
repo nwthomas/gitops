@@ -446,36 +446,27 @@ openaiApiKeys: []
 databaseUrl: ""
 
 # -- Env vars added to the Open WebUI deployment. Most up-to-date environment variables can be found here: https://docs.openwebui.com/getting-started/env-configuration. Variables can be defined as list or map style.
-extraEnvVars: []
-  # - name: OPENAI_API_KEY
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: pipelines-api-key
-  #       key: api-key
-  # - name: OPENAI_API_KEY
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: openai-api-key
-  #       key: api-key
-  # - name: OLLAMA_DEBUG
-  #   value: "1"
-  #
-  # OPENAI_API_KEY:
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: pipelines-api-key
-  #       key: api-key
-  # OPENAI_API_KEY:
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: openai-api-key
-  #       key: api-key
-  # OLLAMA_DEBUG: "1"
+extraEnvVars:
+  - name: ENABLE_WEB_SEARCH
+    value: "true"
+  - name: ENABLE_SEARCH_QUERY_GENERATION
+    value: "true"
+  - name: WEB_SEARCH_RESULT_COUNT
+    value: "10"
+  - name: WEB_LOADER_CONCURRENT_REQUESTS
+    value: "2"
+  - name: WEB_SEARCH_ENGINE
+    value: "tavily"
+  - name: TAVILY_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: open-webui-secrets
+        key: SEARCH_API_KEY
+  - name: WEB_LOADER_ENGINE
+    value: "playwright"
 
 # -- Env vars added to the Open WebUI deployment, common across environments. Most up-to-date environment variables can be found here: https://docs.openwebui.com/getting-started/env-configuration/ (caution: environment variables defined in both `extraEnvVars` and `commonEnvVars` will result in a conflict. Avoid duplicates)
 commonEnvVars: []
-  # - name: RAG_EMBEDDING_ENGINE
-  #   value: "openai"
 
 # -- Env vars added from configmap or secret to the Open WebUI deployment. Most up-to-date environment variables can be found here: https://docs.openwebui.com/getting-started/env-configuration/ (caution: `extraEnvVars` will take precedence over the value from `extraEnvFrom`)
 extraEnvFrom: []
@@ -715,7 +706,8 @@ sealedSecret:
   create: true
   # -- Encrypted data for the SealedSecret (leave empty string and update after deployment)
   encryptedData:
-    LOAD_BALANCER_IP: AgCzLa8Mqxe2Tm8lwEFDbI5cydEu9cn2a+H+J+xRNhqDa3lz21tn+mLBpBN53uPiYxnsqXQ1WAIWFyLse0XqYRd3G9LvuEe85D3SYgI6qGwt73AWWz0CSN71w+LjpZ87sOtlbk6l77ulL0qbIddnR06zalPy3NrMgwxwYD/0z2CBif9R+6FDGK8713y/8czdaZtdwd9LSkNowXS2XtKXCue7nDj5Q3WeaA5HWlfabz5R5TW8OEr9vV8Z34sb+2g3kSQNZiwFM21VD5SZCSx10163De+q/2aRXB09RrLQVyNbbOqODzr1ZneQDeJ4QqZ+NSYAjcSxAUiAzrBXr2f5mBULdJd488p4jdDY5VCUJ6zl3ekhXQ9lt01t/z7OYo2zvaYIK4JvCJy2jWO/KsX2RI9jmwcyveT5xT+vCqYJgAFYvixT1lLrADkfLnj4+E1XkP7MFfviZEDkJKaj4PRM2MO3mmBRyhacdTo4qMzT1BSuJEhP8o0NxrwG7BPEc2DF0fnMdnf5l9MT8dwZ+g0xx59q1CYROY+4o0MjCjIoCo5D8qb/ZCciJJnsOfEcBRQ2h68CdqPB10lT6mGtJh0Ij9++GjBRhJlKOoo4+7J1BkZ+3C+vNNHEfNUEyafXFaJW5tVQiFuxry7fBtt/IOa560qtabhdqTBTATrDDmZ7Vr2th1EvwjVvyHlBqOtY4zt2/VexyakkXvJXvfpZ
+    LOAD_BALANCER_IP: AgCiCcrYPmL2BGZIPialLUVROI3dcUFttyVeKCa6KKPQgwi+SiF/Ot+gQWOlPz4aYcgrLjx3xcmdDEOSNfwo7ynXu8i8wRJvM3ZwMAGPCOy8aV8fiM4kbd4bRkU90SmJb/4jBghfW3eFWc/G11geZl/MJgX8g9JDsZh+Y7PChXXq5Ai0UBIeFYbOv4XW/THgV46vNtBU2rFQjCygdbc5g2ju8AhFfZKGcJH2MfZDVP0yxTq8qytGLc/rv2OeMoHMtjfZNHgo965bUYkIzjePATYZakfb7SeVn7k1voZeq6ph3gEUuLHG0tGFRzBmwZm69C2UcOTLvfeKMquoukH9t9Obb5IuFo7OmhSbGnKTu01JB76fiC+/M43NvdqXYDHwM1DoKbTrslp/8sjONs5cjYUGgzXFC4Ffo4kmckyiBJ5X420cyEhZ5BVV+M4bDTOMChCXPx26HULne5O83hoUrDeGDbw6Rpd064Sw98xvjHeyehZomBd8riqe4RqsxWo8+M9CDcPFk2xaXs9L/e/lU0p2wHedJpvVkaQGggKTI+EowjiOcj2KK0XyA9PhMDMaoEaSZGlhyMhv8TtIa5N2mQ0xFXIfefcnpgo2vX1ahs5FGmXyw0LgORl706IKJft43YJNEMl2T4J/Noku0db+PrfQq74vhoIvxzn5txkrP2Kuwl+NXWgNR8jjkJz7Pln+WbKYJ0TdP9kwyulN
+    SEARCH_API_KEY: AgBYS23netTlcnLym0Iff6hb1LcSWpQANeQGk/0vK4+HMDmgSA0MgtG2wht/XrvYlsG922KQkvZxbk+EJy3zBFi5vuCKg7dBxXDiC+EjvTOzWEP3IXNPK24wp00aJbyLYYDd7zoTY4+LkOmJe9pZpVHcw8vMsggEWXDmcc9PJoPAGhDYGdTwdVEPsJLklZUGqEbVft4BQZdFK5vp8MF2C3/3D+p/rDYQBfrckw0kLbEBUJmBYx03BRRpu+9c1p+7G4QiPgbz81GH35WccWw4L0wX8VfhfrY/wAofxpxg9jurS01oxQZalIa7Y8foQB/1Wre+2T3LeGZh9Tq3GWoEwrnswqQr4FlH7hWdCZ/RXLB/OEFSg89lg5Z8JB+8eoj1v7zzK11OOtHw/qU/qQAxt3rMmrNLrcHpuyWOfOWQo2OI4oe1yNxn0eJ3kSt9UhBqnwcoiuoiIQUhFZ6tKdkLsS7KMwp5U6GyhGgq0gEmjGvKwmtny3Itfkrn1esB6CyXwpCdweCRMdA92EytxirnIRT3sGo8m2rLfPCW/RApTuL+lhqSVzYrRV8brVkMmM/ibdOFpsPOhN6zTE99gowA/lQ8XMNpTPV9XHPkdqLAr01GUZgJ1E0hJeyoHa1Xoh31sBaMsivNZyppq0Y1D2fqv/2LH4TBbVcdsXkUbiXfPz51KhIUoHyYQiGDlptH4pbvrXbQH1YbY4J38RpgGV+kfoDYB98Pg70ESTOhABqTIcEazdg9lBwN0vZtUQ==
 
 # -- Patch Job configuration to apply LoadBalancer IP from SealedSecret
 # @section -- Patch Job configuration

@@ -743,11 +743,20 @@ kubeseal --version
 To seal a secret, here's an example (outputting to YAML and then encoding) of creating one:
 
 ```bash
-# Create the secret
+# Create the secret for one key-value
 echo -n bar | kubectl create secret generic mysecret \
   --from-file=foo=/dev/stdin \
   --type=Opaque \
   --namespace=<service namespace here> \
+  --dry-run=client \
+  -o yaml | yq '.metadata.name = "<secret name here>"' > mysecret.yaml
+
+# Create the secret for multiple key-values
+kubectl create secret generic <secret name> \
+  --from-literal=KEY1='value' \
+  --from-literal=KEY2='value' \
+  --type=Opaque \
+  --namespace=<service namespace here>\
   --dry-run=client \
   -o yaml | yq '.metadata.name = "<secret name here>"' > mysecret.yaml
 

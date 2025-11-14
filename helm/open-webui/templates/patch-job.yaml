@@ -27,7 +27,7 @@ spec:
               set -e
 
               # Patch the open-webui service with its LoadBalancer IP
-              IP=$(kubectl get secret {{ include "open-webui.name" . }}-lb-ip -n {{ include "open-webui.namespace" . }} -o jsonpath="{.data.LOAD_BALANCER_IP}" | base64 -d)
+              IP=$(kubectl get secret {{ include "open-webui.name" . }}-secrets -n {{ include "open-webui.namespace" . }} -o jsonpath="{.data.LOAD_BALANCER_IP}" | base64 -d)
               CURRENT_IP=$(kubectl get svc {{ include "open-webui.name" . }} -n {{ include "open-webui.namespace" . }} -o jsonpath="{.spec.loadBalancerIP}" 2>/dev/null || echo "")
               if [[ "$CURRENT_IP" != "$IP" ]]; then
                 kubectl patch svc {{ include "open-webui.name" . }} -n {{ include "open-webui.namespace" . }} -p '{"spec":{"loadBalancerIP":"'$IP'"}}' --type=merge
