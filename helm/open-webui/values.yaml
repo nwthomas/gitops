@@ -10,7 +10,7 @@ ollama:
 # A list of Ollama API endpoints. These can be added in lieu of automatically installing the Ollama Helm chart, or in addition to it.
 # This will be patched during deployment
 # @section -- External Tools configuration
-ollamaUrls: []
+ollamaUrls: ["http://placeholder-will-be-patched:11434"]
 
 # -- Disables taking Ollama Urls from `ollamaUrls`  list
 # @section -- External Tools configuration
