@@ -462,8 +462,6 @@ extraEnvVars:
       secretKeyRef:
         name: open-webui-secrets
         key: SEARCH_API_KEY
-  - name: WEB_LOADER_ENGINE
-    value: "playwright"
 
 # -- Env vars added to the Open WebUI deployment, common across environments. Most up-to-date environment variables can be found here: https://docs.openwebui.com/getting-started/env-configuration/ (caution: environment variables defined in both `extraEnvVars` and `commonEnvVars` will result in a conflict. Avoid duplicates)
 commonEnvVars: []
