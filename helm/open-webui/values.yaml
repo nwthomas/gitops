@@ -153,7 +153,7 @@ image:
   repository: ghcr.io/open-webui/open-webui
   # -- Open WebUI image tag (Open WebUI image tags can be found here: https://github.com/open-webui/open-webui)
   # @section -- Image configuration
-  tag: ""
+  tag: "0.6.36"
   # -- Open WebUI image pull policy
   # @section -- Image configuration
   pullPolicy: "IfNotPresent"
@@ -393,7 +393,7 @@ hostAliases: []
 service:
   # -- Service type to expose Open WebUI pods to cluster. Options are ClusterIP, NodePort, LoadBalancer, or ExternalName
   # @section -- Service configuration
-  type: ClusterIP
+  type: LoadBalancer
   # -- Additional annotations to add to the Service
   # @section -- Service configuration
   annotations: {}
@@ -412,6 +412,9 @@ service:
   # -- Load balancer class to use if service type is LoadBalancer (e.g., for GKE use "gce")
   # @section -- Service configuration
   loadBalancerClass: ""
+  # -- Load balancer IP to use if service type is LoadBalancer
+  # @section -- Service configuration
+  loadBalancerIP: ""
 
 # -- Enables the use of OpenAI APIs
 # @section -- OpenAI API configuration
@@ -704,3 +707,24 @@ logging:
     # -- Set the log level for the Authentication Webhook component
     # @section -- Logging configuration
     webhook: ""
+
+# -- Sealed Secret configuration for LoadBalancer IP
+# @section -- Sealed Secret configuration
+sealedSecret:
+  # -- Create a SealedSecret for the LoadBalancer IP
+  create: true
+  # -- Encrypted data for the SealedSecret (leave empty string and update after deployment)
+  encryptedData:
+    LOAD_BALANCER_IP: AgCzLa8Mqxe2Tm8lwEFDbI5cydEu9cn2a+H+J+xRNhqDa3lz21tn+mLBpBN53uPiYxnsqXQ1WAIWFyLse0XqYRd3G9LvuEe85D3SYgI6qGwt73AWWz0CSN71w+LjpZ87sOtlbk6l77ulL0qbIddnR06zalPy3NrMgwxwYD/0z2CBif9R+6FDGK8713y/8czdaZtdwd9LSkNowXS2XtKXCue7nDj5Q3WeaA5HWlfabz5R5TW8OEr9vV8Z34sb+2g3kSQNZiwFM21VD5SZCSx10163De+q/2aRXB09RrLQVyNbbOqODzr1ZneQDeJ4QqZ+NSYAjcSxAUiAzrBXr2f5mBULdJd488p4jdDY5VCUJ6zl3ekhXQ9lt01t/z7OYo2zvaYIK4JvCJy2jWO/KsX2RI9jmwcyveT5xT+vCqYJgAFYvixT1lLrADkfLnj4+E1XkP7MFfviZEDkJKaj4PRM2MO3mmBRyhacdTo4qMzT1BSuJEhP8o0NxrwG7BPEc2DF0fnMdnf5l9MT8dwZ+g0xx59q1CYROY+4o0MjCjIoCo5D8qb/ZCciJJnsOfEcBRQ2h68CdqPB10lT6mGtJh0Ij9++GjBRhJlKOoo4+7J1BkZ+3C+vNNHEfNUEyafXFaJW5tVQiFuxry7fBtt/IOa560qtabhdqTBTATrDDmZ7Vr2th1EvwjVvyHlBqOtY4zt2/VexyakkXvJXvfpZ
+
+# -- Patch Job configuration to apply LoadBalancer IP from SealedSecret
+# @section -- Patch Job configuration
+patchJob:
+  # -- Create a patch job to update the service with the LoadBalancer IP from the SealedSecret
+  create: true
+
+# -- RBAC configuration for service patching
+# @section -- RBAC configuration
+rbac:
+  # -- Create RBAC resources (Role and RoleBinding) for the patch job
+  create: true

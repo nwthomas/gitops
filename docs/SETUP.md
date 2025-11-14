@@ -758,7 +758,6 @@ cat mysecret.yaml
 kubeseal --controller-name=sealed-secrets \
   --controller-namespace=kube-system \
   --format yaml \
-  --scope namespace-wide \
   < mysecret.yaml \
   > mysealedsecret.yaml
 

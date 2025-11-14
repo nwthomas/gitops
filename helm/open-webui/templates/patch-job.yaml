@@ -1,0 +1,32 @@
+{{- if .Values.patchJob.create -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "open-webui.name" . }}-lb-ip-patch
+  namespace: {{ include "open-webui.namespace" . }}
+  labels:
+    {{- include "open-webui.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  ttlSecondsAfterFinished: 30
+  template:
+    metadata:
+      name: {{ include "open-webui.name" . }}-lb-ip-patch
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name | default (include "open-webui.name" .) }}
+      restartPolicy: OnFailure
+      containers:
+        - name: kubectl
+          image: bitnami/kubectl:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              IP=$(kubectl get secret {{ include "open-webui.name" . }}-lb-ip -n {{ include "open-webui.namespace" . }} -o jsonpath="{.data.LOAD_BALANCER_IP}" | base64 -d)
+              CURRENT_IP=$(kubectl get svc {{ include "open-webui.name" . }} -n {{ include "open-webui.namespace" . }} -o jsonpath="{.spec.loadBalancerIP}" 2>/dev/null || echo "")
+              if [[ "$CURRENT_IP" != "$IP" ]]; then
+                kubectl patch svc {{ include "open-webui.name" . }} -n {{ include "open-webui.namespace" . }} -p '{"spec":{"loadBalancerIP":"'$IP'"}}' --type=merge
+              fi
+{{- end }}
