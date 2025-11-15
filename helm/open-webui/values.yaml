@@ -446,22 +446,23 @@ openaiApiKeys: []
 databaseUrl: ""
 
 # -- Env vars added to the Open WebUI deployment. Most up-to-date environment variables can be found here: https://docs.openwebui.com/getting-started/env-configuration. Variables can be defined as list or map style.
-extraEnvVars:
-  - name: ENABLE_WEB_SEARCH
-    value: "true"
-  - name: ENABLE_SEARCH_QUERY_GENERATION
-    value: "true"
-  - name: WEB_SEARCH_RESULT_COUNT
-    value: "10"
-  - name: WEB_LOADER_CONCURRENT_REQUESTS
-    value: "2"
-  - name: WEB_SEARCH_ENGINE
-    value: "tavily"
-  - name: TAVILY_API_KEY
-    valueFrom:
-      secretKeyRef:
-        name: open-webui-secrets
-        key: SEARCH_API_KEY
+extraEnvVars: []
+  # Temporarily commenting out web search as it makes every query run slow
+  # - name: ENABLE_WEB_SEARCH
+  #   value: "true"
+  # - name: ENABLE_SEARCH_QUERY_GENERATION
+  #   value: "true"
+  # - name: WEB_SEARCH_RESULT_COUNT
+  #   value: "10"
+  # - name: WEB_LOADER_CONCURRENT_REQUESTS
+  #   value: "2"
+  # - name: WEB_SEARCH_ENGINE
+  #   value: "tavily"
+  # - name: TAVILY_API_KEY
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: open-webui-secrets
+  #       key: SEARCH_API_KEY
 
 # -- Env vars added to the Open WebUI deployment, common across environments. Most up-to-date environment variables can be found here: https://docs.openwebui.com/getting-started/env-configuration/ (caution: environment variables defined in both `extraEnvVars` and `commonEnvVars` will result in a conflict. Avoid duplicates)
 commonEnvVars: []
