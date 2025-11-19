@@ -20,6 +20,7 @@ ollama:
       - qwen2.5vl:7b
       - qwen3-coder:30b
       - qwen3:30b
+      - MichelRosselli/GLM-4.5-Air:Q2_K
     create:
       - name: gpt-oss:20b-131k-context
         template: |
@@ -33,6 +34,10 @@ ollama:
         template: |
           FROM qwen3:30b
           PARAMETER num_ctx 32768
+      - name: GLM-4.5-Air-128k-context
+        template: |
+          FROM MichelRosselli/GLM-4.5-Air:Q2_K
+          PARAMETER num_ctx 128000
   insecure: false
   mountPath: ""
 
