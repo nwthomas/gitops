@@ -56,7 +56,7 @@ Work for this repository is housed in this [Trello board](https://trello.com/b/H
 │   ├── prometheus/                              #
 │   ├── prometheus-operator/                     #
 │   ├── prometheus-service-monitors/             #
-│   ├── vllm/             #
+│   ├── vllm/                                    #
 └── terraform/                                   # Terraform configurations
     ├── namespaces.tf                            # Kubernetes namespace definitions
     ├── provider.tf                              # Terraform provider configuration
