@@ -52,7 +52,6 @@ Work for this repository is housed in this [Trello board](https://trello.com/b/H
 │   ├── longhorn/                                #
 │   ├── n8n/                                     #
 │   ├── nvidia-device-plugin/                    #
-│   ├── ollama-app/                              # vLLM doesn't support 5090 FE cards right now, so Ollama it is
 │   ├── prometheus/                              #
 │   ├── prometheus-operator/                     #
 │   ├── prometheus-service-monitors/             #
@@ -76,7 +75,7 @@ Here's the hardware list of what each of the control/worker nodes is using:
 3. [Samsung 2TB NVMe SSD](https://www.amazon.com/dp/B0DHLCRF91)
 4. [256gb Micro SD Card](https://www.amazon.com/dp/B08TJZDJ4D)
 
-> It's worth noting that one of my nodes is a computer running Ubuntu with a nice GPU, but that's really outside the scope of any guides I'd give for deploying this repository. The only part of this that will impact you is any apps that have node affinity for that setup (like the `nvidia-device-plugin-app` and `ollama-app` deployments), but you can easily remove that from your own deployments.
+> It's worth noting that one of my nodes is a computer running Ubuntu with a nice GPU, but that's really outside the scope of any guides I'd give for deploying this repository. The only part of this that will impact you is any apps that have node affinity for that setup (like the `nvidia-device-plugin-app` and `vllm-app` deployments), but you can easily remove that from your own deployments.
 >
 > The rest of the nodes are Raspberry Pi 5s as described above.
 
@@ -93,7 +92,6 @@ Here's the hardware list of what each of the control/worker nodes is using:
 - [Metal LB](https://metallb.io/)
 - [n8n](https://n8n.io/)
 - [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)
-- [Ollama](https://ollama.com/) (vLLM does not support RTX 5090 FE cards right now)
 - [OpenFaaS](https://www.openfaas.com/) (coming soon)
 - [Prometheus](https://prometheus.io/) and [Prometheus Operator](https://github.com/prometheus-operator/prometheus-operator)
 - [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets)
