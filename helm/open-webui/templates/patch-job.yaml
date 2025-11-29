@@ -42,11 +42,11 @@ spec:
                 kubectl get secrets -n {{ include "open-webui.namespace" . }}
                 exit 1
               fi
-              VLLM_URL="http://${VLLM_IP}:11434"
+              VLLM_URL="http://${VLLM_IP}:8000"
               echo "vLLM URL: $VLLM_IP"
 
               # Patch the StatefulSet with OLLAMA_BASE_URLS environment variable (using set env to merge, not replace)
-              kubectl set env statefulset/{{ include "open-webui.name" . }} -n {{ include "open-webui.namespace" . }} OLLAMA_BASE_URLS="$VLLM_URL"
+              kubectl set env statefulset/{{ include "open-webui.name" . }} -n {{ include "open-webui.namespace" . }} OPENAI_API_BASE_URL="$VLLM_URL"
 
               echo "StatefulSet patched with vLLM URL: $VLLM_URL"
 {{- end }}

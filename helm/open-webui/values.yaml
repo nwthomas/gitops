@@ -2,15 +2,14 @@ nameOverride: "open-webui"
 
 namespaceOverride: "applications"
 
-# There's already an Ollama deployment in the cluster, so we don't need to install it again
+# The cluster is running vLLM, so we don't need to install Ollama
 ollama:
   enabled: false
-  fullnameOverride: "open-webui-ollama"
 
 # A list of Ollama API endpoints. These can be added in lieu of automatically installing the Ollama Helm chart, or in addition to it.
 # This will be patched during deployment
 # @section -- External Tools configuration
-ollamaUrls: ["http://placeholder-will-be-patched:11434"]
+ollamaUrls: []
 
 # -- Disables taking Ollama Urls from `ollamaUrls`  list
 # @section -- External Tools configuration
@@ -427,11 +426,9 @@ enableOpenaiApi: true
 openaiBaseApiUrl: "https://api.openai.com/v1"
 
 # -- OpenAI base API URLs to use. Overwrites the value in openaiBaseApiUrl if set
+# This will be patched during deployment
 # @section -- OpenAI API configuration
-openaiBaseApiUrls:
-  []
-  # - "https://api.openai.com/v1"
-  # - "https://api.company.openai.com/v1"
+openaiBaseApiUrls: ["http://placeholder-will-be-patched:11434"]
 
 # -- OpenAI API key to use. Default API key value for Pipelines if `openaiBaseApiUrl` is blank. Should be updated in a production deployment, or be changed to the required API key if not using Pipelines
 # @section -- OpenAI API configuration
