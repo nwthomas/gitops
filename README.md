@@ -84,7 +84,7 @@ The GPU node I am running for model inference is quite different and uses the fo
 3. [AMD 9800x3D CPU](https://amzn.to/3K04gQk)
 4. [128gb DDR5 Corsair RAM](https://amzn.to/489KtXV)
 5. [8TB Western Digital NVMe SSD](https://amzn.to/49OdUju)
-6. [Nvidia RTX 6000 Pro Workstation GPU](https://amzn.to/4amKZTJ)
+6. [Nvidia RTX 5090 FE GPU](https://www.walmart.com/ip/NVIDIA-GeForce-RTX-5090-Graphic-Card-32GB-GDDR7/15176552726?wmlspartner=wlpa&selectedSellerId=102776342&sourceid=dsn_ad_34ba2672-106a-484b-a996-41cf96423ae3&veh=dsn&wmlspartner=dsn_ad_34ba2672-106a-484b-a996-41cf96423ae3&cn=FY26-MP-PMax-P13N_cnv_dps_dsn_dis_ad_mp_s_n&gclsrc=aw.ds&wl9=pla&wl11=online&gad_source=1&gad_campaignid=22437915517&gbraid=0AAAAADmfBIoWMJ-7ViIpR86Zh1q0Gmlk2&gclid=CjwKCAiAlrXJBhBAEiwA-5pgwrykl7_Y7RNg8jth7acgZtNw2I2QFscKcJaRvuJCTO10Z2nHWsbTmBoCVecQAvD_BwE)
 7. [Corsair SF1000 PSU](https://amzn.to/4okJn05)
 8. [NZXT Kraken Elite 280mm AIO](https://amzn.to/4okXBxZ)
 9. [Noctua 120mm Fans](https://amzn.to/4okXBxZ)
