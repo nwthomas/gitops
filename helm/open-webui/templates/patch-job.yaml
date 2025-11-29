@@ -43,9 +43,9 @@ spec:
                 exit 1
               fi
               VLLM_URL="http://${VLLM_IP}:8000"
-              echo "vLLM URL: $VLLM_IP"
+              echo "vLLM URL: $VLLM_URL"
 
-              # Patch the StatefulSet with OLLAMA_BASE_URLS environment variable (using set env to merge, not replace)
+              # Patch the StatefulSet with OPENAI_API_BASE_URL environment variable (using set env to merge, not replace)
               kubectl set env statefulset/{{ include "open-webui.name" . }} -n {{ include "open-webui.namespace" . }} OPENAI_API_BASE_URL="$VLLM_URL"
 
               echo "StatefulSet patched with vLLM URL: $VLLM_URL"
