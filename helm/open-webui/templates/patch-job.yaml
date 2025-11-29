@@ -34,19 +34,19 @@ spec:
                 echo "Service LoadBalancer IP patched to: $IP"
               fi
 
-              # Get Ollama LoadBalancer IP from ollama-app-lb-ip secret
-              OLLAMA_IP=$(kubectl get secret ollama-app-lb-ip -n {{ include "open-webui.namespace" . }} -o jsonpath="{.data.loadBalancerIP}" 2>/dev/null | base64 -d)
-              if [[ -z "$OLLAMA_IP" ]]; then
-                echo "ERROR: Failed to read Ollama IP from secret ollama-app-lb-ip"
+              # Get vLLM LoadBalancer IP from vllm-app-lb-ip secret
+              VLLM_IP=$(kubectl get secret vllm-app-lb-ip -n {{ include "open-webui.namespace" . }} -o jsonpath="{.data.loadBalancerIP}" 2>/dev/null | base64 -d)
+              if [[ -z "$VLLM_IP" ]]; then
+                echo "ERROR: Failed to read vLLM LB IP from secret vllm-app-lb-ip"
                 echo "Available secrets:"
                 kubectl get secrets -n {{ include "open-webui.namespace" . }}
                 exit 1
               fi
-              OLLAMA_URL="http://${OLLAMA_IP}:11434"
-              echo "Ollama URL: $OLLAMA_URL"
+              VLLM_URL="http://${VLLM_IP}:11434"
+              echo "vLLM URL: $VLLM_IP"
 
               # Patch the StatefulSet with OLLAMA_BASE_URLS environment variable (using set env to merge, not replace)
-              kubectl set env statefulset/{{ include "open-webui.name" . }} -n {{ include "open-webui.namespace" . }} OLLAMA_BASE_URLS="$OLLAMA_URL"
+              kubectl set env statefulset/{{ include "open-webui.name" . }} -n {{ include "open-webui.namespace" . }} OLLAMA_BASE_URLS="$VLLM_URL"
 
-              echo "StatefulSet patched with Ollama URL: $OLLAMA_URL"
+              echo "StatefulSet patched with vLLM URL: $VLLM_URL"
 {{- end }}
