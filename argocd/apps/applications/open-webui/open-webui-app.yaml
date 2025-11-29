@@ -18,9 +18,10 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - Prune=true
+      - RespectIgnoreDifferences=true
   ignoreDifferences:
   - group: apps
     kind: StatefulSet
     name: open-webui
-    jqPathExpressions:
-    - '.spec.template.spec.containers[0].env[] | select(.name == "OLLAMA_BASE_URLS") | .value'
+    managedFieldsManagers:
+    - kubectl-set
