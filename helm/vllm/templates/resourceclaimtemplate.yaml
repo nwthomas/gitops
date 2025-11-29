@@ -1,0 +1,19 @@
+{{- if and .Values.vllm.gpu.enabled .Values.vllm.gpu.draEnabled (not .Values.vllm.gpu.draExistingClaimTemplate) -}}
+---
+{{- if semverCompare ">=1.34-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: resource.k8s.io/v1
+{{- else }}
+apiVersion: resource.k8s.io/v1beta1
+{{- end }}
+kind: ResourceClaimTemplate
+metadata:
+  name: {{ template "vllm.fullname" . }}
+  namespace: {{ include "vllm.namespace" . }}
+spec:
+  spec:
+    devices:
+      requests:
+        - name: gpu
+          deviceClassName: {{ .Values.vllm.gpu.draDriverClass }}
+          count: {{(.Values.vllm.gpu.number | default 1)}}
+{{- end -}}

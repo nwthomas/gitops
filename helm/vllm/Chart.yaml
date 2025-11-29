@@ -1,0 +1,14 @@
+apiVersion: v2
+appVersion: 0.1.0
+description: vLLM is a high-performance, GPU-accelerated inference engine for LLM models.
+home: https://vllm.ai/
+icon: https://vllm.ai/public/vllm.png
+keywords:
+  - ai
+  - llm
+kubeVersion: ^1.16.0-0
+name: vllm
+sources:
+  - https://github.com/vllm/vllm
+type: application
+version: 0.1.0

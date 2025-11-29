@@ -1,0 +1,169 @@
+# Based on vLLM deployment configuration
+
+replicaCount: 1
+
+image:
+  repository: vllm/vllm-openai
+  tag: "latest"
+  pullPolicy: Always
+
+vllm:
+  port: 8000
+  cacheMountPath: /root/.cache/huggingface
+  shmSizeLimit: "2Gi"
+  command:
+    - /bin/sh
+    - -c
+  args:
+    - "vllm serve mistralai/Mistral-7B-Instruct-v0.3 --trust-remote-code --enable-chunked-prefill --max_num_batched_tokens 1024"
+  gpu:
+    enabled: true
+    type: "nvidia"
+    number: 1
+    nvidiaResource: "nvidia.com/gpu"
+    draEnabled: false
+    draDriverClass: ""
+    draExistingClaimTemplate: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+rbac:
+  create: true
+
+sealedSecret:
+  create: true
+  encryptedData:
+    loadBalancerIP: "AgCtwbICRqpe4P3iplh5Rr7vISg0UE0EJCNg7QvHahGvvfiDnFq0ryWS4BUtnvh3Goay44sAi7XR5wuu9JbX9HRH+g7U46mkTg0lTiiNQTMjB4zwqcI9asJUTDy7SAvZrj8Qa8+xGY/2+rzz56P9f2rP04nZ+xGCpTCmsysHH5JqkgGKwiX/bZ/uUSUOi94ygZIKCO0RpPIh7au2Cf3nzdEtu43GnfDmJ/BY9SuG9Wiux4MGFAMzdByMsA09o7vpfhcGqSv05/MaQcBt9W72FrnKgV2/chywP0VB+2t+KGCBDDk11NP4LCxbVnTJ+LeNa9rUPn5l3eg6A1O5qtda71hvr2l85wC9Yg5a0PIS7NmML2tww2W3InHXpKIlM/Df4VWphZQp84zXvyXyKqcsdA/1owrGFovb1Oec/4dQpBCyEoAheO0vW+J/hIluPBJYlC+rbFLFjov2THpr9Y0eMEldF/fjFWKDJ5AdKYm2ezUu3wUKm7FhGPk6T6MCJ7VaHMnlT6TrjQYd0nfUGyXqfY6lFLPwUe8VqrsERgSrh3n19E3hTwdW3XJtHRLH0Dg+zIDSMMBVlXIiNstBwvla3pq/kvBOfI9N4HeA4RWlkTFxvvGrAeci6RWsalp6I0ckJrysmzx7eBiS/7j9jF+5C6SSqu8eHnRqKt42+AUtPRt2Faskd6LVCxi7050ZaREeGCH/8qoJflxKS/9L"
+
+patchJob:
+  create: true
+
+podAnnotations: {}
+
+podLabels: {}
+
+podSecurityContext: {}
+
+priorityClassName: ""
+
+securityContext:
+  runAsNonRoot: false
+  runAsUser: 0
+
+runtimeClassName: nvidia
+
+service:
+  type: LoadBalancer
+  port: 8000
+  nodePort: 30080
+  loadBalancerIP: ""
+  annotations: {}
+  labels: {}
+
+deployment:
+  labels: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: vllm.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  requests:
+    nvidia.com/gpu: "1"
+    memory: "6G"
+    cpu: "2"
+  limits:
+    nvidia.com/gpu: "1"
+    memory: "20G"
+    cpu: "10"
+
+livenessProbe:
+  enabled: true
+  path: /health
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+  successThreshold: 1
+
+readinessProbe:
+  enabled: true
+  path: /health
+  initialDelaySeconds: 60
+  periodSeconds: 5
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+
+volumeMounts: []
+
+extraArgs: []
+
+extraEnv: []
+
+extraEnvFrom: []
+
+persistentVolume:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  annotations:
+    # Set the number of replicas for this Longhorn volume by overriding the storage class default
+    longhorn.io/number-of-replicas: "1"
+  existingClaim: ""
+  size: 200Gi
+  storageClass: "longhorn"
+  volumeMode: ""
+  subPath: ""
+  volumeName: ""
+
+nodeSelector:
+  kubernetes.io/arch: amd64
+  gpu: "true"
+
+tolerations: []
+
+affinity: {}
+
+lifecycle: {}
+
+updateStrategy:
+  type: "Recreate"
+
+topologySpreadConstraints: {}
+
+terminationGracePeriodSeconds: 120
+
+initContainers: []
+
+hostIPC: false
+
+hostPID: false
+
+hostNetwork: false
+
+extraObjects: []
+
+tests:
+  enabled: true
+  labels: {}
+  annotations: {}

@@ -1,0 +1,11 @@
+{{- if .Values.runtimeClassName }}
+---
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: {{ .Values.runtimeClassName | quote }}
+  labels:
+    {{- include "vllm.labels" . | nindent 4 }}
+handler: {{ .Values.runtimeClassName | quote }}
+{{- end }}
+

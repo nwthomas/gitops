@@ -19,13 +19,13 @@ If you want to implement this for yourself, please follow the [setup document](.
 - Metal LB: An on-prem native software load balancer
 - Monitoring: Prometheus Operator with Grafana using storage PVC through Longhorn
 - n8n: Workflow automation platform with persistent storage
-- Ollama: Runtime for AI models on a GPU node
+- vLLM: Runtime for AI models on a GPU node
 - Dashboard UI for:
-    - Argo CD: For controlling deployments and rollbacks
-    - Grafana: For building dashboards against Prometheus data
-    - Longhorn: For controlling the distributed block storage setup
-    - n8n: For creating and managing automated workflows
-    - Prometheus: For querying against raw data from pods/nodes/deployment resources
+  - Argo CD: For controlling deployments and rollbacks
+  - Grafana: For building dashboards against Prometheus data
+  - Longhorn: For controlling the distributed block storage setup
+  - n8n: For creating and managing automated workflows
+  - Prometheus: For querying against raw data from pods/nodes/deployment resources
 
 ## 🧱 Project Management
 
@@ -56,6 +56,7 @@ Work for this repository is housed in this [Trello board](https://trello.com/b/H
 │   ├── prometheus/                              #
 │   ├── prometheus-operator/                     #
 │   ├── prometheus-service-monitors/             #
+│   ├── vllm/             #
 └── terraform/                                   # Terraform configurations
     ├── namespaces.tf                            # Kubernetes namespace definitions
     ├── provider.tf                              # Terraform provider configuration
@@ -69,6 +70,7 @@ Work for this repository is housed in this [Trello board](https://trello.com/b/H
 The cluster this repo's files runs on uses Raspberry Pi 5 devices, specifically the 16gb version.
 
 Here's the hardware list of what each of the control/worker nodes is using:
+
 1. [Raspberry Pi 5](https://www.amazon.com/dp/B0DSPYPKRG)
 2. [NVMe + POE+ Pi 5 Hat and Active Cooler](https://www.amazon.com/dp/B0D8JC3MXQ)
 3. [Samsung 2TB NVMe SSD](https://www.amazon.com/dp/B0DHLCRF91)
@@ -97,6 +99,7 @@ Here's the hardware list of what each of the control/worker nodes is using:
 - [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets)
 - [Terraform](https://developer.hashicorp.com/terraform)
 - [Traefik](https://traefik.io/traefik)
+- [vLLM](https://docs.vllm.ai)
 
 ## 🙇🏻‍♂️ Acknowledgements
 
