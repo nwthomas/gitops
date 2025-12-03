@@ -87,7 +87,7 @@ The GPU node I am running for model inference is quite different and uses the fo
 6. [Nvidia RTX 5090 FE GPU](https://www.walmart.com/ip/NVIDIA-GeForce-RTX-5090-Graphic-Card-32GB-GDDR7/15176552726?wmlspartner=wlpa&selectedSellerId=102776342&sourceid=dsn_ad_34ba2672-106a-484b-a996-41cf96423ae3&veh=dsn&wmlspartner=dsn_ad_34ba2672-106a-484b-a996-41cf96423ae3&cn=FY26-MP-PMax-P13N_cnv_dps_dsn_dis_ad_mp_s_n&gclsrc=aw.ds&wl9=pla&wl11=online&gad_source=1&gad_campaignid=22437915517&gbraid=0AAAAADmfBIoWMJ-7ViIpR86Zh1q0Gmlk2&gclid=CjwKCAiAlrXJBhBAEiwA-5pgwrykl7_Y7RNg8jth7acgZtNw2I2QFscKcJaRvuJCTO10Z2nHWsbTmBoCVecQAvD_BwE)
 7. [Corsair SF1000 PSU](https://amzn.to/4okJn05)
 8. [NZXT Kraken Elite 280mm AIO](https://amzn.to/4okXBxZ)
-9. [Noctua 120mm Fans](https://amzn.to/4okXBxZ)
+9. [Noctua 120mm Fans](https://amzn.to/4pkPR0m)
 
 I built it to be beefy enough to handle inference but also lightweight enough for me to unplug, take with me while traveling, and use as a personal computer.
 
