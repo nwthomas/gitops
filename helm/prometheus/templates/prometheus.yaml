@@ -12,6 +12,9 @@ spec:
   replicas: {{ .Values.replicas | default 1 }}
   retention: {{ .Values.retention | default "7d" }}
   retentionSize: {{ .Values.retentionSize | default "60GB" }}
+  walCompression: {{ .Values.walCompression | default true }}
+  scrapeInterval: {{ .Values.scrapeInterval | default "60s" }}
+  evaluationInterval: {{ .Values.evaluationInterval | default "60s" }}
   resources:
     requests:
       memory: {{ .Values.resources.requests.memory | default "400Mi" }}

@@ -18,6 +18,17 @@ spec:
             local:
               chunks_directory: /var/loki/chunks
               rules_directory: /var/loki/rules
+          limits_config:
+            ingestion_rate_mb: 10
+            ingestion_burst_size_mb: 20
+          chunk_store_config:
+            max_chunk_age: 2h
+          ingester:
+            chunk_idle_period: 30m
+            chunk_block_size: 262144
+            chunk_target_size: 1572864
+            max_chunk_age: 2h
+            flush_check_period: 30s
         persistence:
           enabled: true
           storageClassName: longhorn

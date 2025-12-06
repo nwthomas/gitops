@@ -14,6 +14,12 @@ spec:
         daemonset:
           tolerations:
             - operator: Exists
+        config:
+          clients:
+            - url: http://loki-gateway/loki/api/v1/push
+              batchwait: 5s
+              batchsize: 1048576
+              timeout: 30s
   destination:
     server: https://kubernetes.default.svc
     namespace: logging

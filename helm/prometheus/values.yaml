@@ -3,6 +3,11 @@ replicas: 1
 retention: "7d"
 retentionSize: "60GB"
 
+# Write optimization settings
+walCompression: true
+scrapeInterval: "60s"
+evaluationInterval: "60s"
+
 resources:
   requests:
     memory: "400Mi"
