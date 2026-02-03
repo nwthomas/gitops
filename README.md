@@ -1,6 +1,6 @@
 > NOTE: Terraform files will be drastically updated later as [Atlantis](https://www.runatlantis.io) is brought online.
 
-# GitOps 🛠️
+# GitOps
 
 ## About
 
