@@ -155,7 +155,7 @@ image:
   repository: ghcr.io/open-webui/open-webui
   # -- Open WebUI image tag (Open WebUI image tags can be found here: https://github.com/open-webui/open-webui)
   # @section -- Image configuration
-  tag: "0.7.2"
+  tag: "0.8.5"
   # -- Open WebUI image pull policy
   # @section -- Image configuration
   pullPolicy: "IfNotPresent"
