@@ -13,7 +13,7 @@ If you want to implement this for yourself, please follow the [setup document](.
 ## Features
 
 - App-of-apps: A root Argo CD Application deployment schema which recursively manages child apps
-- Namespace deployments: `argocd`, `cert-manager`, `kube-system`, `logging`, `longhorn-system`, `monitoring`, and `applications-eng`
+- Namespace deployments: `argocd`, `cert-manager`, `kube-system`, `logging`, `longhorn-system`, `monitoring`, and `applications`
 - Cert-manager: X.509 certificate management for Kubernetes
 - Longhorn: Distributed on-prem file storage with multiple storage classes
 - Metal LB: An on-prem native software load balancer

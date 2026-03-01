@@ -16,7 +16,8 @@ This file provides guidance to coding agents when working with code in this repo
 
 ## High Level Architecture
 
-- Root Argo CD application resides at `argocd/root/` and recursively manages child applications in `argocd/apps/*`.
+- Root Argo CD application resides at `argocd/root/` and targets `argocd/namespaces/`.
+- Namespace-level applications in `argocd/namespaces/*` then recursively manage child applications in `argocd/apps/*`.
 - Each application deploys resources in dedicated namespaces (e.g., `cert-manager`, `longhorn-system`, `monitoring`).
 - Helm charts under `helm/` provide the infrastructure components.
 - Terraform configuration under `terraform/` is a work‑in‑progress but defines the underlying infrastructure provider.
@@ -29,7 +30,9 @@ This file provides guidance to coding agents when working with code in this repo
 
 ## Argo CD
 
-- Argo CD resources are defined under `argocd/apps/`. Each app has a `spec` pointing to a Git repo and path.
+- Argo CD resources are defined under `argocd/root/`, `argocd/namespaces/`, and `argocd/apps/`.
+- Root points to namespace-level apps, and namespace-level apps point to app-level resources.
+- Each app has a `spec` pointing to a Git repo and path.
 - Sync state can be checked with `argocd app list`.
 
 ## Terraform (WIP)
@@ -39,5 +42,5 @@ This file provides guidance to coding agents when working with code in this repo
 
 ## Notes
 
-- Some components (e.g., Longhorn) require manual installation steps via Helm and kubectl; see respective READMEs.
+- Some components (e.g., Longhorn) may require manual installation steps via Helm and kubectl; see `docs/SETUP.md`.
 - Keep the cluster state separate from version control; use `secrets` and `sealed-secrets` for sensitive data.
