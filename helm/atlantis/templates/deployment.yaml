@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "atlantis.fullname" . }}
+  labels:
+    {{- include "atlantis.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "atlantis.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "atlantis.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "atlantis.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: atlantis
+        image: "{{ .Values.atlantis.image.repository }}:{{ .Values.atlantis.image.tag }}"
+        imagePullPolicy: {{ .Values.atlantis.image.pullPolicy }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.atlantis.service.targetPort }}
+          protocol: TCP
+        env:
+        - name: ATLANTIS_REPO_ALLOWLIST
+          value: {{ .Values.atlantis.env.ATLANTIS_REPO_ALLOWLIST | quote }}
+        - name: ATLANTIS_DATA_DIR
+          value: {{ .Values.atlantis.env.ATLANTIS_DATA_DIR | quote }}
+        - name: ATLANTIS_ATLANTIS_URL
+          value: {{ .Values.atlantis.env.ATLANTIS_ATLANTIS_URL | quote }}
+        - name: GITHUB_USER
+          value: {{ .Values.atlantis.env.GITHUB_USER | quote }}
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "atlantis.fullname" . }}-secrets
+              key: github-token
+        - name: ATLANTIS_REPO_CONFIG_JSON
+          value: {{ .Values.atlantis.env.ATLANTIS_REPO_CONFIG_JSON | quote }}
+        {{- if .Values.atlantis.env.GITHUB_APP_ID }}
+        - name: GITHUB_APP_ID
+          value: {{ .Values.atlantis.env.GITHUB_APP_ID | quote }}
+        - name: GITHUB_APP_KEY_FILE
+          value: {{ .Values.atlantis.env.GITHUB_APP_KEY_FILE | quote }}
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          {{- toYaml .Values.atlantis.resources | nindent 10 }}
+        volumeMounts:
+        - name: atlantis-data
+          mountPath: {{ .Values.atlantis.env.ATLANTIS_DATA_DIR }}
+        {{- if .Values.atlantis.env.GITHUB_APP_ID }}
+        - name: github-app-key
+          mountPath: /atlantis-data
+          readOnly: true
+        {{- end }}
+      volumes:
+      - name: atlantis-data
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "atlantis.fullname" . }}-pvc
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      {{- if .Values.atlantis.env.GITHUB_APP_ID }}
+      - name: github-app-key
+        secret:
+          secretName: {{ include "atlantis.fullname" . }}-secrets
+          items:
+          - key: github-app-key
+            path: github-app-key.pem
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
