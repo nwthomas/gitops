@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: watcher-in-the-water-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/nwthomas/watcher-in-the-water.git
+    targetRevision: main
+    path: helm/
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: applications
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Prune=true
