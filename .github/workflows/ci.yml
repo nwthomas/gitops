@@ -30,9 +30,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.6.0
+          terraform_version: 1.15.7
       - name: Terraform init & validate
         working-directory: terraform
         run: |
