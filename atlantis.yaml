@@ -1,0 +1,94 @@
+version: 3
+projects:
+# Monitor the helm directory for changes
+- name: helm-argocd
+  dir: helm/argocd
+  workflow: default
+  autoplan:
+    when_modified: ["**/*.yaml", "**/*.yml", "**/*.tpl"]
+    enabled: true
+  apply_requirements: ["approved", "mergeable"]
+  allowed_users: ["nwthomas"]
+
+- name: helm-cert-manager
+  dir: helm/cert-manager
+  workflow: default
+  autoplan:
+    when_modified: ["**/*.yaml", "**/*.yml", "**/*.tpl"]
+    enabled: true
+  apply_requirements: ["approved", "mergeable"]
+  allowed_users: ["nwthomas"]
+
+- name: helm-grafana
+  dir: helm/grafana
+  workflow: default
+  autoplan:
+    when_modified: ["**/*.yaml", "**/*.yml", "**/*.tpl"]
+    enabled: true
+  apply_requirements: ["approved", "mergeable"]
+  allowed_users: ["nwthomas"]
+
+- name: helm-longhorn
+  dir: helm/longhorn
+  workflow: default
+  autoplan:
+    when_modified: ["**/*.yaml", "**/*.yml", "**/*.tpl"]
+    enabled: true
+  apply_requirements: ["approved", "mergeable"]
+  allowed_users: ["nwthomas"]
+
+- name: helm-prometheus
+  dir: helm/prometheus
+  workflow: default
+  autoplan:
+    when_modified: ["**/*.yaml", "**/*.yml", "**/*.tpl"]
+    enabled: true
+  apply_requirements: ["approved", "mergeable"]
+  allowed_users: ["nwthomas"]
+
+- name: helm-prometheus-operator
+  dir: helm/prometheus-operator
+  workflow: default
+  autoplan:
+    when_modified: ["**/*.yaml", "**/*.yml", "**/*.tpl"]
+    enabled: true
+  apply_requirements: ["approved", "mergeable"]
+  allowed_users: ["nwthomas"]
+
+- name: helm-prometheus-service-monitors
+  dir: helm/prometheus-service-monitors
+  workflow: default
+  autoplan:
+    when_modified: ["**/*.yaml", "**/*.yml", "**/*.tpl"]
+    enabled: true
+  apply_requirements: ["approved", "mergeable"]
+  allowed_users: ["nwthomas"]
+
+- name: helm-atlantis
+  dir: helm/atlantis
+  workflow: default
+  autoplan:
+    when_modified: ["**/*.yaml", "**/*.yml", "**/*.tpl"]
+    enabled: true
+  apply_requirements: ["approved", "mergeable"]
+  allowed_users: ["nwthomas"]
+
+# Monitor the terraform directory for changes
+- name: terraform-namespaces
+  dir: terraform
+  workflow: default
+  autoplan:
+    when_modified: ["**/*.tf", "**/*.tfvars"]
+    enabled: true
+  apply_requirements: ["approved", "mergeable"]
+  allowed_users: ["nwthomas"]
+
+workflows:
+  default:
+    plan:
+      steps:
+      - init
+      - plan
+    apply:
+      steps:
+      - apply
