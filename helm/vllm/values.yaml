@@ -5,18 +5,28 @@ replicaCount: 1
 
 image:
   repository: vllm/vllm-openai
-  tag: "v0.12.0"
+  tag: "v0.27.1"
   pullPolicy: Always
 
 vllm:
   port: 8000
   cacheMountPath: /root/.cache/huggingface
-  shmSizeLimit: "2Gi"
+  shmSizeLimit: "16Gi"
   command:
     - /bin/sh
     - -c
   args:
-    - "vllm serve openai/gpt-oss-20b --trust-remote-code --enable-chunked-prefill --enable-auto-tool-choice --tool-call-parser openai --reasoning-parser openai_gptoss"
+    - >-
+      vllm serve unsloth/Qwen3.8-27B-NVFP4
+      --served-model-name qwen3.8-27b
+      --tensor-parallel-size 1
+      --max-model-len 32768
+      --kv-cache-dtype fp8
+      --gpu-memory-utilization 0.90
+      --enforce-eager
+      --reasoning-parser qwen3
+      --enable-auto-tool-choice
+      --tool-call-parser qwen3_coder
   gpu:
     enabled: true
     type: "nvidia"
@@ -82,17 +92,17 @@ ingress:
 resources:
   requests:
     nvidia.com/gpu: "1"
-    memory: "6G"
-    cpu: "2"
+    memory: "32G"
+    cpu: "4"
   limits:
     nvidia.com/gpu: "1"
-    memory: "20G"
-    cpu: "10"
+    memory: "96G"
+    cpu: "12"
 
 livenessProbe:
   enabled: true
   path: /health
-  initialDelaySeconds: 60
+  initialDelaySeconds: 300
   periodSeconds: 10
   timeoutSeconds: 10
   failureThreshold: 3
@@ -101,10 +111,10 @@ livenessProbe:
 readinessProbe:
   enabled: true
   path: /health
-  initialDelaySeconds: 60
+  initialDelaySeconds: 300
   periodSeconds: 5
   timeoutSeconds: 5
-  failureThreshold: 3
+  failureThreshold: 24
   successThreshold: 1
 
 autoscaling:
