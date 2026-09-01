@@ -998,31 +998,6 @@ To fix this, we need to add Grafana Loki and Alloy.
 
 TODO: Describe setting up Loki and Alloy.
 
-## Adding n8n
-
-This repository already has a full configuration for n8n. Once you have ArgoCD functional, you should be able to just go to the n8n application and deploy it. The only caveat is that you'll need to manually set a LoadBalancer deployment type in order to view it in the browser. You can `kubectl apply` a file with this in it:
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: n8n-app-loadbalancer
-  namespace: applications
-spec:
-  selector:
-    app.kubernetes.io/name: n8n
-    app.kubernetes.io/instance: n8n-app
-  type: LoadBalancer
-  loadBalancerIP: <your-ip-address-here>
-  ports:
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: http
-```
-
-TODO: Update with information on sealed secret for IP load balancer address once that's functional.
-
 ## Finishing Up
 
 The last thing that you should do is hop into the ArgoCD dashboard (via whatever IP you set it to for external) and deploy all the root/namespaces/apps there.

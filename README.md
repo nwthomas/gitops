@@ -18,13 +18,11 @@ If you want to implement this for yourself, please follow the [setup document](.
 - Longhorn: Distributed on-prem file storage with multiple storage classes
 - Metal LB: An on-prem native software load balancer
 - Monitoring: Prometheus Operator with Grafana using storage PVC through Longhorn
-- n8n: Workflow automation platform with persistent storage
 - vLLM: Runtime for AI models on a GPU node
 - Dashboard UI for:
   - Argo CD: Controlling deployments and rollbacks
   - Grafana: Building dashboards against Prometheus data
   - Longhorn: Controlling the distributed block storage setup
-  - n8n: Creating and managing automated workflows
   - Open WebUI: A ChatGPT-like interface paired with the vLLM deployment for inference
   - Prometheus: Querying against raw data from pods/nodes/deployment resources
 
@@ -51,7 +49,6 @@ Work for this repository is housed in this [Trello board](https://trello.com/b/H
 │   ├── cert-manager/                            #
 │   ├── grafana/                                 #
 │   ├── longhorn/                                #
-│   ├── n8n/                                     #
 │   ├── nvidia-device-plugin/                    #
 │   ├── open-webui/                              #
 │   ├── prometheus/                              #
@@ -102,7 +99,6 @@ I built it to be beefy enough to handle inference but also lightweight enough fo
 - [Kubernetes](https://kubernetes.io)/[K3s](https://k3s.io)
 - [Longhorn](https://longhorn.io)
 - [Metal LB](https://metallb.io)
-- [n8n](https://n8n.io)
 - [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)
 - [Open WebUI](https://openwebui.com)
 - [OpenFaaS](https://www.openfaas.com) (coming soon)
