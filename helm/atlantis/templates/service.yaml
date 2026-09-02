@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "atlantis.fullname" . }}
+  labels:
+    {{- include "atlantis.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.atlantis.service.type }}
+  ports:
+  - port: {{ .Values.atlantis.service.port }}
+    targetPort: {{ .Values.atlantis.service.targetPort }}
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "atlantis.selectorLabels" . | nindent 4 }}

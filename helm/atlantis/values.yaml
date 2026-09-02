@@ -1,0 +1,114 @@
+# Default values for atlantis
+# This chart deploys Atlantis for Terraform pull request automation
+
+# Global settings
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+
+# Atlantis configuration
+atlantis:
+  # Image configuration
+  image:
+    repository: runatlantis/atlantis
+    tag: "v0.27.0"
+    pullPolicy: IfNotPresent
+
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 4141
+    targetPort: 4141
+
+  # Ingress configuration
+  ingress:
+    enabled: true
+    className: "traefik"
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: "true"
+    hosts:
+      - host: atlantis.yourdomain.com  # Change this to your domain
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: atlantis-tls
+        hosts:
+          - atlantis.yourdomain.com  # Change this to your domain
+
+  # Resource configuration
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+  # Environment variables
+  env:
+    # GitHub configuration
+    ATLANTIS_REPO_ALLOWLIST: "github.com/nwthomas/gitops"  # Your GitHub repo
+    ATLANTIS_DATA_DIR: "/atlantis-data"
+    ATLANTIS_ATLANTIS_URL: "https://atlantis.yourdomain.com"  # Change this to your domain
+    
+    # GitHub App or Personal Access Token (set via secret)
+    GITHUB_TOKEN: ""  # Will be set via secret
+    GITHUB_USER: "nwthomas"  # Your GitHub username
+    GITHUB_APP_ID: ""  # If using GitHub App
+    GITHUB_APP_KEY_FILE: "/atlantis-data/github-app-key.pem"  # If using GitHub App
+    
+    # Webhook configuration
+    ATLANTIS_REPO_CONFIG_JSON: |
+      {
+        "repos": [
+          {
+            "id": "/.*/",
+            "allowed_users": ["nwthomas"],  # Only allow your GitHub username
+            "allowed_merge_methods": ["merge", "squash"],
+            "apply_requirements": ["approved", "mergeable"],
+            "workflow": "default"
+          }
+        ]
+      }
+
+# Security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+# Pod security context
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+# Service account
+serviceAccount:
+  create: true
+  name: atlantis
+  annotations: {}
+
+# RBAC
+rbac:
+  create: true
+
+# Persistence
+persistence:
+  enabled: true
+  storageClass: "longhorn"
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}

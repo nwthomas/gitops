@@ -1,0 +1,17 @@
+apiVersion: v2
+name: atlantis
+description: Atlantis is a tool for Terraform pull request automation
+type: application
+version: 0.1.0
+appVersion: "0.27.0"
+keywords:
+  - atlantis
+  - terraform
+  - gitops
+  - automation
+home: https://www.runatlantis.io/
+sources:
+  - https://github.com/runatlantis/atlantis
+maintainers:
+  - name: Atlantis Team
+    email: atlantis@runatlantis.io
