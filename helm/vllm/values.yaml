@@ -20,7 +20,7 @@ vllm:
       vllm serve unsloth/Qwen3.8-27B-NVFP4
       --served-model-name qwen3.8-27b
       --tensor-parallel-size 1
-      --max-model-len 32768
+      --max-model-len 120000
       --kv-cache-dtype fp8
       --gpu-memory-utilization 0.90
       --enforce-eager
