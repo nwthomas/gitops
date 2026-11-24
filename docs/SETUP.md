@@ -890,12 +890,11 @@ However, you can now utilize ArgoCD to do all the hard parts for you. Merely go 
 
 ## Accessing Prometheus and Grafana Dashboards
 
-Until I get sealed secrets validated in how it works with _non-environment variable secrets_ (e.g. for port numbers and such in Argo/Helm), I'm manually applying LoadBalancer configurations for Prometheus and Grafana to access them.
+Grafana is exposed through its Helm chart. Set `service.type` and `service.loadBalancerIP` in `helm/grafana/values.yaml` to an IP in your MetalLB range, then sync the Grafana app. Don't apply a manual Service named `grafana`, because Argo CD will revert it on the next sync.
 
-Adapt these with your own IP addresses and then access them at the IP + port you've set them to:
+Prometheus is still exposed with a manually applied LoadBalancer Service. Adapt it with your own IP address and then access it at the IP + port you've set:
 
 ```bash
-# For Prometheus
 apiVersion: v1
 kind: Service
 metadata:
@@ -911,26 +910,9 @@ spec:
       port: 9090
       targetPort: web
   loadBalancerIP: <IP address that falls within the metallb range you previously set>
-
-# For Grafana
-apiVersion: v1
-kind: Service
-metadata:
-  name: grafana
-  namespace: monitoring
-spec:
-  selector:
-    app: grafana
-  type: LoadBalancer
-  ports:
-  - name: http
-    port: 3000
-    targetPort: http
-  loadBalancerIP: <IP address that falls within the metallb range you previously set>
-
 ```
 
-Make files for each of those and then use `kubectl apply -f <file name>` to get a working URL you can use (e.g. `http://<the IP you set>"<the port you set>`).
+Save that to a file and then use `kubectl apply -f <file name>` to get a working URL you can use (e.g. `http://<the IP you set>"<the port you set>`).
 
 The default username/password for Grafana is `admin` and `admin`, but you should change the password immediately on accessing the dashboard.
 

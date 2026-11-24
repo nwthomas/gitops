@@ -12,6 +12,10 @@ resources:
     memory: "200Mi"
     cpu: "200m"
 
+service:
+  type: LoadBalancer
+  loadBalancerIP: 10.0.0.247
+
 nodeSelector:
   node-type: worker
 
