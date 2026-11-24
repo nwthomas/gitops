@@ -1,0 +1,82 @@
+{{- if and .Values.patchJob.create .Values.sealedSecret.create .Values.sealedSecret.encryptedData.loadBalancerIP -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: grafana-lb-ip-patch
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: grafana-lb-ip-patch
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["grafana-lb-ip"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["services"]
+    resourceNames: ["grafana"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: grafana-lb-ip-patch
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: grafana-lb-ip-patch
+subjects:
+  - kind: ServiceAccount
+    name: grafana-lb-ip-patch
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: grafana-lb-ip-patch
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  ttlSecondsAfterFinished: 30
+  backoffLimit: 4
+  template:
+    metadata:
+      name: grafana-lb-ip-patch
+    spec:
+      serviceAccountName: grafana-lb-ip-patch
+      restartPolicy: OnFailure
+      containers:
+        - name: kubectl
+          image: {{ .Values.patchJob.image }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              IP=$(kubectl get secret grafana-lb-ip -n {{ .Release.Namespace }} -o jsonpath="{.data.loadBalancerIP}" | base64 -d)
+              CURRENT_IP=$(kubectl get svc grafana -n {{ .Release.Namespace }} -o jsonpath="{.spec.loadBalancerIP}")
+              if [ "$CURRENT_IP" != "$IP" ]; then
+                kubectl patch svc grafana -n {{ .Release.Namespace }} --type=merge -p '{"spec":{"loadBalancerIP":"'"$IP"'"}}'
+              fi
+{{- end }}

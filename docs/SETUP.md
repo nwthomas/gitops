@@ -890,7 +890,13 @@ However, you can now utilize ArgoCD to do all the hard parts for you. Merely go 
 
 ## Accessing Prometheus and Grafana Dashboards
 
-Grafana is exposed through its Helm chart. Set `service.type` and `service.loadBalancerIP` in `helm/grafana/values.yaml` to an IP in your MetalLB range, then sync the Grafana app. Don't apply a manual Service named `grafana`, because Argo CD will revert it on the next sync.
+Grafana is exposed through its Helm chart as a LoadBalancer. Its IP is stored as a SealedSecret, and a PostSync job patches it onto the Service. Seal an IP from your MetalLB range on a machine with cluster access:
+
+```bash
+echo -n "<IP address that falls within the metallb range you previously set>" | kubeseal --raw --namespace monitoring --name grafana-lb-ip --controller-namespace kube-system --controller-name sealed-secrets
+```
+
+Put the output in `sealedSecret.encryptedData.loadBalancerIP` in `helm/grafana/values.yaml`, then sync the Grafana app. Don't apply a manual Service named `grafana`, because Argo CD will revert it on the next sync.
 
 Prometheus is still exposed with a manually applied LoadBalancer Service. Adapt it with your own IP address and then access it at the IP + port you've set:
 

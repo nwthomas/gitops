@@ -11,9 +11,6 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type | default "ClusterIP" }}
-  {{- with .Values.service.loadBalancerIP }}
-  loadBalancerIP: {{ . }}
-  {{- end }}
   ports:
     - name: http
       port: 3000
