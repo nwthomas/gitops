@@ -12,6 +12,6 @@ roleRef:
   kind: ClusterRole
   name: prometheus
 subjects:
-- kind: ServiceAccount
-  name: prometheus
-  namespace: {{ .Release.Namespace }}
+  - kind: ServiceAccount
+    name: prometheus
+    namespace: {{ .Release.Namespace }}

@@ -1,2 +1,1 @@
-# Mark all files in Helm chart directories as vendored
 helm/**/templates/** linguist-vendored

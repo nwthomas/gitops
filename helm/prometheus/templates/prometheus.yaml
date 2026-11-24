@@ -32,11 +32,11 @@ spec:
   serviceMonitorSelector:
     matchExpressions:
     {{- range .Values.serviceMonitorSelector.matchExpressions }}
-    - key: {{ .key }}
-      operator: {{ .operator }}
-      values:
-      {{- range .values }}
-      - {{ . }}
+      - key: {{ .key }}
+        operator: {{ .operator }}
+        values:
+        {{- range .values }}
+          - {{ . }}
       {{- end }}
     {{- end }}
   storage:

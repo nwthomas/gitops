@@ -1,13 +1,8 @@
-# This template contains the exact content from https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/master/bundle.yaml
-# with the namespace changed to use Helm templating
-
-# CustomResourceDefinitions
 {{- if .Values.crds.enabled }}
 {{- $crdContent := .Files.Get "crds/prometheus-operator-crds.yaml" }}
 {{- $crdContent | nindent 0 }}
 {{- end }}
 
-# ClusterRoleBinding
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -22,11 +17,10 @@ roleRef:
   kind: ClusterRole
   name: prometheus-operator
 subjects:
-- kind: ServiceAccount
-  name: prometheus-operator
-  namespace: {{ .Release.Namespace }}
+  - kind: ServiceAccount
+    name: prometheus-operator
+    namespace: {{ .Release.Namespace }}
 
-# ClusterRole
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -37,107 +31,106 @@ metadata:
     app.kubernetes.io/version: 0.85.0
   name: prometheus-operator
 rules:
-- apiGroups:
-  - monitoring.coreos.com
-  resources:
-  - alertmanagers
-  - alertmanagers/finalizers
-  - alertmanagers/status
-  - alertmanagerconfigs
-  - prometheuses
-  - prometheuses/finalizers
-  - prometheuses/status
-  - prometheusagents
-  - prometheusagents/finalizers
-  - prometheusagents/status
-  - thanosrulers
-  - thanosrulers/finalizers
-  - thanosrulers/status
-  - scrapeconfigs
-  - servicemonitors
-  - servicemonitors/status
-  - podmonitors
-  - probes
-  - prometheusrules
-  verbs:
-  - '*'
-- apiGroups:
-  - apps
-  resources:
-  - statefulsets
-  verbs:
-  - '*'
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  - secrets
-  verbs:
-  - '*'
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  verbs:
-  - list
-  - delete
-- apiGroups:
-  - ""
-  resources:
-  - services
-  - services/finalizers
-  verbs:
-  - get
-  - create
-  - update
-  - delete
-- apiGroups:
-  - ""
-  resources:
-  - nodes
-  verbs:
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - namespaces
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - events
-  verbs:
-  - patch
-  - create
-- apiGroups:
-  - networking.k8s.io
-  resources:
-  - ingresses
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - storage.k8s.io
-  resources:
-  - storageclasses
-  verbs:
-  - get
-- apiGroups:
-  - ""
-  resources:
-  - endpoints
-  verbs:
-  - get
-  - create
-  - update
-  - delete
+  - apiGroups:
+    - monitoring.coreos.com
+    resources:
+      - alertmanagers
+      - alertmanagers/finalizers
+      - alertmanagers/status
+      - alertmanagerconfigs
+      - prometheuses
+      - prometheuses/finalizers
+      - prometheuses/status
+      - prometheusagents
+      - prometheusagents/finalizers
+      - prometheusagents/status
+      - thanosrulers
+      - thanosrulers/finalizers
+      - thanosrulers/status
+      - scrapeconfigs
+      - servicemonitors
+      - servicemonitors/status
+      - podmonitors
+      - probes
+      - prometheusrules
+    verbs:
+      - '*'
+  - apiGroups:
+    - apps
+    resources:
+      - statefulsets
+    verbs:
+      - '*'
+  - apiGroups:
+    - ""
+    resources:
+      - configmaps
+      - secrets
+    verbs:
+      - '*'
+  - apiGroups:
+    - ""
+    resources:
+      - pods
+    verbs:
+      - list
+      - delete
+  - apiGroups:
+    - ""
+    resources:
+      - services
+      - services/finalizers
+    verbs:
+      - get
+      - create
+      - update
+      - delete
+  - apiGroups:
+    - ""
+    resources:
+      - nodes
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+    - ""
+    resources:
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+    - ""
+    resources:
+      - events
+    verbs:
+      - patch
+      - create
+  - apiGroups:
+    - networking.k8s.io
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+    - storage.k8s.io
+    resources:
+      - storageclasses
+    verbs:
+      - get
+  - apiGroups:
+    - ""
+    resources:
+      - endpoints
+    verbs:
+      - get
+      - create
+      - update
+      - delete
 
-# Deployment
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -165,32 +158,32 @@ spec:
     spec:
       automountServiceAccountToken: true
       containers:
-      - args:
-        - --kubelet-service=kube-system/kubelet
-        - --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.85.0
-        - --kubelet-endpoints=true
-        - --kubelet-endpointslice=false
-        env:
-        - name: GOGC
-          value: "30"
-        image: quay.io/prometheus-operator/prometheus-operator:v0.85.0
-        name: prometheus-operator
-        ports:
-        - containerPort: 8080
-          name: http
-        resources:
-          limits:
-            cpu: 200m
-            memory: 200Mi
-          requests:
-            cpu: 100m
-            memory: 100Mi
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          readOnlyRootFilesystem: true
+        - args:
+          - --kubelet-service=kube-system/kubelet
+          - --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.85.0
+          - --kubelet-endpoints=true
+          - --kubelet-endpointslice=false
+          env:
+            - name: GOGC
+              value: "30"
+          image: quay.io/prometheus-operator/prometheus-operator:v0.85.0
+          name: prometheus-operator
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
       nodeSelector:
         kubernetes.io/os: linux
       securityContext:
@@ -200,7 +193,6 @@ spec:
           type: RuntimeDefault
       serviceAccountName: prometheus-operator
 
-# ServiceAccount
 ---
 apiVersion: v1
 automountServiceAccountToken: false
@@ -213,7 +205,6 @@ metadata:
   name: prometheus-operator
   namespace: {{ .Release.Namespace }}
 
-# Service
 ---
 apiVersion: v1
 kind: Service
@@ -227,9 +218,9 @@ metadata:
 spec:
   clusterIP: None
   ports:
-  - name: http
-    port: 8080
-    targetPort: http
+    - name: http
+      port: 8080
+      targetPort: http
   selector:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator

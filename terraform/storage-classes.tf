@@ -11,7 +11,7 @@ resource "kubernetes_storage_class" "longhorn_default" {
   reclaim_policy         = "Delete"
   volume_binding_mode    = "Immediate"
   allow_volume_expansion = true
-  
+
   parameters = {
     "numberOfReplicas"    = tostring(var.longhorn_replicas)
     "staleReplicaTimeout" = tostring(var.longhorn_stale_replica_timeout)
@@ -34,7 +34,7 @@ resource "kubernetes_storage_class" "longhorn_high_availability" {
   reclaim_policy         = "Delete"
   volume_binding_mode    = "Immediate"
   allow_volume_expansion = true
-  
+
   parameters = {
     "numberOfReplicas"    = tostring(var.longhorn_ha_replicas)
     "staleReplicaTimeout" = tostring(var.longhorn_stale_replica_timeout)
@@ -57,7 +57,7 @@ resource "kubernetes_storage_class" "longhorn_fast" {
   reclaim_policy         = "Delete"
   volume_binding_mode    = "Immediate"
   allow_volume_expansion = true
-  
+
   parameters = {
     "numberOfReplicas"    = tostring(var.longhorn_fast_replicas)
     "staleReplicaTimeout" = tostring(var.longhorn_stale_replica_timeout)
@@ -80,7 +80,7 @@ resource "kubernetes_storage_class" "longhorn_retain" {
   reclaim_policy         = "Retain"
   volume_binding_mode    = "Immediate"
   allow_volume_expansion = true
-  
+
   parameters = {
     "numberOfReplicas"    = tostring(var.longhorn_replicas)
     "staleReplicaTimeout" = tostring(var.longhorn_stale_replica_timeout)

@@ -7,15 +7,15 @@ metadata:
   labels:
     {{- include "open-webui.labels" . | nindent 4 }}
 rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get"]
-- apiGroups: [""]
-  resources: ["services"]
-  verbs: ["get", "patch"]
-- apiGroups: ["apps"]
-  resources: ["statefulsets"]
-  verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -29,7 +29,7 @@ roleRef:
   kind: Role
   name: {{ include "open-webui.name" . }}-service-patch
 subjects:
-- kind: ServiceAccount
-  name: {{ .Values.serviceAccount.name | default (include "open-webui.name" .) }}
-  namespace: {{ include "open-webui.namespace" . }}
+  - kind: ServiceAccount
+    name: {{ .Values.serviceAccount.name | default (include "open-webui.name" .) }}
+    namespace: {{ include "open-webui.namespace" . }}
 {{- end }}

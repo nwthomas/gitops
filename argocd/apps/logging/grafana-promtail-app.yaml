@@ -7,8 +7,8 @@ spec:
   project: default
   source:
     repoURL: https://grafana.github.io/helm-charts
-    targetRevision: 6.15.0
     chart: promtail
+    targetRevision: 6.15.0
     helm:
       values: |
         daemonset:

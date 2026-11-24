@@ -6,9 +6,7 @@ metadata:
   labels:
     {{- include "cert-manager.labels" . | nindent 4 }}
   annotations:
-    # Ensure this applies after cert-manager Helm app creation
     argocd.argoproj.io/sync-wave: "1"
-    # Allow Argo CD to skip dry-run until CRDs exist on the first sync
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   acme:

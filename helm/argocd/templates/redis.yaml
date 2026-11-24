@@ -16,20 +16,20 @@ metadata:
     app.kubernetes.io/part-of: argocd
   name: argocd-redis
 rules:
-- apiGroups:
-  - ""
-  resourceNames:
-  - argocd-redis
-  resources:
-  - secrets
-  verbs:
-  - get
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - create
+  - apiGroups:
+    - ""
+    resourceNames:
+      - argocd-redis
+    resources:
+      - secrets
+    verbs:
+      - get
+  - apiGroups:
+    - ""
+    resources:
+      - secrets
+    verbs:
+      - create
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -44,8 +44,8 @@ roleRef:
   kind: Role
   name: argocd-redis
 subjects:
-- kind: ServiceAccount
-  name: argocd-redis
+  - kind: ServiceAccount
+    name: argocd-redis
 ---
 apiVersion: v1
 kind: Service
@@ -57,9 +57,9 @@ metadata:
   name: argocd-redis
 spec:
   ports:
-  - name: tcp-redis
-    port: 6379
-    targetPort: 6379
+    - name: tcp-redis
+      port: 6379
+      targetPort: 6379
   selector:
     app.kubernetes.io/name: argocd-redis
 ---
@@ -83,59 +83,59 @@ spec:
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/name: argocd-redis
-              topologyKey: kubernetes.io/hostname
-            weight: 100
-          - podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/part-of: argocd
-              topologyKey: kubernetes.io/hostname
-            weight: 5
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: argocd-redis
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/part-of: argocd
+                topologyKey: kubernetes.io/hostname
+              weight: 5
       containers:
-      - args:
-        - --save
-        - ""
-        - --appendonly
-        - "no"
-        - --requirepass $(REDIS_PASSWORD)
-        env:
-        - name: REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: auth
-              name: argocd-redis
-        image: public.ecr.aws/docker/library/redis:7.2.7-alpine
-        imagePullPolicy: Always
-        name: redis
-        ports:
-        - containerPort: 6379
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          readOnlyRootFilesystem: true
+        - args:
+          - --save
+          - ""
+          - --appendonly
+          - "no"
+          - --requirepass $(REDIS_PASSWORD)
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: auth
+                  name: argocd-redis
+          image: public.ecr.aws/docker/library/redis:7.2.7-alpine
+          imagePullPolicy: Always
+          name: redis
+          ports:
+            - containerPort: 6379
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
       initContainers:
-      - command:
-        - argocd
-        - admin
-        - redis-initial-password
-        image: quay.io/argoproj/argocd:v3.1.1
-        imagePullPolicy: IfNotPresent
-        name: secret-init
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
+        - command:
+          - argocd
+          - admin
+          - redis-initial-password
+          image: quay.io/argoproj/argocd:v3.1.1
+          imagePullPolicy: IfNotPresent
+          name: secret-init
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
       nodeSelector:
         kubernetes.io/os: linux
       securityContext:
@@ -155,21 +155,21 @@ metadata:
   name: argocd-redis-network-policy
 spec:
   ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: argocd-server
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: argocd-repo-server
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: argocd-application-controller
-    ports:
-    - port: 6379
-      protocol: TCP
+    - from:
+      - podSelector:
+          matchLabels:
+            app.kubernetes.io/name: argocd-server
+      - podSelector:
+          matchLabels:
+            app.kubernetes.io/name: argocd-repo-server
+      - podSelector:
+          matchLabels:
+            app.kubernetes.io/name: argocd-application-controller
+      ports:
+        - port: 6379
+          protocol: TCP
   podSelector:
     matchLabels:
       app.kubernetes.io/name: argocd-redis
   policyTypes:
-  - Ingress
+    - Ingress

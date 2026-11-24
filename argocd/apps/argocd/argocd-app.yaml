@@ -7,12 +7,12 @@ spec:
   project: default
   source:
     repoURL: https://github.com/nwthomas/gitops.git
-    targetRevision: main
     path: helm/argocd
+    targetRevision: main
     helm:
+      releaseName: argocd
       valueFiles:
         - values.yaml
-      releaseName: argocd
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

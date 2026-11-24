@@ -7,8 +7,8 @@ spec:
   project: default
   source:
     repoURL: https://github.com/nwthomas/watcher-in-the-water.git
-    targetRevision: main
     path: helm/
+    targetRevision: main
     helm:
       valueFiles:
         - values.yaml

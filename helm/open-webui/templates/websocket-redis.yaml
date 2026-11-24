@@ -34,32 +34,32 @@ spec:
         - name: {{ .Values.websocket.redis.image.pullSecretName }}
       {{- end }}
       containers:
-      - name: {{ .Values.websocket.redis.name }}
-        image: "{{ .Values.websocket.redis.image.repository }}:{{ .Values.websocket.redis.image.tag }}"
-        imagePullPolicy: {{ .Values.websocket.redis.image.pullPolicy }}
-        {{- with .Values.websocket.redis.command }}
-        command:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- with .Values.websocket.redis.args }}
-        args:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
-        ports:
-        - name: http
-          containerPort: {{ .Values.websocket.redis.service.containerPort }}
-        {{- with .Values.websocket.redis.resources }}
-        resources:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- with .Values.websocket.redis.containerSecurityContext }}
-        securityContext:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- if and (hasKey .Values.websocket.redis.containerSecurityContext "readOnlyRootFilesystem") .Values.websocket.redis.containerSecurityContext.readOnlyRootFilesystem }}
-        volumeMounts:
-          - name: data
-            mountPath: "/data"
+        - name: {{ .Values.websocket.redis.name }}
+          image: "{{ .Values.websocket.redis.image.repository }}:{{ .Values.websocket.redis.image.tag }}"
+          imagePullPolicy: {{ .Values.websocket.redis.image.pullPolicy }}
+          {{- with .Values.websocket.redis.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.websocket.redis.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.websocket.redis.service.containerPort }}
+          {{- with .Values.websocket.redis.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.websocket.redis.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if and (hasKey .Values.websocket.redis.containerSecurityContext "readOnlyRootFilesystem") .Values.websocket.redis.containerSecurityContext.readOnlyRootFilesystem }}
+          volumeMounts:
+            - name: data
+              mountPath: "/data"
         {{- end }}
       {{- with .Values.websocket.redis.tolerations }}
       tolerations:
@@ -102,11 +102,11 @@ spec:
     {{- include "websocket.redis.selectorLabels" . | nindent 4 }}
   type: {{ .Values.websocket.redis.service.type | default "ClusterIP" }}
   ports:
-  - protocol: TCP
-    name: {{ .Values.websocket.redis.service.portName | default "http" }}
-    port: {{ .Values.websocket.redis.service.port }}
-    targetPort: http
-    {{- if .Values.websocket.redis.service.nodePort }}
-    nodePort: {{ .Values.websocket.redis.service.nodePort | int }}
+    - protocol: TCP
+      name: {{ .Values.websocket.redis.service.portName | default "http" }}
+      port: {{ .Values.websocket.redis.service.port }}
+      targetPort: http
+      {{- if .Values.websocket.redis.service.nodePort }}
+      nodePort: {{ .Values.websocket.redis.service.nodePort | int }}
     {{- end }}
 {{- end }}

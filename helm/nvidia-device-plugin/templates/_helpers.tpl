@@ -1,16 +1,7 @@
-{{/* vim: set filetype=mustache: */}}
-{{/*
-Expand the name of the chart.
-*/}}
 {{- define "nvidia-device-plugin.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
 {{- define "nvidia-device-plugin.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
@@ -24,9 +15,6 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
-{{/*
-Allow the release namespace to be overridden for multi-namespace deployments in combined charts
-*/}}
 {{- define "nvidia-device-plugin.namespace" -}}
   {{- if .Values.namespaceOverride -}}
     {{- .Values.namespaceOverride -}}
@@ -35,17 +23,11 @@ Allow the release namespace to be overridden for multi-namespace deployments in 
   {{- end -}}
 {{- end -}}
 
-{{/*
-Create chart name and version as used by the chart label.
-*/}}
 {{- define "nvidia-device-plugin.chart" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" $name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{/*
-Common labels
-*/}}
 {{- define "nvidia-device-plugin.labels" -}}
 helm.sh/chart: {{ include "nvidia-device-plugin.chart" . }}
 {{ include "nvidia-device-plugin.templateLabels" . }}
@@ -55,9 +37,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
-{{/*
-Template labels
-*/}}
 {{- define "nvidia-device-plugin.templateLabels" -}}
 app.kubernetes.io/name: {{ include "nvidia-device-plugin.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
@@ -66,9 +45,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 {{- end }}
 
-{{/*
-Selector labels
-*/}}
 {{- define "nvidia-device-plugin.selectorLabels" -}}
 {{- if .Values.selectorLabelsOverride -}}
 {{ toYaml .Values.selectorLabelsOverride }}
@@ -77,17 +53,11 @@ Selector labels
 {{- end }}
 {{- end }}
 
-{{/*
-Full image name with tag
-*/}}
 {{- define "nvidia-device-plugin.fullimage" -}}
 {{- $tag := printf "v%s" .Chart.AppVersion }}
 {{- .Values.image.repository -}}:{{- .Values.image.tag | default $tag -}}
 {{- end }}
 
-{{/*
-Security context for the plugin
-*/}}
 {{- define "nvidia-device-plugin.securityContext" -}}
 {{- if ne (len .Values.securityContext) 0 -}}
 {{ toYaml .Values.securityContext }}
@@ -104,9 +74,6 @@ capabilities:
 {{- end -}}
 {{- end -}}
 
-{{/*
-Security context for GFD
-*/}}
 {{- define "gpu-feature-discovery.securityContext" -}}
 {{- if ne (len .Values.gfd.securityContext) 0 -}}
 {{ toYaml .Values.gfd.securityContext }}
@@ -121,9 +88,6 @@ capabilities:
 {{- end -}}
 {{- end -}}
 
-{{/*
-Check whether the SYS_ADMIN capability should be included.
-*/}}
 {{- define "nvidia-device-plugin.requiresCapSysAdmin" -}}
 {{- $result := false -}}
 {{- if ne (include "nvidia-device-plugin.allPossibleMigStrategiesAreNone" .) "true" -}}
@@ -134,9 +98,6 @@ Check whether the SYS_ADMIN capability should be included.
 {{- $result -}}
 {{- end -}}
 
-{{/*
-Check if migStrategy (from all possible configurations) is "none"
-*/}}
 {{- define "nvidia-device-plugin.allPossibleMigStrategiesAreNone" -}}
 {{- $result := true -}}
 {{- if .Values.migStrategy -}}
@@ -158,9 +119,6 @@ Check if migStrategy (from all possible configurations) is "none"
 {{- $result -}}
 {{- end }}
 
-{{/*
-Check if volume-mounts is included in the set of device-list-strategies
-*/}}
 {{- define "nvidia-device-plugin.deviceListStrategyIncludesVolumeMount" -}}
 {{- $result := false -}}
 {{- if .Values.deviceListStrategy -}}
@@ -184,9 +142,6 @@ Check if volume-mounts is included in the set of device-list-strategies
 {{- $result -}}
 {{- end }}
 
-{{/*
-Check if an explicit set of configs has been provided or not
-*/}}
 {{- define "nvidia-device-plugin.hasEmbeddedConfigMap" -}}
 {{- $result := true -}}
 {{- if empty .Values.config.map  -}}
@@ -195,9 +150,6 @@ Check if an explicit set of configs has been provided or not
 {{- $result -}}
 {{- end }}
 
-{{/*
-Check if there is a ConfigMap in use or not
-*/}}
 {{- define "nvidia-device-plugin.hasConfigMap" -}}
 {{- $result := false -}}
 {{- if ne (include "nvidia-device-plugin.configMapName" .) "" -}}
@@ -206,9 +158,6 @@ Check if there is a ConfigMap in use or not
 {{- $result -}}
 {{- end }}
 
-{{/*
-Get the name of the default configuration
-*/}}
 {{- define "nvidia-device-plugin.hasDefaultConfig" -}}
 {{- $result := "false" -}}
 {{- if .Values.config.default -}}
@@ -231,9 +180,6 @@ Get the name of the default configuration
 {{- $result -}}
 {{- end }}
 
-{{/*
-Get the name of the configmap to use
-*/}}
 {{- define "nvidia-device-plugin.configMapName" -}}
 {{- $result := "" -}}
 {{- if .Values.config.name -}}
@@ -244,25 +190,16 @@ Get the name of the configmap to use
 {{- $result -}}
 {{- end -}}
 
-{{/*
-Pod annotations for the plugin and GFD
-*/}}
 {{- define "nvidia-device-plugin.podAnnotations" -}}
 {{- $annotations := deepCopy .local.Values.podAnnotations -}}
 {{- if not (hasKey $annotations "checksum/config") -}}
   {{- if eq (include "nvidia-device-plugin.hasEmbeddedConfigMap" .root) "true" -}}
-    {{- $_ := set $annotations "checksum/config" (include (print $.root.Template.BasePath "/configmap.yml") .root | sha256sum) -}}
+    {{- $_ := set $annotations "checksum/config" (include (print $.root.Template.BasePath "/configmap.yaml") .root | sha256sum) -}}
   {{- end -}}
 {{- end -}}
 {{- toYaml $annotations }}
 {{- end -}}
 
-
-{{/*
-Collection of typed options for the device plugin.
-
-We convert this to JSON so that it can be included and converted to an object using fromJson.
-*/}}
 {{- define "nvidia-device-plugin.options" -}}
 {{- $options := dict "" "" -}}
 {{- $_ := set $options "hasConfigMap" ( eq ( (include "nvidia-device-plugin.hasConfigMap" . ) | trim ) "true" ) -}}

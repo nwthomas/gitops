@@ -7,8 +7,8 @@ spec:
   project: default
   source:
     repoURL: https://grafana.github.io/helm-charts
-    targetRevision: 1.8.11
     chart: loki-simple-scalable
+    targetRevision: 1.8.11
     helm:
       values: |
         loki:

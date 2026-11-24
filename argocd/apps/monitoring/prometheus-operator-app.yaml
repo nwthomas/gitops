@@ -9,8 +9,8 @@ spec:
   project: default
   source:
     repoURL: https://github.com/nwthomas/gitops.git
-    targetRevision: main
     path: helm/prometheus-operator
+    targetRevision: main
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
@@ -18,4 +18,3 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-

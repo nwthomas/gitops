@@ -26,7 +26,6 @@ spec:
             - |
               set -e
 
-              # Patch the open-webui service with its LoadBalancer IP
               IP=$(kubectl get secret {{ include "open-webui.name" . }}-secrets -n {{ include "open-webui.namespace" . }} -o jsonpath="{.data.LOAD_BALANCER_IP}" | base64 -d)
               CURRENT_IP=$(kubectl get svc {{ include "open-webui.name" . }} -n {{ include "open-webui.namespace" . }} -o jsonpath="{.spec.loadBalancerIP}" 2>/dev/null || echo "")
               if [[ "$CURRENT_IP" != "$IP" ]]; then
@@ -34,7 +33,6 @@ spec:
                 echo "Service LoadBalancer IP patched to: $IP"
               fi
 
-              # Get vLLM LoadBalancer IP from vllm-app-lb-ip secret
               VLLM_IP=$(kubectl get secret vllm-app-lb-ip -n {{ include "open-webui.namespace" . }} -o jsonpath="{.data.loadBalancerIP}" 2>/dev/null | base64 -d)
               if [[ -z "$VLLM_IP" ]]; then
                 echo "ERROR: Failed to read vLLM LB IP from secret vllm-app-lb-ip"
@@ -45,7 +43,6 @@ spec:
               VLLM_URL="http://${VLLM_IP}:8000/v1"
               echo "vLLM URL: $VLLM_URL"
 
-              # Patch the StatefulSet with OPENAI_API_BASE_URL environment variable (using set env to merge, not replace)
               kubectl set env statefulset/{{ include "open-webui.name" . }} -n {{ include "open-webui.namespace" . }} OPENAI_API_BASE_URL="$VLLM_URL"
 
               echo "StatefulSet patched with vLLM URL: $VLLM_URL"

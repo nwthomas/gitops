@@ -20,27 +20,27 @@ spec:
         app: grafana
     spec:
       containers:
-      - env: []
-        image: {{ .Values.image.repository | default "grafana/grafana" }}:{{ .Values.image.tag | default "latest" }}
-        name: grafana
-        ports:
-        - containerPort: 3000
-          name: http
-        readinessProbe:
-          httpGet:
-            path: /api/health
-            port: http
-        resources:
-          limits:
-            cpu: {{ .Values.resources.limits.cpu | default "200m" }}
-            memory: {{ .Values.resources.limits.memory | default "200Mi" }}
-          requests:
-            cpu: {{ .Values.resources.requests.cpu | default "100m" }}
-            memory: {{ .Values.resources.requests.memory | default "100Mi" }}
-        volumeMounts:
-        - mountPath: /var/lib/grafana
-          name: grafana-storage
-          readOnly: false
+        - env: []
+          image: {{ .Values.image.repository | default "grafana/grafana" }}:{{ .Values.image.tag | default "latest" }}
+          name: grafana
+          ports:
+            - containerPort: 3000
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu | default "200m" }}
+              memory: {{ .Values.resources.limits.memory | default "200Mi" }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu | default "100m" }}
+              memory: {{ .Values.resources.requests.memory | default "100Mi" }}
+          volumeMounts:
+            - mountPath: /var/lib/grafana
+              name: grafana-storage
+              readOnly: false
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       securityContext:

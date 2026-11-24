@@ -1,6 +1,3 @@
-# Based on vLLM deployment configuration
-# See: https://docs.vllm.ai/en/latest/deployment/k8s/#deployment-with-gpus
-
 replicaCount: 1
 
 image:
@@ -138,7 +135,6 @@ persistentVolume:
   accessModes:
     - ReadWriteOnce
   annotations:
-    # Set the number of replicas for this Longhorn volume by overriding the storage class default
     longhorn.io/number-of-replicas: "1"
   existingClaim: ""
   size: 200Gi
