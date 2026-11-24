@@ -17,12 +17,12 @@ spec:
     {{- include "open-webui.selectorLabels" . | nindent 4 }}
   type: {{ .Values.service.type | default "ClusterIP" }}
   ports:
-  - protocol: TCP
-    name: http
-    port: {{ .Values.service.port }}
-    targetPort: http
-    {{- if .Values.service.nodePort }}
-    nodePort: {{ .Values.service.nodePort | int }}
+    - protocol: TCP
+      name: http
+      port: {{ .Values.service.port }}
+      targetPort: http
+      {{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort | int }}
     {{- end }}
   {{- if .Values.service.loadBalancerClass }}
   loadBalancerClass: {{ .Values.service.loadBalancerClass | quote }}

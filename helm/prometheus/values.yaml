@@ -24,14 +24,14 @@ securityContext:
 
 serviceMonitorSelector:
   matchExpressions:
-  - key: name
-    operator: In
-    values:
-    - longhorn-prometheus-servicemonitor
-    - kube-state-metrics
-    - node-exporter
-    - kubelet
-    - traefik
+    - key: name
+      operator: In
+      values:
+        - longhorn-prometheus-servicemonitor
+        - kube-state-metrics
+        - node-exporter
+        - kubelet
+        - traefik
 
 storage:
   storageClassName: "longhorn"

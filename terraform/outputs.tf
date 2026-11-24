@@ -1,7 +1,7 @@
 output "namespaces" {
   description = "Created Kubernetes namespaces"
   value = {
-    applications     = kubernetes_namespace.applications.metadata[0].name
+    applications    = kubernetes_namespace.applications.metadata[0].name
     argocd          = kubernetes_namespace.argocd.metadata[0].name
     atlantis        = kubernetes_namespace.atlantis.metadata[0].name
     cert_manager    = kubernetes_namespace.cert_manager.metadata[0].name
@@ -15,10 +15,10 @@ output "namespaces" {
 output "storage_classes" {
   description = "Created Kubernetes storage classes"
   value = {
-    longhorn_default         = kubernetes_storage_class.longhorn_default.metadata[0].name
+    longhorn_default           = kubernetes_storage_class.longhorn_default.metadata[0].name
     longhorn_high_availability = kubernetes_storage_class.longhorn_high_availability.metadata[0].name
-    longhorn_fast           = kubernetes_storage_class.longhorn_fast.metadata[0].name
-    longhorn_retain         = kubernetes_storage_class.longhorn_retain.metadata[0].name
+    longhorn_fast              = kubernetes_storage_class.longhorn_fast.metadata[0].name
+    longhorn_retain            = kubernetes_storage_class.longhorn_retain.metadata[0].name
   }
 }
 

@@ -194,7 +194,7 @@ capabilities:
 {{- $annotations := deepCopy .local.Values.podAnnotations -}}
 {{- if not (hasKey $annotations "checksum/config") -}}
   {{- if eq (include "nvidia-device-plugin.hasEmbeddedConfigMap" .root) "true" -}}
-    {{- $_ := set $annotations "checksum/config" (include (print $.root.Template.BasePath "/configmap.yml") .root | sha256sum) -}}
+    {{- $_ := set $annotations "checksum/config" (include (print $.root.Template.BasePath "/configmap.yaml") .root | sha256sum) -}}
   {{- end -}}
 {{- end -}}
 {{- toYaml $annotations }}

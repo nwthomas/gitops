@@ -87,22 +87,22 @@ nfd:
 
   worker:
     tolerations:
-    - key: "node-role.kubernetes.io/master"
-      operator: "Equal"
-      value: ""
-      effect: "NoSchedule"
-    - key: "nvidia.com/gpu"
-      operator: "Equal"
-      value: "present"
-      effect: "NoSchedule"
+      - key: "node-role.kubernetes.io/master"
+        operator: "Equal"
+        value: ""
+        effect: "NoSchedule"
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
     config:
       sources:
         pci:
           deviceClassWhitelist:
-          - "02"
-          - "03"
+            - "02"
+            - "03"
           deviceLabelFields:
-          - vendor
+            - vendor
 
 mps:
   root: "/run/nvidia/mps"

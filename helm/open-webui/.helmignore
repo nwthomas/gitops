@@ -13,7 +13,6 @@
 *~
 .project
 .idea/
-.drone.yml
 *.tmproj
 .vscode/
-values-minikube.yaml
+*.md
