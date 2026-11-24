@@ -11,6 +11,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.replicas | default 1 }}
+  strategy:
+    type: Recreate
+    rollingUpdate: null
   selector:
     matchLabels:
       app: grafana
@@ -32,11 +35,11 @@ spec:
               port: http
           resources:
             limits:
-              cpu: {{ .Values.resources.limits.cpu | default "200m" }}
-              memory: {{ .Values.resources.limits.memory | default "200Mi" }}
+              cpu: {{ .Values.resources.limits.cpu | default "500m" }}
+              memory: {{ .Values.resources.limits.memory | default "512Mi" }}
             requests:
               cpu: {{ .Values.resources.requests.cpu | default "100m" }}
-              memory: {{ .Values.resources.requests.memory | default "100Mi" }}
+              memory: {{ .Values.resources.requests.memory | default "256Mi" }}
           volumeMounts:
             - mountPath: /var/lib/grafana
               name: grafana-storage
