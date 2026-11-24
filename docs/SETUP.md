@@ -688,7 +688,7 @@ kubectl create namespace argocd
 # Install ArgoCD
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-# Validate the install worked 
+# Validate the install worked
 kubectl get pods -n argocd
 kubectl get svc -n argocd
 ```
@@ -726,7 +726,7 @@ TODO: Show setting up the external IP, logging in, and changing password + deplo
 
 Now that we have ArgoCD setup and you bootstrapped the application cluster, getting sealed secrets working should be as simple as deploying the `kube-system` namespace app and then deploying the `sealed-secrets-app`.
 
-After you do that, you'll also need to install kubeseal, a CLI tool for encrypting secrets. You'll be using this locally to make your secret before putting it into Git to be committed. 
+After you do that, you'll also need to install kubeseal, a CLI tool for encrypting secrets. You'll be using this locally to make your secret before putting it into Git to be committed.
 
 Get the most recent version [from here](https://github.com/bitnami-labs/sealed-secrets/pkgs/container/sealed-secrets-kubeseal) and then install via:
 
@@ -1022,8 +1022,8 @@ nmcli connection show
 That should output someting like this:
 
 ```bash
-NAME                UUID                                  TYPE      DEVICE 
-Wired connection 1  fd179af5-6b4d-35aa-97c4-3e14bfe9ee81  ethernet  enp1s0 
+NAME                UUID                                  TYPE      DEVICE
+Wired connection 1  fd179af5-6b4d-35aa-97c4-3e14bfe9ee81  ethernet  enp1s0
 ```
 
 Also, get the network adapter MAC address for later use:
@@ -1092,8 +1092,6 @@ Once you're done with all of the above, you'll need to go into your BIOS and ens
 Follow Nvidia's setup steps here for `nvidia-container-toolkit`:
 
 https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
-
-
 
 TODO
 

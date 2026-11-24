@@ -1,4 +1,3 @@
-# Default values for grafana
 replicas: 1
 
 image:

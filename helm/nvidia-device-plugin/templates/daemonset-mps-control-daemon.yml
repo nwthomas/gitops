@@ -110,7 +110,6 @@ spec:
       {{- end }}
       containers:
       {{- if $options.hasConfigMap }}
-        # TODO: How do we synchronize the plugin and control-daemon on restart.
         - image: {{ include "nvidia-device-plugin.fullimage" . }}
           name: mps-control-daemon-sidecar
           command: ["config-manager"]
@@ -204,7 +203,6 @@ spec:
         emptyDir: {}
       {{- end }}
       nodeSelector:
-        # We only deploy this pod if the following sharing label is applied.
         nvidia.com/mps.capable: "true"
       {{- with .Values.nodeSelector }}
         {{- toYaml . | nindent 8 }}

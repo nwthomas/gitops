@@ -1,18 +1,11 @@
-# ArgoCD Helm Chart Values
-# This chart deploys ArgoCD using the official manifests
-
-# Global settings
 global:
   imageRegistry: ""
   imagePullSecrets: []
 
-# ArgoCD server configuration
-# TODO: Move to a secret for IP and LB type service
 server:
   service:
     type: ClusterIP
 
-# Application controller configuration
 controller:
   resources:
     requests:
@@ -22,15 +15,12 @@ controller:
       cpu: "500m"
       memory: "512Mi"
 
-# ApplicationSet controller
 applicationSet:
   enabled: true
 
-# RBAC configuration
 rbac:
   create: true
 
-# Namespace
 namespace:
   create: true
   name: argocd

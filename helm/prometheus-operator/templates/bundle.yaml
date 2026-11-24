@@ -1,13 +1,8 @@
-# This template contains the exact content from https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/master/bundle.yaml
-# with the namespace changed to use Helm templating
-
-# CustomResourceDefinitions
 {{- if .Values.crds.enabled }}
 {{- $crdContent := .Files.Get "crds/prometheus-operator-crds.yaml" }}
 {{- $crdContent | nindent 0 }}
 {{- end }}
 
-# ClusterRoleBinding
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -26,7 +21,6 @@ subjects:
   name: prometheus-operator
   namespace: {{ .Release.Namespace }}
 
-# ClusterRole
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -137,7 +131,6 @@ rules:
   - update
   - delete
 
-# Deployment
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -200,7 +193,6 @@ spec:
           type: RuntimeDefault
       serviceAccountName: prometheus-operator
 
-# ServiceAccount
 ---
 apiVersion: v1
 automountServiceAccountToken: false
@@ -213,7 +205,6 @@ metadata:
   name: prometheus-operator
   namespace: {{ .Release.Namespace }}
 
-# Service
 ---
 apiVersion: v1
 kind: Service

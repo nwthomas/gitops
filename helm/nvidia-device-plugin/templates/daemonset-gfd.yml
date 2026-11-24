@@ -121,7 +121,7 @@ spec:
         - name: SEND_SIGNAL
           value: "true"
         - name: SIGNAL
-          value: "1" # SIGHUP
+          value: "1"
         - name: PROCESS_TO_SIGNAL
           value: "gpu-feature-discovery"
         volumeMounts:

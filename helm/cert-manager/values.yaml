@@ -1,4 +1,3 @@
-# Default values for cert-manager
 email: "cert.manager.k7f9z@gmail.com"
 ingressClassName: "traefik"
 
@@ -6,11 +5,11 @@ letsencryptStaging:
   enabled: true
   email: "cert.manager.k7f9z@gmail.com"
   server: "https://acme-staging-v02.api.letsencrypt.org/directory"
-  
+
 letsencryptProduction:
   enabled: true
   email: "cert.manager.k7f9z@gmail.com"
   server: "https://acme-v02.api.letsencrypt.org/directory"
-  
+
 selfsigned:
   enabled: true

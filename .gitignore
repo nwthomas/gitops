@@ -1,4 +1,3 @@
-# Terraform files
 *.tfstate
 *.tfstate.*
 *.tfvars
@@ -10,33 +9,23 @@ crash.*.log
 *.tfplan
 *.tfplan.*
 
-# Ignore override files as they are usually used to override resources locally and so
-# are not checked in
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
 
-# Ignore transient lock info files created by terraform apply
 .terraform.tfstate.lock.info
 
-# Include override files you do wish to add to version control using negated pattern
-# !example_override.tf
-
-# Ignore CLI configuration files
 .terraformrc
 terraform.rc
 
-# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS files
 .DS_Store
 Thumbs.db
 
-## Miscellaneous
 charts/
 !helm/open-webui/charts/

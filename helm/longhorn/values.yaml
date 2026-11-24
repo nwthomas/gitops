@@ -1,9 +1,7 @@
 longhorn:
-  # Default settings for Longhorn
   defaultSettings:
     defaultDataPath: /storage01
-  
-  # Tolerations for control plane nodes and GPU nodes
+
   longhornManager:
     tolerations:
       - key: "node-role.kubernetes.io/control-plane"

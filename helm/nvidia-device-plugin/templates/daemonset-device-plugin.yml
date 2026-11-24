@@ -119,7 +119,7 @@ spec:
         - name: SEND_SIGNAL
           value: "true"
         - name: SIGNAL
-          value: "1" # SIGHUP
+          value: "1"
         - name: PROCESS_TO_SIGNAL
           value: "nvidia-device-plugin"
         volumeMounts:
@@ -203,13 +203,10 @@ spec:
           - name: kubelet-device-plugins-dir
             mountPath: /var/lib/kubelet/device-plugins
         {{- if typeIs "string" .Values.nvidiaDriverRoot }}
-          # We always mount the driver root at /driver-root in the container.
-          # This is required for CDI detection to work correctly.
           - name: driver-root
             mountPath: /driver-root
             readOnly: true
         {{- end }}
-          # The MPS /dev/shm is needed to allow for MPS daemon health-checking.
           - name: mps-shm
             mountPath: /dev/shm
           - name: mps-root

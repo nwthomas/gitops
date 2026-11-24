@@ -8,4 +8,3 @@ metadata:
     {{- include "vllm.labels" . | nindent 4 }}
 handler: {{ .Values.runtimeClassName | quote }}
 {{- end }}
-
