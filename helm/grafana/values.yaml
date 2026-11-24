@@ -12,6 +12,18 @@ resources:
     memory: "200Mi"
     cpu: "200m"
 
+service:
+  type: LoadBalancer
+
+sealedSecret:
+  create: true
+  encryptedData:
+    loadBalancerIP: "AgB9XQxgMM8UbY2q0k4QhxHXMpmTVguFMUKhw30pig/uUpcT27Y4aSR14PC8hARv8cPCC1dg6UmuHvASu/6RB7Q0l/sYwNcP53nBA2UplYBreWd//HNtFGJRJv1Omo4ZyBJg318dhN/hLahT6Il9vBuJCXHvv2p9TPzuGUPBbetUg461iULL4J6favGjtLvw0EDsbZqKFM9ZC3QAd1F8rv3zeEsEE/cxlS/WHyPGpuVsnK6D0a5dPorix7sZbd1GCE6is1//9PijziW4ZWxEqa+UI8go3skPyoD+x4vUG7jQ58m0L0N5hM0CMcxNnU4dWd6t+JKlVo95NAuameypkr95Alf8V4SpYzGgWqzHD2wTtUzmSxXSjxfKPTbgmpw4juKw2Ht8FVTW+mvyJqUD3W250DIvnNbjJTmYTolLL7zX/0vTTUYm/S2lshlG0a/A/4lMscPqwLV4gpUkJZmYRTvwIHLolJ5L9Xk1/1Kf4vbb6KouJSf/OJ0Z03nPbhGjOvBTmbKf/+WwYjneTQxkarSjGCOYJz16tHQD2adg+ymiSwXgBUTi+h/KSgoX0uJjhvP8+vsOSoOtUvfduw85xlH42EEmPBpfjoL4sskTKNPW5KhD5tgQSSKgcG/u2g9vEHJaGZOJ4MA7CgfKf1XlBodydAJe1SrUnOwySG2e777nG6qW0pyIEzXZeNWFymP9r+VZwj+xJfgBBn6l"
+
+patchJob:
+  create: true
+  image: bitnami/kubectl:latest
+
 nodeSelector:
   node-type: worker
 
